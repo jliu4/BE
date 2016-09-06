@@ -1,15 +1,18 @@
 clear all;close all
 addpath('C:\jinwork\BE\matlab')
-addpath('C:\jinwork\BE\matlab\addaxis5\addaxis5')
+addpath('C:\jinwork\BE\matlab\addaxis5')
 
 %looking at Berkeley HHT
 SYS = 'BEC Core B37';
-Directory='C:\jinwork\BE\data\ConF00_copy\2016-07-21';
+Directory='C:\jinwork\BEC\data\ConF00_copy\2016-07-21';
 AllFiles = getall(Directory);  %SORTED BY DATE....
-Experiment = AllFiles(19:end);
+Experiment = AllFiles(1:2);
 Experiment'
 
 loadHHT 
+%startTime 8/12/2016 17:30 assume 11.5*360
+%endTime 8/15/2016 17 assume (8/12-8/15) 24*4 - 16
+
 %change a few messy variable names
 QOccurred = QOccurred0x3F; clear QPulseOccurred0x3F
 QPulseLengthns = QPulseLength0x28ns0x29; clear QPulseLength0x28ns0x29

@@ -15,11 +15,11 @@ addpath('C:\jinwork\BE\matlab\addaxis5')
 % of those parameters. 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %looking at Berkeley HHT
-SYS = 'BEC Core B13 (NiAlNi)';
+SYS = 'BEC Core B37';
 hpt = 24 %how many hours per tick mark in graphs...
-Directory='C:\jinwork\BEC\data\ConF00_copy\2016-04-20';
+Directory='C:\jinwork\BEC\data\ConF00_copy\2016-07-21';
 AllFiles = getall(Directory);  %SORTED BY DATE....
-Experiment = AllFiles([8:13,16:22]);%(9:22);
+Experiment = AllFiles([4:7]);%(9:22);
 Experiment'
 
 loadHHT 
@@ -29,16 +29,21 @@ QPulseLengthns = QPulseLength0x28ns0x29; clear QPulseLength0x28ns0x29
 QPulseDelays = QPulseDelay0x28s0x29; clear QPulseDelay0x28s0x29
 QkHz = QKHz; clear QKHz;
 dateN=datenum(DateTime,'mm/dd/yyyy HH:MM:SS');
+%startTime 8/12/2016 17:30 assume 11*360
+%endTime 8/15/2016 17 assume (8/12-8/15) 24*4 - 12
+DateTime(11*360)
+DateTime(end - 12*360)
+
 reltime=24*(dateN-dateN(1)); %in days*24 = hours
+%titletxt=strcat('BEC HHT test from ',DateTime(11*360),' through ',DateTime(end - 12*360)); %how to keep trailing spaces?
 titletxt=strcat('BEC HHT test from ',DateTime(1),' through ',DateTime(end)); %how to keep trailing spaces?
 qi=find(QOccurred == 1);
-
 cd('C:\jinwork\BEC\Data\MatlabTempData')
-save BEC_051716 %used to be BEC_051016
+save BEC_081616 %used to be BEC_051016
 %%
 clear all;close all;
 cd('C:\jinwork\BEC\Data\MatlabTempData')
-load BEC_051716
+load BEC_081616
 
 %note that everthing before index ~5000 (starting at file 8) is before
 %sequence we want was actually started.
@@ -46,7 +51,9 @@ load BEC_051716
 
 %copied from "biasSteps.m"
 %use bias voltage to get steps, then take last 15 min of step and average
-BiasV = CoreGasHtrVolt;
+%since 7/21/2016 CoreGasHtrVolt changed to BiasVolt
+%BiasV = CoreGasHtrVolt;
+BiasV = BiasVolt;
 %take each step and find avg, the delay from term them pow is distracting
 dQBV = abs(diff(BiasV));
 % [peakLoc] = peakfinder(x0,sel,thresh) returns the indicies of local 
@@ -130,7 +137,9 @@ plot(Expstart,BiasV(Expstart),'go')
 plot(Expend,BiasV(Expend),'ro')
 
 QCP = QPow-TerminationThermPow;
-BiasP = CoreGasHtrPow - 0.00063*BiasV;
+%changed the name from CoreGasHtrPow to BiasPow 2016-7-21 from 2016-4-20
+%BiasP = CoreGasHtrPow - 0.00063*BiasV;
+BiasP = BiasPow - 0.00063*BiasV;
 QPcore = QCP + BiasP;
 
 figure
@@ -173,6 +182,8 @@ ylabel('Q Power (W)')
 legend(['Q Power',legstr])
 title(['HHT ',DateTime{1},' through ',DateTime{end}],'fontsize',11)
 legstr'
+size(relT)
+size(mQPow)
 
 plot([relT(1:2:end);relT(2:2:end)],[mQPow(1:2:end);mQPow(2:2:end)],'s-')
 

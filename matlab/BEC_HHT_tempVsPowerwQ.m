@@ -17,8 +17,14 @@ QPulseLengthns = QPulseLength0x28ns0x29; clear QPulseLength0x28ns0x29
 QPulseDelays = QPulseDelay0x28s0x29; clear QPulseDelay0x28s0x29
 QkHz = QKHz; clear QKHz;
 dateN=datenum(DateTime,'mm/dd/yyyy HH:MM:SS');
-startingSeqTime = '08/11/2016 14:25:00';
+startTime =datetime('08/12/2016 17:25:00')
+
+isdatetime(startTime)
+t1 = datetime(DateTime(1))
+isdatetime(t1)
+
 reltime=24*(dateN-dateN(1)); %in days*24 = hours
+
 titletxt=strcat('BEC HHT test from ',DateTime(1),' through ',DateTime(end)); %how to keep trailing spaces?
 qi=find(QOccurred == 1);
 

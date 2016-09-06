@@ -96,6 +96,7 @@ for pp=1:length(Expstart)
     GAS.mCHP(pp) = mean(mData.CHP(ExpRange)); %core heater power
     GAS.stdCHP(pp) = std(mData.CHP(ExpRange))
     GAS.mCRT(pp) = mean(mData.CRT(ExpRange)); %core reactor temp
+    GAS.mICT(pp) = mean(mData.ICT(ExpRange)); %inner core temp
     GAS.mQPow(pp) = mean(mData.QP(ExpRange)); %q power (measured at pi filter)
     GAS.stdQPow(pp) = std(mData.QP(ExpRange));
     GAS.mTTPow(pp) = mean(mData.TTP(ExpRange)); %termination thermal power
@@ -119,11 +120,10 @@ for pp=1:length(Expstart)
     GAS.coreTin(pp) = mean(mData.coreTin(ExpRange)); %core Temp in
     GAS.coreTout(pp) = mean(mData.coreTout(ExpRange)); % core Temp out
     plot(mData.DN(ExpRange),mData.CHP(ExpRange),'.') %plot date(start) vs total power (CHP + power to core)
-    legstr(pp) = {['CHP',num2str(Expstart(pp),'%8.0f'),' : ',num2str(Expend(pp),'%8.0f')]};
+    
 end
 grid
 datetick('x','mmm dd', 'keeplimits')
 ylabel('Core Heater Power (W)')
-legend(legstr)
 
 end
