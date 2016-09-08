@@ -8,7 +8,7 @@ processYes = 0;
 %looking at Berkeley HHT
 SYS = 'HHT Core - ';
 %sequence file: IPB1_Temp_sequence_300-100-300ns_50W_150C-400C
-whichEx = 4;
+whichEx = 5;
 qpulse = 1;
 switch (whichEx)
     case 1 
@@ -43,16 +43,18 @@ switch (whichEx)
         qpulse = 0;
         deltaTemp = 0.05;
    case 5
-        startTime = 9; %
-        endTime = 0;
-        Experiment = AllFiles(10:14);
-        rowPerFigure = 1;
-        columnPerFigure = 1;
+        seqFile ='ALL'
+        Directory='C:\jinwork\BEC\Data\SRIdata\2016-08-12';
+        startTime = 0; %8/22/2016 15:01
+        endTime = 0; %8/24/2016 1:05 from end of file 8/24/2016 10:21
+        %Experiment = AllFiles(1:end);
+        %for temp=350:25:600
+        deltaTemp = 0.05;
     otherwise
         exit
 end;
 AllFiles = getall(Directory);  %SORTED BY DATE....
-Experiment = AllFiles(16:20);
+Experiment = AllFiles(1:end);
 Experiment'
 
 loadHHT 
