@@ -1,27 +1,23 @@
 clear all;close all
-
 addpath('C:\jinwork\BE\matlab')
 addpath('C:\jinwork\BE\matlab\addaxis5')
-%control parameters
-
-%input reactor
-reactor = 'ipb1' %'sri'; %'ipb1','ipb2-aug','ipb2-sep'conflat'
-
-deltaTemp = 2;
-plotYes = 1;
+dailyPlot = 1;
+detailPlot = 0;
 processYes = 0;
 qpulse = 1;
+%input reactor
+reactor = 'ipb1' %'sri'; %'ipb1','ipb2-aug','ipb2-sep','conflat'
 switch (reactor)
 case 'ipb2-sep'
    Directory='C:\jinwork\BEC\Data\ISOPERIBOLIC2_DATA\2016-09-05_crio_V164_core28b'
    AllFiles = getall(Directory);  %SORTED BY DATE....
-   whichSeq = 3;
+   whichSeq = 4;
    %input which sequence
    switch (whichSeq)
    case 1 
      seqFile ='All'
-     startTime = 0; %9/4/2016 6 hours after 6:00
-     endTime = 0;   %9/5/2016 20:33
+     startTime = 0; %9/5/2016 
+     endTime = 0;  
      Experiment = AllFiles(1:4);
      %for temp=[277 302 327 352]
    case 2
@@ -36,7 +32,11 @@ case 'ipb2-sep'
      endTime = 0; 
      Experiment = AllFiles(3:4);
      %for temp=[602 502 402 302]
-
+   case 4
+     seqFile ='IPB2-Core-28b-H2-150c-400c-run1-09072016'       
+     startTime = 0; 
+     endTime = 0; 
+     Experiment = AllFiles(5:5);
    end       
 case 'sri'
    Directory='C:\jinwork\BEC\Data\SRIdata\2016-08-12'
@@ -44,25 +44,28 @@ case 'sri'
    whichSeq = 1;
    %input which sequence
    switch (whichSeq)
-   case 1 
-     seqFile ='300-100ns steps 275-350C in 25C steps He 30sccm 100psi.csv'
-     startTime = 6; %9/4/2016 6 hours after 6:00
-     endTime = 7;   %9/5/2016 20:33
-     Experiment = AllFiles(24:25);
-     %for temp=[277 302 327 352]
-   case 2
-     seqFile ='300-100ns+steps+600-300C+in+100C+steps+He+30sccm+100psi.csv'       
-     startTime = 2; 
-     endTime = 9; 
-     Experiment = AllFiles(22:23);
-     %for temp=[602 502 402 302]
-   case 3
+   case 1 %ALL
+     seqFile ='ALL'  %8/12/2016-9/5/2016     
+     startTime = 0; 
+     endTime = 0; 
+     Experiment = AllFiles(1:end);
+   case 2 
+     seqFile ='no sequence file found'     
+     startTime = 0; %8/22/2016 15:01
+     endTime = 0; %8/24/2016 1:05 from end of file 8/24/2016 10:21
+     Experiment = AllFiles(1:9);  
+   case 3 
+     seqFile ='Sequence+300-100ns+alternates+100VAC+33W+H2+275C+30sccm+100psi.csv'       
+     startTime = 5; 
+     endTime = 19; 
+     Experiment = AllFiles(10:11);
+   case 4
      seqFile ='No QPulse'      
      startTime = 1.5; 
      endTime = 9; 
      Experiment = AllFiles(12:21);
      qpulse = 0;
-   case 4 %no Qpulse with a sequence file
+   case 5 %no Qpulse with a sequence file
      seqFile ='Sequence+325-600C+in+25C+steps+H2+30sccm+100psi.csv'     
      startTime = 11; 
      endTime = 21; 
@@ -70,21 +73,19 @@ case 'sri'
      %for temp=350:25:600
      qpulse = 0;
      deltaTemp = 0.05;
-   case 5 %ALL
-     seqFile ='ALL'       
-     startTime = 0; 
-     endTime = 0; 
-     Experiment = AllFiles(1:end);
-   case 6 
-     seqFile ='Sequence+300-100ns+alternates+100VAC+33W+H2+275C+30sccm+100psi.csv'       
-     startTime = 5; 
-     endTime = 19; 
-     Experiment = AllFiles(10:11);
+
+   case 6
+     seqFile ='300-100ns+steps+600-300C+in+100C+steps+He+30sccm+100psi.csv'       
+     startTime = 2; 
+     endTime = 9; 
+     Experiment = AllFiles(22:23);
+     %for temp=[602 502 402 302]
    case 7 
-     seqFile ='no sequence file found'     
-     startTime = 0; %8/22/2016 15:01
-     endTime = 0; %8/24/2016 1:05 from end of file 8/24/2016 10:21
-     Experiment = AllFiles(1:9);  
+     seqFile ='300-100ns steps 275-350C in 25C steps He 30sccm 100psi.csv'
+     startTime = 6; %9/4/2016 6 hours after 6:00
+     endTime = 7;   %9/5/2016 20:33
+     Experiment = AllFiles(24:25);
+     %for temp=[277 302 327 352]
    otherwise
      exit
    end;
@@ -106,7 +107,7 @@ case 'sri'
    AllFiles = getall(Directory);  %SORTED BY DATE....
    whichSeq = 5;
    switch (whichSeq)
-   case 1
+   case 1 
      seqFile ='ALL'   
      startTime = 1.0; %8/22/2016 15:01
      endTime = 11; %8/24/2016 1:05 from end of file 8/24/2016 10:21
@@ -126,13 +127,13 @@ case 'sri'
      startTime = 1.0; %8/22/2016 15:01
      endTime = 0; %8/24/2016 1:05 from end of file 8/24/2016 10:21
      Experiment = AllFiles(7:8);
-
+     
    case 5
-        seqFile ='IPB1-Core-26b-New-core-2nd-condition'  
-        startTime = 1.5; %8/22/2016 15:01
-        endTime = 19; %8/24/2016 1:05 from end of file 8/24/2016 10:21
-        Experiment = AllFiles(9:10)
-        
+     seqFile ='IPB1-Core-26b-New-core-2nd-condition'  
+     startTime = 1.5; %8/22/2016 15:01
+     endTime = 19; %8/24/2016 1:05 from end of file 8/24/2016 10:21
+     Experiment = AllFiles(9:10);
+     detailPlot = 1;        
    case 6
         seqFile ='IPB1-Core-26b-New-core-3rd-condition'  
         startTime = 1.5; %8/22/2016 15:01
@@ -143,7 +144,6 @@ case 'sri'
         startTime = 1.5; %8/30/2016 13:45 from 12:00
         endTime = 16; %9/1/2016 8/31/2016 20:55 from end of file 9/1/2016 14:27
         Experiment = AllFiles(13:15);
-      
    case 8
         seqFile ='IPB1-Core-26b-New-core-H2-D2-Run2'  
         startTime = 3.5; %8/30/2016 13:45 from 12:00
@@ -152,10 +152,16 @@ case 'sri'
    case 9
      seqFile ='IPB1-Temp-sequence-150-100-150ns-50W-150C-400C-H2.csv'   
      %IPB1_Core_26b-New-core_He_150C-400C_day-01(02)(03).csv (8/20/2016 11:00 - 8/22/2016 10:28)
+     startTime = 0; 
+     endTime = 15;  
+     
+     Experiment = AllFiles(19:21);
+   case 10
+     seqFile ='IPB1-Temp-sequence-150-100-150ns-50W-150C-400C-H2.csv'   
+     %IPB1_Core_26b-New-core_He_150C-400C_day-01(02)(03).csv (8/20/2016 11:00 - 8/22/2016 10:28)
      startTime = 0; %11 hours after 6:00
      endTime = 0;   %8/21/2016 20:33
-     Experiment = AllFiles(19:20);
-
+     Experiment = AllFiles(22:22);
    otherwise
         exit
   end;
@@ -169,7 +175,6 @@ QPulseDelays = QPulseDelay0x28s0x29; clear QPulseDelay0x28s0x29
 QkHz = QKHz; clear QKHz;
 %change datetime to number
 dateN=datenum(DateTime,'mm/dd/yyyy HH:MM:SS');
-
 %print out starting and end time in command window to make sure the data
 %process window is proper.
 DateTime(1+startTime*360)
@@ -181,17 +186,14 @@ switch (reactor)
 case {'sri','conflat'}
   j1 = horzcat(dateN,CoreHtrPow,CoreReactorTemp,QPulseLengthns,QkHz,TerminationThermPow,HGASSOURCEVALVEVH3);
 case {'ipb1', 'ipb2-sep','ipb2-aug'}
-  j1 = horzcat(dateN,HeaterPower,CoreTemp,QPulseLengthns,QkHz,QPulsePCBHeatsinkPower,IsoperibolicCalorimetryPower,QPulseVolt,QEnable);
+              %1     2           3        4              5    6                       7                8    9                        10%        
+  j1 = horzcat(dateN,HeaterPower,CoreTemp,QPulseLengthns,QkHz,QPulsePCBHeatsinkPower,PressureSensorPSI,QPow,TerminationHeatsinkPower,BoxOxygenLevel);
 otherwise
   exit
 end
-
-%limit to the right time period
 j1=j1(1+startTime*360:end-endTime*360,:);
-%formating time
 dt = datetime(j1(:,1), 'ConvertFrom', 'datenum') ; 
-
-if (plotYes == 1)
+if (dailyPlot == 1)
 figure(1)
 hold on
 %Power
@@ -200,21 +202,24 @@ aa_splot(dt,j1(:,2),'black')
 addaxis(dt,j1(:,3));
 %qpulselengthns
 addaxis(dt,j1(:,4))
-if qpulse == 1
-  addaxis(dt,j1(:,5))
+addaxis(dt,j1(:,5))
+if detailPlot == 1
   addaxis(dt,j1(:,6))
-end
-
+  addaxis(dt,j1(:,7))
+  addaxis(dt,j1(:,9))
+  %addaxis(dt,j1(:,10))
+end    
 title(seqFile,'fontsize',11)
 addaxislabel(1,'HeaterPower');
 addaxislabel(2,'CoreTemp');
-
-
-if qpulse == 1
-  addaxislabel(3,'QPulseLen');
-  addaxislabel(4,'QkHz');
+addaxislabel(3,'QPulseLen');
+addaxislabel(4,'QkHz');
+if detailPlot == 1
+  addaxislabel(5,'QPulsePCBHeatsinkPower');
+  addaxislabel(6,'pressure');
+  addaxislabel(7,'TerminationHeatSinkPower');
+  %addaxislabel(8,'BoxOxygenLevel');
 end 
-addaxislabel(5,'QPulsePCBHeatsinkPower');
 end
 if (processYes == 0) 
 j4 = [];
