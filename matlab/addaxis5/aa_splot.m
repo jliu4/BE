@@ -9,14 +9,18 @@ function varargout = aa_splot(varargin)
 
 np = get(gca,'nextplot');
 oldplots = get(gca,'children');
-
-cord = get(gca,'colorord');
+cord = get(gca,'colorOrder');
+% turn on x grid
+set(gca,'xgrid','on');
+set(gca,'xminorgrid','on');
+set(gca,'ygrid','on');
+set(gca,'yminorgrid','on');
 
 if ~isempty(oldplots)
-lastcolor = get(oldplots(1),'color');
-if lastcolor == cord(1,:),
-  set(gca,'colorord',cord(mod([0:6]+1,7)+1,:));
-end
+    lastcolor = get(oldplots(1),'color');
+    if lastcolor == cord(1,:),
+        set(gca,'colorOrder',cord(mod([0:6]+1,7)+1,:));
+    end
 end
 
 hold on;
@@ -29,6 +33,6 @@ end
 
 %if nargout > 0, varargout{:} = h; end;
 
-set(gca,'colorord',cord(mod([0:6]+1,7)+1,:));
+set(gca,'colorOrder',cord(mod([0:6]+1,7)+1,:));
 set(gca,'nextplot',np);
 set(gca,'box','on');

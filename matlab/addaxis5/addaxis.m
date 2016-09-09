@@ -42,7 +42,11 @@ function addaxis(varargin)
   %  get current axis
   cah = gca;
   
-
+  
+  hzoom = zoom;
+  set(hzoom,'ActionPostCallback',@addaxis_zoom_post);
+  set(hzoom,'ActionPreCallback',@addaxis_zoom_pre);
+  
   if nargin>=3 & ~isstr(varargin{3}) 
     yl2 = varargin{3};
     indkeep = setdiff(1:nargin,3);
@@ -89,10 +93,12 @@ function addaxis(varargin)
   
   %  parameters setting axis separation
   axcompleft=0.12;
+  axcompleft=0.05;
   if numax == 1
     axcompright = 0.0;
   else 
     axcompright = 0.12;
+    axcompright = 0.05;
   end
   
   if numax/2 == round(numax/2)
@@ -104,6 +110,7 @@ function addaxis(varargin)
   end
 
   h_ax = axes('position',[xpos, cpos(2), cpos(3)*.015, cpos(4)]);
+  %h_ax = axes('position',[xpos, cpos(2), cpos(3)*.02, cpos(4)]);
 %  plot in new axis to get the automatically generated ylimits
   hplt = plot(varargin{:});  
 
@@ -119,8 +126,6 @@ function addaxis(varargin)
   set(hplt,'visible','off');
 
   set(h_ax,'ylim',yl2);
-
-
 %  rescale all y-values
   y = varargin{2};
   
