@@ -3,10 +3,10 @@ addpath('C:\jinwork\BE\matlab')
 addpath('C:\jinwork\BE\matlab\addaxis5')
 dailyPlot = 1;
 detailPlot = 1;
-processYes = 0;
+processYes = 1;
 qpulse = 1;
 %input reactor
-reactor = 'sri' %'ipb2-sep09-165' %'sri' 'sri-09'; %'ipb1','ipb2-aug','ipb2-sep05','conflat'
+reactor = 'ipb1'  %'ipb1','ipb2-aug','ipb2-sep05'
 switch (reactor)
 case 'ipb2-sep09-165'
    Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC2_DATA\2016-09-09_CRIO_v165-core27b'
@@ -92,62 +92,6 @@ case 'ipb2-sep07'
      endTime = 0; 
      Experiment = AllFiles(1:2);
    end
-case 'sri'
-   Directory='C:\jinwork\BEC\Data\SRIdata\2016-08-12'
-   AllFiles = getall(Directory);  %SORTED BY DATE....
-   whichSeq = 8;
-   %input which sequence
-   switch (whichSeq)
-   case 1 %ALL
-     seqFile ='ALL'  %8/12/2016-9/5/2016     
-     startTime = 0; 
-     endTime = 0; 
-     Experiment = AllFiles(1:end);
-   case 2 
-     seqFile ='no sequence file found'     
-     startTime = 0; %8/22/2016 15:01
-     endTime = 0; %8/24/2016 1:05 from end of file 8/24/2016 10:21
-     Experiment = AllFiles(1:9);  
-   case 3 
-     seqFile ='Sequence+300-100ns+alternates+100VAC+33W+H2+275C+30sccm+100psi.csv'       
-     startTime = 5; 
-     endTime = 19; 
-     Experiment = AllFiles(10:11);
-   case 4
-     seqFile ='No QPulse'      
-     startTime = 1.5; 
-     endTime = 9; 
-     Experiment = AllFiles(12:21);
-     qpulse = 0;
-   case 5 %no Qpulse with a sequence file
-     seqFile ='Sequence+325-600C+in+25C+steps+H2+30sccm+100psi.csv'     
-     startTime = 11; 
-     endTime = 21; 
-     Experiment = AllFiles(16:20);
-     %for temp=350:25:600
-     qpulse = 0;
-     deltaTemp = 0.05;
-   case 6
-     seqFile ='300-100ns+steps+600-300C+in+100C+steps+He+30sccm+100psi.csv'       
-     startTime = 2; 
-     endTime = 9; 
-     Experiment = AllFiles(22:23);
-     %for temp=[602 502 402 302]
-   case 7 
-     seqFile ='300-100ns steps 275-350C in 25C steps He 30sccm 100psi.csv'
-     startTime = 6; %9/4/2016 6 hours after 6:00
-     endTime = 7;   %9/5/2016 20:33
-     Experiment = AllFiles(24:25);
-     %for temp=[277 302 327 352]
-   case 8 
-     seqFile ='300-100ns steps 100-300C in 25C steps He 30sccm 100psi.csv'
-     startTime = 7; %9/4/2016 6 hours after 6:00
-     endTime = 0;   %9/5/2016 20:33
-     Experiment = AllFiles(26:26);
-     %for temp=[277 302 327 352]  
-   otherwise
-     exit
-   end;
  case 'ipb2-aug'
    Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC2_DATA\2016-08-20-CORE_28_DC_Heater'
    AllFiles = getall(Directory);  %SORTED BY DATE....
@@ -175,7 +119,7 @@ case 'sri'
  case 'ipb1'
    Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\2016-08-20-CORE_26b'
    AllFiles = getall(Directory);  %SORTED BY DATE....
-   whichSeq = 9;
+   whichSeq = 10;
    switch (whichSeq)
    case 1 
      seqFile ='ALL'   
@@ -223,14 +167,19 @@ case 'sri'
      startTime = 0; %8/30/2016 13:45 from 12:00
      endTime = 15; %9/1/2016 8/31/2016 20:55 from end of file 9/1/2016 14:27
      Experiment = AllFiles(22:24);
-
    case 10
+     seqFile ='IPB1-Core-26b-New-core-H2-D2-Run5'  
+     startTime = 0; %8/30/2016 13:45 from 12:00
+     endTime = 0; %9/1/2016 8/31/2016 20:55 from end of file 9/1/2016 14:27
+     Experiment = AllFiles(25:26);
+
+   case 11
      seqFile ='IPB1-Temp-sequence-150-100-150ns-50W-150C-400C-H2.csv'   
      %IPB1_Core_26b-New-core_He_150C-400C_day-01(02)(03).csv (8/20/2016 11:00 - 8/22/2016 10:28)
      startTime = 0; 
      endTime = 15;    
      Experiment = AllFiles(19:21);
-   case 11
+   case 12
      seqFile ='IPB1-Temp-sequence-150-100-150ns-50W-150C-400C-H2.csv'   
      %IPB1_Core_26b-New-core_He_150C-400C_day-01(02)(03).csv (8/20/2016 11:00 - 8/22/2016 10:28)
      startTime = 0; %11 hours after 6:00
@@ -251,16 +200,8 @@ QkHz = QKHz; clear QKHz;
 dateN=datenum(DateTime,'mm/dd/yyyy HH:MM:SS');
 DateTime(1+startTime*360)
 DateTime(end - endTime*360)
-switch (reactor)
-case {'sri','conflat'}
-  %            1     2          3               4              5    6                   7    8
-  j1 = horzcat(dateN,CoreHtrPow,CoreReactorTemp,QPulseLengthns,QkHz,TerminationThermPow,QPow,CorePumpInletPress,HGASSOURCEVALVEVH3);
-case {'ipb1', 'ipb2-sep05','ipb2-sep07','ipb2-sep09','ipb2-sep09-165','ipb2-aug'}
-              %1     2           3        4              5    6                       7     8                 9                 10        
-  j1 = horzcat(dateN,HeaterPower,CoreTemp,QPulseLengthns,QkHz,TerminationHeatsinkPower,QPow,PressureSensorPSI,QPulsePCBHeatsinkPower,QEnable);
-otherwise
-  exit
-end
+            %1     2           3        4              5    6    7                        8                 9                      10        
+j1 = horzcat(dateN,HeaterPower,CoreTemp,QPulseLengthns,QkHz,QPow,TerminationHeatsinkPower,PressureSensorPSI,QPulsePCBHeatsinkPower,QEnable);
 j1=j1(1+startTime*360:end-endTime*360,:);
 dt = datetime(j1(:,1), 'ConvertFrom', 'datenum') ; 
 if (dailyPlot == 1)
@@ -271,13 +212,16 @@ ylim([0 40])
 addaxis(dt,j1(:,3));
 addaxis(dt,j1(:,4))
 addaxis(dt,j1(:,5))
+
 if detailPlot == 1
   %addaxis(dt,smooth(j1(:,1),j1(:,6),0.1,'loess'))
   %addaxis(dt,smooth(j1(:,1),j1(:,7),0.1,'loess'))
-  addaxis(dt,j1(:,6))
-  addaxis(dt,j1(:,7))
-  addaxis(dt,j1(:,8))
-  %addaxis(dt,j1(:,10))
+  %addaxis(dt,j1(:,6))
+  %addaxis(dt,j1(:,7))
+  addaxis(dt,j1(:,9))
+  [envHigh, envLow] = envelope(j1(:,9),120,'peak');
+  addaxis(dt,en)
+  addaxis(dt,envLow)
 end    
 title(seqFile,'fontsize',11)
 addaxislabel(1,'HeaterPower');
@@ -285,12 +229,9 @@ addaxislabel(2,'CoreTemp');
 addaxislabel(3,'QPulseLen');
 addaxislabel(4,'QkHz');
 if detailPlot == 1 
-  %addaxislabel(7,'QPulsePCBHeatsinkPower');
-  addaxislabel(6,'QPow');
-  %addaxislabel(5,'TerminationHeatSinkPower');
-  addaxislabel(5,'TerminationTermPower');
-  addaxislabel(7,'CorePumpInletPress');
-  %addaxislabel(8,'BoxOxygenLevel');
+  addaxislabel(7,'QPulsePCBHeatsinkPower');
+  %addaxislabel(5,'QPow');
+  %addaxislabel(6,'TerminationHeatSinkPower');
 end 
 end
 if (processYes == 1) 
