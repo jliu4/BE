@@ -5,84 +5,82 @@ dailyPlot = 1;
 detailPlot = 1;
 processYes = 1;
 qpulse = 1;
-temp=[150 200 250 300 350 400];
-qL = [300 150 100 150 300 100];
-qN = size(qL,2) -1;
 %input reactor
-reactor = 'ipb2-0907-165-28b' %'ipb2-s0909-167'  %'ipb1','ipb2-08','ipb2-0905' 'ipb2-0907','ipb2-0909-165'
+reactor = 'ipb1'  %'ipb1','ipb2-aug','ipb2-sep05'
 switch (reactor)
-case 'ipb2-0907-165-28b'
-   Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC2_DATA\2016-09-07_Crio_V165_core28b'
+case 'ipb2-sep09-165'
+   Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC2_DATA\2016-09-09_CRIO_v165-core27b'
    AllFiles = getall(Directory);  %SORTED BY DATE....
-   whichSeq = 1; 
-   switch (whichSeq)
-   case 1 
-     seqFile ='2016-09-07-Crio-V165-core28b-IPB2-Core-28b--H2-150C-400C-Run1-day-01-02.csv'
-     startTime = 1; 
-     endTime = 0;  
-     Experiment = AllFiles(1:2);
-   end  
-case 'ipb2-0909-167'
-   Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC2_DATA\2016-09-09_CRIO_v167-core27b'
-   AllFiles = getall(Directory);  %SORTED BY DATE....
-   whichSeq = 1;   
-   switch (whichSeq)
-   case 1 
-     seqFile ='2016-09-09-CRIO-v167-core27b'
-     startTime = 0; 
-     endTime = 0;  
-     Experiment = AllFiles(2:3);
-   end  
-case 'ipb2-0909-166'
-   Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC2_DATA\2016-09-09_CRIO_v166-core27b'
-   AllFiles = getall(Directory);  %SORTED BY DATE....
-   whichSeq = 2;
+   whichSeq = 1;
+   detailPlot = 1;
+   %input which sequence
    switch (whichSeq)
    case 1 
      seqFile ='2016-09-09-CRIO-v166-core27b'
      startTime = 0; 
-     endTime = 15;  
-     Experiment = AllFiles(1:2);
+     endTime = 0;  
+     Experiment = AllFiles(1:1);
    case 2 
-     seqFile ='2016-09-09-CRIO-v166-core27b-2probtest'
+     seqFile ='2016-09-09-CRIO-v166-core27b'
      startTime = 0; 
      endTime = 0;  
-     Experiment = AllFiles(6:6);
+     Experiment = AllFiles(4);  
+  case 3 
+     seqFile ='2016-09-09-CRIO-v166-core27b'
+     startTime = 0; 
+     endTime = 0;  
+     Experiment = AllFiles(5);     
    end  
-case 'ipb2-0909-165'
+case 'ipb2-sep09-165'
    Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC2_DATA\2016-09-09_CRIO_v165-core27b'
    AllFiles = getall(Directory);  %SORTED BY DATE....
    whichSeq = 1;
+   detailPlot = 1;
+   %input which sequence
    switch (whichSeq)
    case 1 
-     seqFile ='2016-09-09-CRIO-v165-core27b'
+     seqFile ='2016-09-09_CRIO_v165-core27b'
      startTime = 0; 
      endTime = 0;  
-     Experiment = AllFiles(1:1);  
+     Experiment = AllFiles(1:1);
+   case 2 
+     seqFile ='2016-09-09-CRIO-v166-core27b'
+     startTime = 0; 
+     endTime = 0;  
+     Experiment = AllFiles(4);  
+  case 3 
+     seqFile ='2016-09-09-CRIO-v166-core27b'
+     startTime = 0; 
+     endTime = 0;  
+     Experiment = AllFiles(5);  
    end     
-case 'ipb2-sep0'
+case 'ipb2-sep07'
    Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC2_DATA\2016-09-05_Crio_V164_core28b'
    AllFiles = getall(Directory);  %SORTED BY DATE....
    whichSeq = 3;
    detailPlot = 1;
+   %input which sequence
    switch (whichSeq)
    case 1 
      seqFile ='All'
      startTime = 0; %9/5/2016 
      endTime = 0;  
      Experiment = AllFiles(5:6);
+     %for temp=[277 302 327 352]
    case 2
      seqFile ='IPB2-Core-28b-H2-600c-300c-CRIO-V164'       
      startTime = 0; 
      endTime = 0; 
-     Experiment = AllFiles(1:2);     
+     Experiment = AllFiles(1:2);
+     %for temp=[602 502 402 302]
    case 3
      seqFile ='IPB2-Core-28b-H2-150c-400c-CRIO-V164'       
      startTime = 0; 
      endTime = 0; 
-     Experiment = AllFiles(5:6);     
+     Experiment = AllFiles(5:6);
+     %for temp=[602 502 402 302]
    end
-case 'ipb2-0907'
+case 'ipb2-sep07'
    Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC2_DATA\2016-09-07_Crio_V165_core28b'
    AllFiles = getall(Directory);  %SORTED BY DATE....
    whichSeq = 1;
@@ -94,7 +92,7 @@ case 'ipb2-0907'
      endTime = 0; 
      Experiment = AllFiles(1:2);
    end
- case 'ipb2-08'
+ case 'ipb2-aug'
    Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC2_DATA\2016-08-20-CORE_28_DC_Heater'
    AllFiles = getall(Directory);  %SORTED BY DATE....
    whichSeq = 2;
@@ -121,84 +119,78 @@ case 'ipb2-0907'
  case 'ipb1'
    Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\2016-08-20-CORE_26b'
    AllFiles = getall(Directory);  %SORTED BY DATE....
-   whichSeq = 11;
+   whichSeq = 10;
    switch (whichSeq)
    case 1 
      seqFile ='ALL'   
-     startTime = 1.0;
-     endTime = 11; 
+     startTime = 1.0; %8/22/2016 15:01
+     endTime = 11; %8/24/2016 1:05 from end of file 8/24/2016 10:21
      Experiment = AllFiles(1:20);
    case 2
      seqFile ='IPB1-Core-26b-New-core-He'   
-     startTime = 1.0; 
-     endTime = 13.5; 
+     startTime = 1.0; %8/22/2016 15:01
+     endTime = 13.5; %8/24/2016 1:05 from end of file 8/24/2016 10:21
      Experiment = AllFiles(1:3);
    case 3
      seqFile ='IPB1-Core-26b-New-core-H2'   
-     startTime = 1.0;
-     endTime = 9;
+     startTime = 1.0; %8/22/2016 15:01
+     endTime = 9; %8/24/2016 1:05 from end of file 8/24/2016 10:21
      Experiment = AllFiles(4:6);
    case 4
      seqFile ='IPB1-Core-26b-New-core-1st-condition'   
-     startTime = 1.0; 
-     endTime = 0; 
-     temp = [600 300];
+     startTime = 1.0; %8/22/2016 15:01
+     endTime = 0; %8/24/2016 1:05 from end of file 8/24/2016 10:21
      Experiment = AllFiles(7:8);    
    case 5
      seqFile ='IPB1-Core-26b-New-core-2nd-condition'  
-     startTime = 1.5;
-     endTime = 19; 
+     startTime = 1.5; %8/22/2016 15:01
+     endTime = 19; %8/24/2016 1:05 from end of file 8/24/2016 10:21
      Experiment = AllFiles(9:10);
-     temp = [600 300];
+     detailPlot = 1;        
    case 6
      seqFile ='IPB1-Core-26b-New-core-3rd-condition'  
-     startTime = 1.5;
-     endTime = 0; 
+     startTime = 1.5; %8/22/2016 15:01
+     endTime = 0; %8/24/2016 1:05 from end of file 8/24/2016 10:21
      Experiment = AllFiles(11:12)
-     temp = [600 300];
    case 7
      seqFile ='IPB1-Core-26b-New-core-H2-D2'  
-     startTime = 1.5; 
-     endTime = 16; 
+     startTime = 1.5; %8/30/2016 13:45 from 12:00
+     endTime = 16; %9/1/2016 8/31/2016 20:55 from end of file 9/1/2016 14:27
      Experiment = AllFiles(16:18);
    case 8
      seqFile ='IPB1-Core-26b-New-core-H2-D2-Run2'  
-     startTime = 3.5; 
-     endTime = 12; 
+     startTime = 3.5; %8/30/2016 13:45 from 12:00
+     endTime = 12; %9/1/2016 8/31/2016 20:55 from end of file 9/1/2016 14:27
      Experiment = AllFiles(19:21);
    case 9
      seqFile ='IPB1-Core-26b-New-core-H2-D2-Run3'  
-     startTime = 0; 
-     endTime = 15; 
+     startTime = 0; %8/30/2016 13:45 from 12:00
+     endTime = 15; %9/1/2016 8/31/2016 20:55 from end of file 9/1/2016 14:27
      Experiment = AllFiles(22:24);
    case 10
      seqFile ='IPB1-Core-26b-New-core-H2-D2-Run5'  
-     startTime = 0; 
-     endTime = 0; 
+     startTime = 0; %8/30/2016 13:45 from 12:00
+     endTime = 0; %9/1/2016 8/31/2016 20:55 from end of file 9/1/2016 14:27
      Experiment = AllFiles(25:26);
+
    case 11
-     seqFile ='IPB1-Core-26b-New-core-H2-D2-Run5'  
-     startTime = 0; 
-     endTime = 0; 
-     Experiment = AllFiles(27:27);
-   case 12
      seqFile ='IPB1-Temp-sequence-150-100-150ns-50W-150C-400C-H2.csv'   
      %IPB1_Core_26b-New-core_He_150C-400C_day-01(02)(03).csv (8/20/2016 11:00 - 8/22/2016 10:28)
      startTime = 0; 
      endTime = 15;    
-     Experiment = AllFiles(19:21);   
-   case 13
+     Experiment = AllFiles(19:21);
+   case 12
      seqFile ='IPB1-Temp-sequence-150-100-150ns-50W-150C-400C-H2.csv'   
      %IPB1_Core_26b-New-core_He_150C-400C_day-01(02)(03).csv (8/20/2016 11:00 - 8/22/2016 10:28)
-     startTime = 0; 
-     endTime = 0;   
+     startTime = 0; %11 hours after 6:00
+     endTime = 0;   %8/21/2016 20:33
      Experiment = AllFiles(22:22);
    otherwise
      exit
   end;
 end    
 Experiment'
-loadHHT 
+loadHHT %TODO change name 
 %change a few messy variable names
 QOccurred = QOccurred0x3F; clear QPulseOccurred0x3F
 QPulseLengthns = QPulseLength0x28ns0x29; clear QPulseLength0x28ns0x29
@@ -209,22 +201,27 @@ dateN=datenum(DateTime,'mm/dd/yyyy HH:MM:SS');
 DateTime(1+startTime*360)
 DateTime(end - endTime*360)
             %1     2           3        4              5    6    7                        8                 9                      10        
-j1 = horzcat(dateN,HeaterPower,CoreTemp,QPulseLengthns,QkHz,QPow,TerminationHeatsinkPower,PressureSensorPSI,QPulsePCBHeatsinkPower,QEnable,CoreQPower);
+j1 = horzcat(dateN,HeaterPower,CoreTemp,QPulseLengthns,QkHz,QPow,TerminationHeatsinkPower,PressureSensorPSI,QPulsePCBHeatsinkPower,QEnable);
 j1=j1(1+startTime*360:end-endTime*360,:);
 dt = datetime(j1(:,1), 'ConvertFrom', 'datenum') ; 
 if (dailyPlot == 1)
 figure(1)
 hold on
-aa_splot(dt,j1(:,2),'black','linewidth',1.5)
-%ylim([0 40])
-addaxis(dt,j1(:,3),'linewidth',1.5);
+aa_splot(dt,j1(:,2),'black')
+ylim([0 40])
+addaxis(dt,j1(:,3));
 addaxis(dt,j1(:,4))
 addaxis(dt,j1(:,5))
+
 if detailPlot == 1
-  %addaxis(dt,smooth(j1(:,6),11))
-  addaxis(dt,smooth(j1(:,7),11))
-  addaxis(dt,smooth(j1(:,9),11))
-  addaxis(dt,smooth(j1(:,11),11))
+  %addaxis(dt,smooth(j1(:,1),j1(:,6),0.1,'loess'))
+  %addaxis(dt,smooth(j1(:,1),j1(:,7),0.1,'loess'))
+  %addaxis(dt,j1(:,6))
+  %addaxis(dt,j1(:,7))
+  addaxis(dt,j1(:,9))
+  [envHigh, envLow] = envelope(j1(:,9),120,'peak');
+  addaxis(dt,en)
+  addaxis(dt,envLow)
 end    
 title(seqFile,'fontsize',11)
 addaxislabel(1,'HeaterPower');
@@ -232,53 +229,54 @@ addaxislabel(2,'CoreTemp');
 addaxislabel(3,'QPulseLen');
 addaxislabel(4,'QkHz');
 if detailPlot == 1 
-  addaxislabel(6,'QPulsePCBHeatsinkPower');
-  addaxislabel(7,'CoreQPow');
-  addaxislabel(5,'TerminationHeatSinkPower');
+  addaxislabel(7,'QPulsePCBHeatsinkPower');
+  %addaxislabel(5,'QPow');
+  %addaxislabel(6,'TerminationHeatSinkPower');
 end 
 end
 if (processYes == 1) 
 heatPower = []; 
 heatPower0 = 0;
 dt0 = 0;
-coreQPow = [];
 qPCB = [];
-qPCB1=[];
 qTerm=[];
-qTerm1=[];
 qPow=[];
-qPow1=[];
 t2 = [];
 tp = [];
 dt2=[];
 dt1=[];
 j5 =[];
+%sri
+%qL = [300 100 300 100 300 100 300];
+qL = [300 150 100 150 300 100];
 i=0;
 nj1 = 1;
+%for temp = [100 200 275 300 400 500 600]
+%for temp=[277 302 327 352]
+%for temp=[602 502 402 302]
+%for temp=350:25:600
 ki=1;
 deltaTemp = 3;
-
-for ti = temp
+for temp=150:50:400
    %pick up data with the particular tempareture   
   i = i+1;
   j2= j1(nj1:end,:); %continue
-  j2 = j2((abs(j2(:,3)-ti) < deltaTemp),:);
+  j2 = j2((abs(j2(:,3)-temp) < deltaTemp),:);
   nj2 = size(j2(:,1),1);
-  if nj2 > 10 
+  % nj1 = 1;
+  if nj2 > 10 % minimum requirement is 40 minutes for power watt change < 0.3 
     nj1 = 1;
     nq = 1;
-    for ki = 1:1:qN  
+    for ki = 1:1:5  
       heatpower(ki) = 0;
       qPCB(ki)=0;
       qTerm(ki)=0;
       qPow(ki) = 0;
-      j5(ki)=0;
-      coreQPow(ki) = 0;
       dt1(ki) = j2(1,1);
       for ni = nj1:1:nj2-1
         if (j2(ni+1,10)-j2(ni,10))==1 %noQ
           j3 = j2(nj1:ni,:);
-          fn = ['C:\jinwork\BEC\tmp\' reactor num2str(whichSeq) num2str(ti) num2str(qL(ki)) num2str(ki) 'nq.csv'];          
+          fn = ['C:\jinwork\BEC\tmp\' reactor num2str(whichSeq) num2str(temp) num2str(qL(ki)) num2str(ki) '.csv'];          
           dt = datetime(j3(:,1), 'ConvertFrom', 'datenum') ;                  
           T = table(dt,j3(:,2),j3(:,3),j3(:,4),j3(:,5), 'VariableName',{'DateTime','HeatPower','Temp','QLen','QkHz'});
           writetable(T,fn);
@@ -287,17 +285,21 @@ for ti = temp
           nj1 = ni+1;  
           continue
         end  
-        if ((j2(ni,4)==qL(ki) & j2(ni+1,4)==qL(ki+1) & j2(ni,10) == 1) || (j2(ni,10)-j2(ni+1,10))==1 ) 
+               %1     2           3        4              5    6                      7                        8    9                 10        
+  %j1 = horzcat(dateN,HeaterPower,CoreTemp,QPulseLengthns,QkHz,QPulsePCBHeatsinkPower,TerminationHeatsinkPower,QPow,PressureSensorPSI,QEnable);
+        if (j2(ni,4)==qL(ki) & j2(ni+1,4)==qL(ki+1) & j2(ni,10) == 1)   
            j3 = j2(nj1:ni,:);
-           fn = ['C:\jinwork\BEC\tmp\' reactor num2str(whichSeq) num2str(ti) num2str(qL(ki)) num2str(ki) '.csv'];          
+           fn = ['C:\jinwork\BEC\tmp\' reactor num2str(whichSeq) num2str(temp) num2str(qL(ki)) num2str(ki) '.csv'];          
            dt = datetime(j3(:,1), 'ConvertFrom', 'datenum') ;               
            T = table(dt,j3(:,2),j3(:,3),j3(:,6),j3(:,7), 'VariableName',{'DateTime','HeatPower','Temp','PCB','Term'});
            writetable(T,fn);
            heatPower(ki) = j2(ni,2);
-           qPow(ki) = trimmean(j2(nj1:ni,6),25);
-           qTerm(ki) = trimmean(j2(nj1:ni,7),25);
-           qPCB(ki) = trimmean(j2(nj1:ni,9),25);
-           coreQPow(ki)=trimmean(j2(nj1:ni,11),25);
+           qPCB(ki) = trimmean(j2(nj1:ni,6),10);
+           qTerm(ki) = trimmean(j2(nj1:ni,7),10);
+           qPow(ki) = trimmean(j2(nj1:ni,8),10);
+           qPCB1(ki) = trimmean(j2(nj1:ni,6),25);
+           qTerm1(ki) = trimmean(j2(nj1:ni,7),25);
+           qPow1(ki) = trimmean(j2(nj1:ni,8),25);
            dt1(ki) = j2(ni,1);
            j5(ki) = ni-nj1;
            nj1 = ni+1;     
@@ -306,12 +308,12 @@ for ti = temp
        end 
        
      end 
-     tpi = [temp heatPower0 heatPower qPCB qTerm qPow coreQPow j5];
-     tp = vertcat(tp,tpi);
-     dti=[dt0 dt1];
-     dt2 = vertcat(dt2,dti); 
-
+ 
     end   
+    tpi = [temp heatPower0 heatPower qPCB qTerm qPow qPCB1 qTerm1 qPow1 j5];
+    tp = vertcat(tp,tpi);
+    dti=[dt0 dt1];
+    dt2 = vertcat(dt2,dti); 
   end    
 fn = ['C:\jinwork\BEC\tmp\' reactor num2str(whichSeq) '.xlsx'];            
 dt3 = datetime(dt2, 'ConvertFrom', 'datenum') ;

@@ -3,16 +3,17 @@ addpath('C:\jinwork\BE\matlab')
 addpath('C:\jinwork\BE\matlab\addaxis5')
 dailyPlot = 1;
 detailPlot = 1;
-processYes = 0;
+processYes = 1;
 qpulse = 1;
+temp =[];
+qL=[];
 %input reactor
-reactor = 'sri' %'sri' 'sri-09'; ,'conflat'
+reactor = 'sri-08' %'sri-08' 'sri-09'; ,'conflat'
 switch (reactor)
-
-case 'sri'
+case 'sri-08'
    Directory='C:\jinwork\BEC\Data\SRIdata\2016-08-12'
    AllFiles = getall(Directory);  %SORTED BY DATE....
-   whichSeq = 8;
+   whichSeq = 7;
    %input which sequence
    switch (whichSeq)
    case 1 %ALL
@@ -27,14 +28,17 @@ case 'sri'
      Experiment = AllFiles(1:9);  
    case 3 
      seqFile ='Sequence+300-100ns+alternates+100VAC+33W+H2+275C+30sccm+100psi.csv'       
-     startTime = 5; 
-     endTime = 19; 
+     startTime = 7; %5 
+     endTime = 0; %19; 
      Experiment = AllFiles(10:11);
+     qL = [100 300 100];
+     qN = size(qL,2)-1;
+     temp = [277];
    case 4
      seqFile ='No QPulse'      
-     startTime = 1.5; 
-     endTime = 9; 
-     Experiment = AllFiles(12:21);
+     startTime =0; % 1.5; 
+     endTime = 0; %9; 
+     Experiment = AllFiles(12:15);
      qpulse = 0;
    case 5 %no Qpulse with a sequence file
      seqFile ='Sequence+325-600C+in+25C+steps+H2+30sccm+100psi.csv'     
@@ -52,19 +56,40 @@ case 'sri'
      %for temp=[602 502 402 302]
    case 7 
      seqFile ='300-100ns steps 275-350C in 25C steps He 30sccm 100psi.csv'
-     startTime = 6; %9/4/2016 6 hours after 6:00
-     endTime = 7;   %9/5/2016 20:33
+     startTime = 0; %6; %9/4/2016 6 hours after 6:00
+     endTime = 0; %7;   %9/5/2016 20:33
      Experiment = AllFiles(24:25);
-     %for temp=[277 302 327 352]
+     qL = [300 100 300 100 300 100 300];
+     qN = size(qL,2)-1;
+     temp = [277 302 327 352];
    case 8 
      seqFile ='300-100ns steps 100-300C in 25C steps He 30sccm 100psi.csv'
      startTime = 7; %9/4/2016 6 hours after 6:00
      endTime = 0;   %9/5/2016 20:33
      Experiment = AllFiles(26:26);
      %for temp=[277 302 327 352]  
+   case 9 
+     seqFile ='100-600C&300-100ns steps in 100C steps He 30sccm 100psi002.csv'
+     startTime = 10; %9/4/2016 6 hours after 6:00
+     endTime = 0;   %9/5/2016 20:33
+     Experiment = AllFiles(2:2);
+   end  
+     %for temp=[277 302 327 352]  
+case 'sri-09'
+       Directory='C:\jinwork\BEC\Data\SRIdata\2016-09-11'
+   AllFiles = getall(Directory);  %SORTED BY DATE....
+   whichSeq = 1;
+   %input which sequence
+   switch (whichSeq)
+   case 1 
+     seqFile ='100-600C&300-100ns steps in 100C steps He 30sccm 100psi002.csv'
+     startTime = 0; %9/4/2016 6 hours after 6:00
+     endTime = 0;   %9/5/2016 20:33
+     Experiment = AllFiles(1:4);
+   end  
    otherwise
      exit
-   end;
+  
 end    
 Experiment'
 loadHHT %TODO change name 
@@ -77,24 +102,27 @@ QkHz = QKHz; clear QKHz;
 dateN=datenum(DateTime,'mm/dd/yyyy HH:MM:SS');
 DateTime(1+startTime*360)
 DateTime(end - endTime*360)
-%            1     2          3               4              5    6                   7    8
-j1 = horzcat(dateN,CoreHtrPow,CoreReactorTemp,QPulseLengthns,QkHz,TerminationThermPow,QPow,CoreInPress,HGASSOURCEVALVEVH3);
+%            1     2          3               4              5    6                   7     
+j1 = horzcat(dateN,CoreHtrPow,CoreReactorTemp,QPulseLengthns,QkHz,TerminationThermPow,QPow, ...
+CoreInPress,HGASSOURCEVALVEVH3,QOccurred,CoreGasIn,CoreGasOut,H2MakeupLPM,PowOut);
+%8          9                  10        11        12         13       14
 j1=j1(1+startTime*360:end-endTime*360,:);
 dt = datetime(j1(:,1), 'ConvertFrom', 'datenum') ; 
 if (dailyPlot == 1)
 figure(1)
 hold on
-aa_splot(dt,j1(:,2),'black')
-ylim([0 40])
-addaxis(dt,j1(:,3));
+aa_splot(dt,j1(:,2),'black','linewidth',1.5)
+ylim([0 100])
+addaxis(dt,j1(:,3),'linewidth',1.5);
 addaxis(dt,j1(:,4))
-addaxis(dt,j1(:,5))
+addaxis(dt,smooth(j1(:,5),11))
 if detailPlot == 1
-  %addaxis(dt,smooth(j1(:,1),j1(:,6),0.1,'loess'))
-  %addaxis(dt,smooth(j1(:,1),j1(:,7),0.1,'loess'))
   addaxis(dt,smooth(j1(:,6),11))
   addaxis(dt,smooth(j1(:,7),11))
-  addaxis(dt,smooth(j1(:,8),11))
+  addaxis(dt,j1(:,11))
+  addaxis(dt,smooth(j1(:,12),11))
+  %addaxis(dt,smooth(j1(:,13),11))
+  addaxis(dt,smooth(j1(:,14),11))
 end    
 title(seqFile,'fontsize',11)
 addaxislabel(1,'HeaterPower');
@@ -102,54 +130,65 @@ addaxislabel(2,'CoreTemp');
 addaxislabel(3,'QPulseLen');
 addaxislabel(4,'QkHz');
 if detailPlot == 1 
-  addaxislabel(6,'QPow');
   addaxislabel(5,'TerminationTermPower');
-  addaxislabel(7,'CoreInPress'); 
+  addaxislabel(6,'QPow');
+  addaxislabel(7,'CoreGasIn'); 
+  addaxislabel(8,'CoreGasOut'); 
+  %addaxislabel(9,'H2Markup'); 
+  addaxislabel(9,'PowOut'); 
 end 
 end
 if (processYes == 1) 
 heatPower = []; 
 heatPower0 = 0;
 dt0 = 0;
-qPCB = [];
 qTerm=[];
 qPow=[];
+coreIn = [];
+coreOut = [];
+H2MakeupLPM = [];
+powOut=[];
 t2 = [];
 tp = [];
 dt2=[];
 dt1=[];
 j5 =[];
-%sri
-%qL = [300 100 300 100 300 100 300];
-qL = [300 150 100 150 300 100];
 i=0;
 nj1 = 1;
-%for temp = [100 200 275 300 400 500 600]
-%for temp=[277 302 327 352]
-%for temp=[602 502 402 302]
-%for temp=350:25:600
 ki=1;
 deltaTemp = 3;
-for temp=150:50:400
+for ti = temp
    %pick up data with the particular tempareture   
   i = i+1;
   j2= j1(nj1:end,:); %continue
-  j2 = j2((abs(j2(:,3)-temp) < deltaTemp),:);
+  j2 = j2((abs(j2(:,3)-ti) < deltaTemp),:);
   nj2 = size(j2(:,1),1);
-  % nj1 = 1;
-  if nj2 > 10 % minimum requirement is 40 minutes for power watt change < 0.3 
+ %            1     2          3               4              5    6                   7     
+%j1 = horzcat(dateN,CoreHtrPow,CoreReactorTemp,QPulseLengthns,QkHz,TerminationThermPow,QPow, ...
+%CoreInPress,HGASSOURCEVALVEVH3,QOccurred,CoreGasIn,CoreGasOut,H2MakeupLPM,PowOut);
+%8          9                  10        11        12         13       14
+  if nj2 > 100 % minimum requirement is 40 minutes for power watt change < 0.3 
     nj1 = 1;
     nq = 1;
-    for ki = 1:1:5  
+    for ki = 1:1:qN
       heatpower(ki) = 0;
-      qPCB(ki)=0;
       qTerm(ki)=0;
       qPow(ki) = 0;
+      coreIn(ki)=0;
+      coreOut(ki) = 0;
+      H2MakeupLPM(ki)=0;
+      powOut(ki) = 0;
+      qTermStd(ki)=0;
+      qPowStd(ki) = 0;
+      coreInStd(ki)=0;
+      coreOutStd(ki) = 0;
+      H2MakeupLPMStd(ki)=0;
+      powOutStd(ki) = 0;
       dt1(ki) = j2(1,1);
       for ni = nj1:1:nj2-1
         if (j2(ni+1,10)-j2(ni,10))==1 %noQ
           j3 = j2(nj1:ni,:);
-          fn = ['C:\jinwork\BEC\tmp\' reactor num2str(whichSeq) num2str(temp) num2str(qL(ki)) num2str(ki) '.csv'];          
+          fn = ['C:\jinwork\BEC\tmp\' reactor num2str(whichSeq) num2str(ti) num2str(qL(ki)) num2str(ki) '.csv'];          
           dt = datetime(j3(:,1), 'ConvertFrom', 'datenum') ;                  
           T = table(dt,j3(:,2),j3(:,3),j3(:,4),j3(:,5), 'VariableName',{'DateTime','HeatPower','Temp','QLen','QkHz'});
           writetable(T,fn);
@@ -158,35 +197,42 @@ for temp=150:50:400
           nj1 = ni+1;  
           continue
         end  
-        if (j2(ni,4)==qL(ki) & j2(ni+1,4)==qL(ki+1) & j2(ni,10) == 1)   
+        if (((j2(ni,4)==qL(ki) & j2(ni+1,4)==qL(ki+1) ) & j2(ni,10) == 1) || (j2(ni,10)-j2(ni+1,10))==1 ) %there is a bug in 2016-08-12_day-09.csv file line 3569 some random number of 308.3333 appears 
+        %if (( abs(j2(ni,4)-j2(ni+1,4))>= abs(qL(ki)-qL(ki+1)) || (j2(ni,4)==qL(ki) & j2(ni+1,4)==qL(ki+1) ) & j2(ni,10) == 1) || (j2(ni,10)-j2(ni+1,10))==1 ) 
            j3 = j2(nj1:ni,:);
-           fn = ['C:\jinwork\BEC\tmp\' reactor num2str(whichSeq) num2str(temp) num2str(qL(ki)) num2str(ki) '.csv'];          
+           fn = ['C:\jinwork\BEC\tmp\' reactor num2str(whichSeq) num2str(ti) num2str(qL(ki)) num2str(ki) '.csv'];          
            dt = datetime(j3(:,1), 'ConvertFrom', 'datenum') ;               
            T = table(dt,j3(:,2),j3(:,3),j3(:,6),j3(:,7), 'VariableName',{'DateTime','HeatPower','Temp','PCB','Term'});
            writetable(T,fn);
            heatPower(ki) = j2(ni,2);
-           qPCB(ki) = trimmean(j2(nj1:ni,6),10);
-           qTerm(ki) = trimmean(j2(nj1:ni,7),10);
-           qPow(ki) = trimmean(j2(nj1:ni,8),10);
-           qPCB1(ki) = trimmean(j2(nj1:ni,6),25);
-           qTerm1(ki) = trimmean(j2(nj1:ni,7),25);
-           qPow1(ki) = trimmean(j2(nj1:ni,8),25);
+           qTerm(ki) = trimmean(j2(nj1:ni,6),10);
+           qPow(ki) = trimmean(j2(nj1:ni,7),10);
+           coreIn(ki) = trimmean(j2(nj1:ni,11),10);
+           coreOut(ki) = trimmean(j2(nj1:ni,12),10);
+           H2MakeupLPM(ki) = trimmean(j2(nj1:ni,13),10);
+           powOut(ki) = trimmean(j2(nj1:ni,14),10);
+           qTermStd(ki) = std(j2(nj1:ni,6));
+           qPowStd(ki) = std(j2(nj1:ni,7));
+           coreInStd(ki) = std(j2(nj1:ni,11));
+           coreOutStd(ki) = std(j2(nj1:ni,12));
+           H2MakeupLPMStd(ki) = std(j2(nj1:ni,13));
+           powOutStd(ki) = std(j2(nj1:ni,14));
            dt1(ki) = j2(ni,1);
            j5(ki) = ni-nj1;
            nj1 = ni+1;     
            break
           end                
        end 
-       
-     end 
- 
-    end   
-    tpi = [temp heatPower0 heatPower qPCB qTerm qPow qPCB1 qTerm1 qPow1 j5];
+   
+    end 
+    tpi = [ti heatPower0 heatPower qTerm qPow coreIn coreOut H2MakeupLPM powOut qTermStd qPowStd coreInStd coreOutStd H2MakeupLPMStd powOutStd j5];
     tp = vertcat(tp,tpi);
     dti=[dt0 dt1];
-    dt2 = vertcat(dt2,dti); 
+    dt2 = vertcat(dt2,dti);  
+    end   
+
   end    
-fn = ['C:\jinwork\BEC\tmp\' reactor num2str(whichSeq) '.xlsx'];            
+fn = ['C:\jinwork\BEC\tmp\' reactor '-' num2str(whichSeq) '.csv'];            
 dt3 = datetime(dt2, 'ConvertFrom', 'datenum') ;
 delete(fn);
 %T = table(tp(:,1:19),dt3(:,1:7),'VariableName',{'Qvolts','QkHz','x2','x','c','100','200','275','300','400','500','600','100','200','275','300','400','500','600','100','200','275','300','400','500','600'});
