@@ -8,12 +8,12 @@ qpulse = 1;
 temp =[];
 qL=[];
 %input reactor
-reactor = 'sri-08' %'sri-08' 'sri-09'; ,'conflat'
+reactor = 'sri-09' %'sri-08' 'sri-09'; ,'conflat'
 switch (reactor)
 case 'sri-08'
    Directory='C:\jinwork\BEC\Data\SRIdata\2016-08-12'
    AllFiles = getall(Directory);  %SORTED BY DATE....
-   whichDate = '08222016-08242016';
+   whichDate = '09042016-09052016';
    %input which sequence
    switch (whichDate)
    case 08122016-09052016' %ALL
@@ -78,7 +78,7 @@ case 'sri-08'
 case 'sri-09'
    Directory='C:\jinwork\BEC\Data\SRIdata\2016-09-11'
    AllFiles = getall(Directory);  %SORTED BY DATE....
-   whichDate = '1';
+   whichDate = '09212016-09222016';
    %input which sequence
    switch (whichDate)
    case '1' 
@@ -86,7 +86,17 @@ case 'sri-09'
      startTime = 0; %9/4/2016 6 hours after 6:00
      endTime = 0;   %9/5/2016 20:33
      Experiment = AllFiles(1:4);
+   case '09212016-09222016' 
+     seqFile ='100-600C&300-100ns steps in 100C steps He 30sccm 100psiQV200V-000.csv'
+     startTime = 0.5; %9/4/2016 6 hours after 6:00
+     endTime = 0;   %9/5/2016 20:33
+     Experiment = AllFiles(7:7);
+     qL = [300 100 300 100 300 100 300];
+     qN = size(qL,2)-1;
+     temp = [100 200 300 400];
+
    end  
+   
    otherwise
      exit
 end    
@@ -103,7 +113,7 @@ DateTime(1+startTime*360)
 DateTime(end - endTime*360)
 %            1     2          3               4              5    6     7     
 j1 = horzcat(dateN,CoreHtrPow,CoreReactorTemp,QPulseLengthns,QkHz,QPow, TerminationThermPow,...
-CoreInPress,HGASSOURCEVALVEVH3,QOccurred,CoreGasIn,CoreGasOut,H2MakeupLPM,PowOut);
+CoreInPress,HGASSOURCEVALVEVH3,QOccurred,CoreGasIn,CoreGasOut,H2MakeupLPM,PowOut,JcktGasCircLPM);
 %8          9                  10        11        12         13       14
 j1=j1(1+startTime*360:end-endTime*360,:);
 dt = datetime(j1(:,1), 'ConvertFrom', 'datenum') ; 
@@ -111,17 +121,17 @@ if (dailyPlot == 1)
 figure(1)
 hold on
 aa_splot(dt,j1(:,2),'black','linewidth',1.5)
-ylim([0 100])
+ylim([0 70])
 addaxis(dt,j1(:,3),'linewidth',1.5);
 addaxis(dt,j1(:,4))
 addaxis(dt,smooth(j1(:,5),11))
 if detailPlot == 1
   addaxis(dt,smooth(j1(:,6),11))
   addaxis(dt,smooth(j1(:,7),11))
-  addaxis(dt,smooth(j1(:,11),11))
-  addaxis(dt,smooth(j1(:,12),11))
+  %addaxis(dt,smooth(j1(:,11),11))
+  %addaxis(dt,smooth(j1(:,12),11))
   %addaxis(dt,smooth(j1(:,13),11))
-  addaxis(dt,smooth(j1(:,14),11))
+ addaxis(dt,smooth(j1(:,14),11))
 end    
 title(seqFile,'fontsize',11)
 addaxislabel(1,'HeaterPower');
@@ -131,10 +141,10 @@ addaxislabel(4,'QkHz');
 if detailPlot == 1 
   addaxislabel(5,'QPow'); 
   addaxislabel(6,'TerminationTermPower');
-  addaxislabel(7,'CoreGasIn'); 
-  addaxislabel(8,'CoreGasOut'); 
+  %addaxislabel(7,'CoreGasIn'); 
+  %addaxislabel(8,'CoreGasOut'); 
   %addaxislabel(9,'H2Markup'); 
-  addaxislabel(9,'PowOut'); 
+  addaxislabel(7,'PowOut'); 
 end 
 end
 if (processYes == 1) 
@@ -192,8 +202,8 @@ for ti = temp
           nj1 = ni+1;  
           continue
         end  
-        %if (((j2(ni,4)==qL(ki) & j2(ni+1,4)==qL(ki+1) ) & j2(ni,10) == 1) || (j2(ni,10)-j2(ni+1,10))==1 ) %there is a bug in 2016-08-12_day-09.csv file line 3569 some random number of 308.3333 appears 
-        if (( abs(j2(ni,4)-j2(ni+1,4))>= abs(qL(ki)-qL(ki+1)) || (j2(ni,4)==qL(ki) & j2(ni+1,4)==qL(ki+1) ) & j2(ni,10) == 1) || (j2(ni,10)-j2(ni+1,10))==1 ) 
+        if (((j2(ni,4)==qL(ki) & j2(ni+1,4)==qL(ki+1) ) & j2(ni,10) == 1) || (j2(ni,10)-j2(ni+1,10))==1 ) %there is a bug in 2016-08-12_day-09.csv file line 3569 some random number of 308.3333 appears 
+        %if (( abs(j2(ni,4)-j2(ni+1,4))>= abs(qL(ki)-qL(ki+1)) || (j2(ni,4)==qL(ki) & j2(ni+1,4)==qL(ki+1) ) & j2(ni,10) == 1) || (j2(ni,10)-j2(ni+1,10))==1 ) 
            j3 = j2(nj1:ni,:);
            fn = ['C:\jinwork\BEC\tmp\' reactor '-' whichDate num2str(ti) num2str(qL(ki)) num2str(ki) '.csv'];          
            dt = datetime(j3(:,1), 'ConvertFrom', 'datenum') ;               

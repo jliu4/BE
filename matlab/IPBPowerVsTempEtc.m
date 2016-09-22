@@ -9,7 +9,7 @@ temp=[150 200 250 300 350 400];
 qL = [300 150 100 150 300 100];
 qN = size(qL,2) -1;
 %input reactor
-reactor = 'ipb1-0915' %'ipb2-s0909-167'  %'ipb1-0915','ipb1-0820''ipb2-08','ipb2-0905' 'ipb2-0907','ipb2-0909-165'
+reactor = 'ipb2-0909-167' %'ipb1-0915' %'ipb2-0909-167'  %'ipb1-0915','ipb1-0820''ipb2-08','ipb2-0905' 'ipb2-0907','ipb2-0909-165'
 switch (reactor)
 case 'ipb1-0915'
    Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\2016-09-15-CRIO-v167_CORE_26b'
@@ -46,9 +46,9 @@ case 'ipb2-0907-165-28b'
 case 'ipb2-0909-167'
    Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC2_DATA\2016-09-09_CRIO_v167-core27b'
    AllFiles = getall(Directory);  %SORTED BY DATE....
-   whichDate = '09142016-09152016';   
+   whichDate = '09222016';   
    switch (whichDate)
-   case '09122016' 
+   case '09121016' 
      seqFile ='2016-09-09-CRIO-v167-core27b'
      startTime = 0; 
      endTime = 0;  
@@ -63,6 +63,24 @@ case 'ipb2-0909-167'
      startTime = 0; 
      endTime = 15;  
      Experiment = AllFiles(11:13);    
+   case '09192016-09202016' 
+     seqFile ='2016-09-09-CRIO-v167-core27b'
+     startTime = 0; 
+     endTime = 0;  
+     Experiment = AllFiles(16:17);    
+   case '09212016' 
+     seqFile ='2016-09-09-CRIO-v167-core27b data file IPB2_Core\_27b-\_H2-250-400C\_RUN1\_9-20-16\_day-01.csv'
+     startTime = 0; 
+     endTime = 0;  
+     Experiment = AllFiles(18:18);    
+   case '09222016' 
+     seqFile ='2016-09-09-CRIO-v167-core27b data file: IPB2\_Core\_27b-\_H2-250-400C\_RUN1\_9-21-16\_day-01csv.csv'
+     startTime = 0; 
+     endTime = 0;  
+     Experiment = AllFiles(20:20); 
+     temp=[250 275];
+     qL = [300 150 100 150 300 100];
+     qN = size(qL,2) -1;  
    end  
 case 'ipb2-0909-166'
    Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC2_DATA\2016-09-09_CRIO_v166-core27b'
@@ -158,14 +176,14 @@ case 'ipb2-0907'
  case 'ipb1-0820'
    Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\2016-08-20-CORE_26b'
    AllFiles = getall(Directory);  %SORTED BY DATE....
-   whichDate = '11';
+   whichDate = '08022016-08212016';
    switch (whichDate)
    case '1' 
      seqFile ='ALL'   
      startTime = 1.0;
      endTime = 11; 
      Experiment = AllFiles(1:20);
-   case '2'
+   case '08022016-08212016'
      seqFile ='IPB1-Core-26b-New-core-He'   
      startTime = 1.0; 
      endTime = 13.5; 
@@ -253,13 +271,13 @@ if (dailyPlot == 1)
 figure(1)
 hold on
 aa_splot(dt,j1(:,2),'black','linewidth',1.5)
-%ylim([0 40])
+ylim([0 40])
 addaxis(dt,j1(:,3),'linewidth',1.5);
 addaxis(dt,j1(:,4))
 addaxis(dt,j1(:,5))
 addaxis(dt,smooth(j1(:,6),11))
-addaxis(dt,smooth(j1(:,7),11))
-addaxis(dt,smooth(j1(:,9),19))
+%addaxis(dt,smooth(j1(:,7),11))
+%addaxis(dt,smooth(j1(:,9),19))
 addaxis(dt,smooth(j1(:,11),11))    
 title(seqFile,'fontsize',11)
 addaxislabel(1,'HeaterPower');
@@ -267,22 +285,22 @@ addaxislabel(2,'CoreTemp');
 addaxislabel(3,'QPulseLen');
 addaxislabel(4,'QkHz');
 addaxislabel(5,'QPow');
-addaxislabel(6,'TerminationHeatSinkPower');
-addaxislabel(7,'QPulsePCBHeatsinkPower');
-addaxislabel(8,'CoreQPow'); 
+%addaxislabel(6,'TerminationHeatSinkPower');
+%addaxislabel(6,'QPulsePCBHeatsinkPower');
+addaxislabel(6,'CoreQPow'); 
 end
 if (processYes == 1) 
 heatPower = []; 
 heatPower0 = 0;
 dt0 = 0;
 coreQPow = [];
-coreQPowStd = [];
+coreQPowCV = [];
 qPCB = [];
-qPCBStd=[];
+qPCBCV=[];
 qTerm=[];
-qTermStd=[];
+qTermCV=[];
 qPow=[];
-qPowStd=[];
+qPowCV=[];
 t2 = [];
 tp = [];
 dt2=[];
@@ -306,8 +324,8 @@ for ti = temp
       qPCB(ki)=0;
       qTerm(ki)=0;
       qPow(ki) = 0;
-      j5(ki)=0;
       coreQPow(ki) = 0;
+      j5(ki)=0;
       dt1(ki) = j2(1,1);
       for ni = nj1:1:nj2-1
         if (j2(ni+1,10)-j2(ni,10))==1 %noQ
@@ -332,10 +350,10 @@ for ti = temp
            qTerm(ki) = trimmean(j2(nj1:ni,7),25);
            qPCB(ki) = trimmean(j2(nj1:ni,9),25);
            coreQPow(ki)=trimmean(j2(nj1:ni,11),25);
-           qPowStd(ki) = std(j2(nj1:ni,6));
-           qTermStd(ki) = std(j2(nj1:ni,7));
-           qPCBStd(ki) = std(j2(nj1:ni,9));
-           coreQPowStd(ki)=std(j2(nj1:ni,11));
+           qPowCV(ki) = std(j2(nj1:ni,6))/mean(j2(nj1:ni,6));
+           qTermCV(ki) = std(j2(nj1:ni,7))/mean(j2(nj1:ni,7));
+           qPCBCV(ki) = std(j2(nj1:ni,9))/mean(j2(nj1:ni,9));
+           coreQPowCV(ki)=std(j2(nj1:ni,11))/mean(j2(nj1:ni,11));
            dt1(ki) = j2(ni,1);
            j5(ki) = ni-nj1;
            nj1 = ni+1;     
@@ -343,7 +361,7 @@ for ti = temp
           end                
        end    
      end 
-     tpi = [temp heatPower0 heatPower qPCB qTerm qPow coreQPow qPCBStd qTermStd qPowStd coreQPowStd j5];
+     tpi = [ti heatPower0 heatPower coreQPow qPow qPCB qTerm  coreQPowCV  qPCBCV qTermCV qPowCV ];
      tp = vertcat(tp,tpi);
      dti=[dt0 dt1];
      dt2 = vertcat(dt2,dti); 
