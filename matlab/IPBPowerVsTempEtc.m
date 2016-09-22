@@ -9,19 +9,19 @@ temp=[150 200 250 300 350 400];
 qL = [300 150 100 150 300 100];
 qN = size(qL,2) -1;
 %input reactor
-reactor = 'ipb2-0909-167' %'ipb1-0915' %'ipb2-0909-167'  %'ipb1-0915','ipb1-0820''ipb2-08','ipb2-0905' 'ipb2-0907','ipb2-0909-165'
+reactor = 'ipb1-0915' %'ipb1-0915' %'ipb2-0909-167'  %'ipb1-0915','ipb1-0820''ipb2-08','ipb2-0905' 'ipb2-0907','ipb2-0909-165'
 switch (reactor)
 case 'ipb1-0915'
    Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\2016-09-15-CRIO-v167_CORE_26b'
    AllFiles = getall(Directory);  %SORTED BY DATE....
-   whichDate = '09182016-09192016'; 
+   whichDate = '09212016-09222016'; 
    switch (whichDate)
    case '09162016-09182016' 
      seqFile ='IPB1_Core\_26b-H2-CRIO\_v167\_150C-400C\_Run1\_day-01.csv : 04.csv'
      startTime = 1; 
      endTime = 20;  
      Experiment = AllFiles(1:4);
-     qL = [150 100 150 100];
+     qL = [150 100 150];
      qN = size(qL,2) -1;
    case '09182016-09192016' 
      seqFile ='IPB1\_Core\_26b-H2-650C-300C\_Run1\_day-01.csv : 02.csv'
@@ -31,6 +31,15 @@ case 'ipb1-0915'
      temp=[600 300];
      qL = [300 150 100 150 300 100];
      qN = size(qL,2) -1;  
+      case '09212016-09222016' 
+     seqFile ='\ISOPERIBOLIC_DATA\2016-09-15-CRIO-v167_CORE_26b\IPB1_Core_26b-H2-250C-400C_Run2_day-01.csv : 02.csv'
+     startTime = 0; 
+     endTime = 9;  
+     Experiment = AllFiles(12:13);
+     temp=[250 275 300 325 400];
+     qL = [150 100 150 100];
+     qN = size(qL,2) -1;  
+  
    end  
 case 'ipb2-0907-165-28b'
    Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC2_DATA\2016-09-07_Crio_V165_core28b'
@@ -98,7 +107,7 @@ case 'ipb2-0909-166'
    case '09122016' 
      seqFile ='IPB2\_Core\_27b-\_H2_600c-300C\_2probetest1\_EDITED.csv'
      startTime = 0; 
-     endTime = 0;  
+     endTime = 10;  
      Experiment = AllFiles(6:6);
      temp=[600 300];
      qL = [300 150 100 150 300 100];
@@ -316,7 +325,7 @@ for ti = temp
   j2= j1(nj1:end,:); %continue
   j2 = j2((abs(j2(:,3)-ti) < deltaTemp),:);
   nj2 = size(j2(:,1),1);
-  if nj2 > 10 
+  if nj2 > 100 
     nj1 = 1;
     nq = 1;
     for ki = 1:1:qN  
@@ -325,7 +334,12 @@ for ti = temp
       qTerm(ki)=0;
       qPow(ki) = 0;
       coreQPow(ki) = 0;
-      j5(ki)=0;
+      heatpowerCV(ki) = 0;
+      qPCBCV(ki)=0;
+      qTermCV(ki)=0;
+      qPowCV(ki) = 0;
+      coreQPowCV(ki) = 0;
+      %j5(ki)=0;
       dt1(ki) = j2(1,1);
       for ni = nj1:1:nj2-1
         if (j2(ni+1,10)-j2(ni,10))==1 %noQ
@@ -345,15 +359,28 @@ for ti = temp
            dt = datetime(j3(:,1), 'ConvertFrom', 'datenum') ;               
            T = table(dt,j3(:,2),j3(:,3),j3(:,6),j3(:,7), j3(:,9),j3(:,11),'VariableName',{'DateTime','HeatPower','Temp','qPow','Term','PCB','coreQPow'});
            writetable(T,fn);
-           heatPower(ki) = j2(ni,2);
+           heatPower(ki) = trimmean(j2(nj1:ni,2),25); %j2(ni,2);
+           %heatPower(ki)=mean(j2(ni-20:ni,2));
            qPow(ki) = trimmean(j2(nj1:ni,6),25);
            qTerm(ki) = trimmean(j2(nj1:ni,7),25);
            qPCB(ki) = trimmean(j2(nj1:ni,9),25);
            coreQPow(ki)=trimmean(j2(nj1:ni,11),25);
-           qPowCV(ki) = std(j2(nj1:ni,6))/mean(j2(nj1:ni,6));
-           qTermCV(ki) = std(j2(nj1:ni,7))/mean(j2(nj1:ni,7));
-           qPCBCV(ki) = std(j2(nj1:ni,9))/mean(j2(nj1:ni,9));
-           coreQPowCV(ki)=std(j2(nj1:ni,11))/mean(j2(nj1:ni,11));
+           j6 =mean(j2(nj1:ni,6)); 
+           j7 = mean(j2(nj1:ni,7));
+           j9 =mean(j2(nj1:ni,9)); 
+           j11 = mean(j2(nj1:ni,11));   
+           qPowCV(ki) = std(j2(nj1:ni,6));
+           if j6 > 0
+             qPowCV(ki)= qPowCV(ki)/j6;
+           end   
+           qTermCV(ki) = std(j2(nj1:ni,7));
+           if j7 > 0
+             qTermCV(ki)=qTermCV(ki)/j7;
+           end  
+           qPCBCV(ki) = std(j2(nj1:ni,9))/j9;
+           if j11 > 0 
+            coreQPowCV(ki)=coreQPowCV(ki)/j11;
+           end
            dt1(ki) = j2(ni,1);
            j5(ki) = ni-nj1;
            nj1 = ni+1;     
@@ -361,7 +388,7 @@ for ti = temp
           end                
        end    
      end 
-     tpi = [ti heatPower0 heatPower coreQPow qPow qPCB qTerm  coreQPowCV  qPCBCV qTermCV qPowCV ];
+     tpi = [ti heatPower0 heatPower coreQPow qPow qPCB qTerm  coreQPowCV qPowCV ];
      tp = vertcat(tp,tpi);
      dti=[dt0 dt1];
      dt2 = vertcat(dt2,dti); 
