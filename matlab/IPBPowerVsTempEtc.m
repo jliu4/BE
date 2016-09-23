@@ -1,20 +1,20 @@
 clear all;close all
 addpath('C:\jinwork\BE\matlab')
 addpath('C:\jinwork\BE\matlab\addaxis5')
-dailyPlot = 1;
-detailPlot = 1;
+dailyPlot = 0;
+detailPlot = 0;
 processYes = 1;
-qpulse = 1;
+
 temp=[150 200 250 300 350 400];
 qL = [300 150 100 150 300 100];
 qN = size(qL,2) -1;
 %input reactor
-reactor = 'ipb1-0915' %'ipb1-0915' %'ipb2-0909-167'  %'ipb1-0915','ipb1-0820''ipb2-08','ipb2-0905' 'ipb2-0907','ipb2-0909-165'
+reactor ='ipb2-0907-165-28b' % 'ipb2-0907-165-28b' %'ipb1-0915' %'ipb2-0909-167-27b'  %'ipb1-0915','ipb1-0820''ipb2-08','ipb2-0905' 'ipb2-0907','ipb2-0909-165'
 switch (reactor)
 case 'ipb1-0915'
    Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\2016-09-15-CRIO-v167_CORE_26b'
    AllFiles = getall(Directory);  %SORTED BY DATE....
-   whichDate = '09212016-09222016'; 
+   whichDate = '09222016-09232016'; 
    switch (whichDate)
    case '09162016-09182016' 
      seqFile ='IPB1_Core\_26b-H2-CRIO\_v167\_150C-400C\_Run1\_day-01.csv : 04.csv'
@@ -31,7 +31,7 @@ case 'ipb1-0915'
      temp=[600 300];
      qL = [300 150 100 150 300 100];
      qN = size(qL,2) -1;  
-      case '09212016-09222016' 
+   case '09212016-09222016' 
      seqFile ='\ISOPERIBOLIC_DATA\2016-09-15-CRIO-v167_CORE_26b\IPB1_Core_26b-H2-250C-400C_Run2_day-01.csv : 02.csv'
      startTime = 0; 
      endTime = 9;  
@@ -39,23 +39,51 @@ case 'ipb1-0915'
      temp=[250 275 300 325 400];
      qL = [150 100 150 100];
      qN = size(qL,2) -1;  
-  
+  case '09222016-09232016' 
+     seqFile ='\ISOPERIBOLIC_DATA\2016-09-15-CRIO-v167_CORE_26b\IPB1_Core_26b-H2-250C-400C_Run2_day-03.csv'
+     startTime = 0; 
+     endTime = 9;  
+     Experiment = AllFiles(15:15);
+     temp=[250 275 300 325 400];
+     qL = [150 100 150 100];
+     qN = size(qL,2) -1;  
+
    end  
 case 'ipb2-0907-165-28b'
    Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC2_DATA\2016-09-07_Crio_V165_core28b'
    AllFiles = getall(Directory);  %SORTED BY DATE....
-   whichDate = '09072016-09082016'; 
+   whichDate = '09072016-09082016-250'; 
    switch (whichDate)
-   case '09072016-09082016' 
-     seqFile ='2016-09-07-Crio-V165-core28b-IPB2-Core-28b--H2-150C-400C-Run1-day-01 : 02.csv'
+   case '09072016-09082016-150' 
+     seqFile ='ISOPERIBOLIC2_DATA\2016-09-07_Crio_V165_core28b\IPB2-Core-28b--H2-150C-400C-Run1-day-01 : 02.csv'
      startTime = 1; 
      endTime = 0;  
      Experiment = AllFiles(1:2);
+     temp=[150 200 250 300];
+     qL = [300 150 100 150 100 300];
+     qN = size(qL,2) -1;  
+   case '09072016-09082016-200' 
+     seqFile ='ISOPERIBOLIC2_DATA\2016-09-07_Crio_V165_core28b\IPB2-Core-28b--H2-150C-400C-Run1-day-01 : 02.csv'
+     startTime = 1; 
+     endTime = 0;  
+     Experiment = AllFiles(1:2);
+     temp=[200];
+     qL = [300 150 100 150 100 150];
+     qN = size(qL,2) -1;  
+   case '09072016-09082016-250' 
+     seqFile ='ISOPERIBOLIC2_DATA\2016-09-07_Crio_V165_core28b\2016-09-07-Crio-V165-core28b-IPB2-Core-28b--H2-150C-400C-Run1-day-01 : 02.csv'
+     startTime = 1; 
+     endTime = 0;  
+     Experiment = AllFiles(2:2);
+     temp=[250];
+     qL = [100 150 100 150 100];
+     qN = size(qL,2) -1;  
+
    end  
-case 'ipb2-0909-167'
+case 'ipb2-0909-167-27b'
    Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC2_DATA\2016-09-09_CRIO_v167-core27b'
    AllFiles = getall(Directory);  %SORTED BY DATE....
-   whichDate = '09222016';   
+   whichDate = '09232016';   
    switch (whichDate)
    case '09121016' 
      seqFile ='2016-09-09-CRIO-v167-core27b'
@@ -90,6 +118,15 @@ case 'ipb2-0909-167'
      temp=[250 275];
      qL = [300 150 100 150 300 100];
      qN = size(qL,2) -1;  
+   case '09232016' 
+     seqFile ='2016-09-09-CRIO-v167-core27b data file: IPB2\_Core\_27b-\_H2-250-400C\_RUN1\_9-21-16\_day-02csv.csv'
+     startTime = 0; 
+     endTime = 0;  
+     Experiment = AllFiles(21:21); 
+     temp=[250 275];
+     qL = [300 150 100 150 100 300 150 100];
+     qN = size(qL,2) -1;  
+   
    end  
 case 'ipb2-0909-166'
    Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC2_DATA\2016-09-09_CRIO_v166-core27b'
@@ -273,8 +310,9 @@ dateN=datenum(DateTime,'mm/dd/yyyy HH:MM:SS');
 DateTime(1+startTime*360)
 DateTime(end - endTime*360)
             %1     2           3        4              5    6    7                        8                 9                      10        
-j1 = horzcat(dateN,HeaterPower,CoreTemp,QPulseLengthns,QkHz,QPow,TerminationHeatsinkPower,PressureSensorPSI,QPulsePCBHeatsinkPower,QEnable,CoreQPower);
+j1 = horzcat(dateN,HeaterPower,CoreTemp,QPulseLengthns,QkHz,QPow,TerminationHeatsinkPower,PressureSensorPSI,QPulsePCBHeatsinkPower,QEnable,CoreQPower,SeqStep);
 j1=j1(1+startTime*360:end-endTime*360,:);
+j1(isnan(j1))=0;
 dt = datetime(j1(:,1), 'ConvertFrom', 'datenum') ; 
 if (dailyPlot == 1)
 figure(1)

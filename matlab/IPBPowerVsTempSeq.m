@@ -4,42 +4,46 @@ addpath('C:\jinwork\BE\matlab\addaxis5')
 dailyPlot = 1;
 detailPlot = 1;
 processYes = 1;
-qpulse = 1;
-temp=[150 200 250 300 350 400];
-qL = [300 150 100 150 300 100];
-qN = size(qL,2) -1;
+
 %input reactor
-reactor = 'ipb1-0915' %'ipb1-0915' %'ipb2-0909-167'  %'ipb1-0915','ipb1-0820''ipb2-08','ipb2-0905' 'ipb2-0907','ipb2-0909-165'
+reactor ='ipb2-0905-164-28b' % 'ipb2-0907-165-28b' %'ipb1-0915' %'ipb2-0909-167-27b'  %'ipb1-0915','ipb1-0820''ipb2-08','ipb2-0905' 'ipb2-0907','ipb2-0909-165'
 switch (reactor)
+case 'ipb2-0905-164-28b'
+   Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC2_DATA\2016-09-05_Crio_V164_core28b'
+   AllFiles = getall(Directory);  %SORTED BY DATE....
+   whichDate = '09052016-09062016'; 
+   switch (whichDate)
+   case '09052016-09062016' 
+   seqFile ='\ISOPERIBOLIC2_DATA\2016-09-05_Crio_V164_core28b\IPB2_Core_28b-_H2_600C-300C_CRIO_V164_day-01.csv : 02.csv'
+   startTime = 0; 
+   endTime = 0;  
+   Experiment = AllFiles(5:6);
+   end    
 case 'ipb1-0915'
    Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\2016-09-15-CRIO-v167_CORE_26b'
    AllFiles = getall(Directory);  %SORTED BY DATE....
-   whichDate = '09212016-09222016'; 
+   whichDate = '09222016-09232016'; 
    switch (whichDate)
    case '09162016-09182016' 
      seqFile ='IPB1_Core\_26b-H2-CRIO\_v167\_150C-400C\_Run1\_day-01.csv : 04.csv'
      startTime = 1; 
      endTime = 20;  
      Experiment = AllFiles(1:4);
-     qL = [150 100 150];
-     qN = size(qL,2) -1;
    case '09182016-09192016' 
      seqFile ='IPB1\_Core\_26b-H2-650C-300C\_Run1\_day-01.csv : 02.csv'
      startTime = 0; 
      endTime = 0;  
      Experiment = AllFiles(6:7);
-     temp=[600 300];
-     qL = [300 150 100 150 300 100];
-     qN = size(qL,2) -1;  
-      case '09212016-09222016' 
+   case '09212016-09222016' 
      seqFile ='\ISOPERIBOLIC_DATA\2016-09-15-CRIO-v167_CORE_26b\IPB1_Core_26b-H2-250C-400C_Run2_day-01.csv : 02.csv'
      startTime = 0; 
      endTime = 9;  
      Experiment = AllFiles(12:13);
-     temp=[250 275 300 325 400];
-     qL = [150 100 150 100];
-     qN = size(qL,2) -1;  
-  
+  case '09222016-09232016' 
+     seqFile ='\ISOPERIBOLIC_DATA\2016-09-15-CRIO-v167_CORE_26b\IPB1_Core_26b-H2-250C-400C_Run2_day-03.csv'
+     startTime = 0; 
+     endTime = 9;  
+     Experiment = AllFiles(15:15);
    end  
 case 'ipb2-0907-165-28b'
    Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC2_DATA\2016-09-07_Crio_V165_core28b'
@@ -47,15 +51,25 @@ case 'ipb2-0907-165-28b'
    whichDate = '09072016-09082016'; 
    switch (whichDate)
    case '09072016-09082016' 
-     seqFile ='2016-09-07-Crio-V165-core28b-IPB2-Core-28b--H2-150C-400C-Run1-day-01 : 02.csv'
+     seqFile ='ISOPERIBOLIC2_DATA\2016-09-07_Crio_V165_core28b\IPB2-Core-28b--H2-150C-400C-Run1-day-01 : 02.csv'
      startTime = 1; 
      endTime = 0;  
      Experiment = AllFiles(1:2);
+   case '09072016-09082016-200' 
+     seqFile ='ISOPERIBOLIC2_DATA\2016-09-07_Crio_V165_core28b\IPB2-Core-28b--H2-150C-400C-Run1-day-01 : 02.csv'
+     startTime = 1; 
+     endTime = 0;  
+     Experiment = AllFiles(1:2);
+   case '09072016-09082016-250' 
+     seqFile ='ISOPERIBOLIC2_DATA\2016-09-07_Crio_V165_core28b\2016-09-07-Crio-V165-core28b-IPB2-Core-28b--H2-150C-400C-Run1-day-01 : 02.csv'
+     startTime = 1; 
+     endTime = 0;  
+     Experiment = AllFiles(2:2);
    end  
-case 'ipb2-0909-167'
+case 'ipb2-0909-167-27b'
    Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC2_DATA\2016-09-09_CRIO_v167-core27b'
    AllFiles = getall(Directory);  %SORTED BY DATE....
-   whichDate = '09222016';   
+   whichDate = '09232016';   
    switch (whichDate)
    case '09121016' 
      seqFile ='2016-09-09-CRIO-v167-core27b'
@@ -87,9 +101,11 @@ case 'ipb2-0909-167'
      startTime = 0; 
      endTime = 0;  
      Experiment = AllFiles(20:20); 
-     temp=[250 275];
-     qL = [300 150 100 150 300 100];
-     qN = size(qL,2) -1;  
+   case '09232016' 
+     seqFile ='2016-09-09-CRIO-v167-core27b data file: IPB2\_Core\_27b-\_H2-250-400C\_RUN1\_9-21-16\_day-02csv.csv'
+     startTime = 0; 
+     endTime = 0;  
+     Experiment = AllFiles(21:21); 
    end  
 case 'ipb2-0909-166'
    Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC2_DATA\2016-09-09_CRIO_v166-core27b'
@@ -101,17 +117,11 @@ case 'ipb2-0909-166'
      startTime = 0; 
      endTime = 15;  
      Experiment = AllFiles(1:2);
-     temp=[600 300];
-     qL = [300 150 100 150 300 100];
-     qN = size(qL,2) -1;  
    case '09122016' 
      seqFile ='IPB2\_Core\_27b-\_H2_600c-300C\_2probetest1\_EDITED.csv'
      startTime = 0; 
      endTime = 10;  
      Experiment = AllFiles(6:6);
-     temp=[600 300];
-     qL = [300 150 100 150 300 100];
-     qN = size(qL,2) -1;  
    end  
 case 'ipb2-0909-165'
    Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC2_DATA\2016-09-09_CRIO_v165-core27b'
@@ -206,7 +216,6 @@ case 'ipb2-0907'
      seqFile ='IPB1-Core-26b-New-core-1st-condition'   
      startTime = 1.0; 
      endTime = 0; 
-     temp = [600 300];
      Experiment = AllFiles(7:8);    
    case '5'
      seqFile ='IPB1-Core-26b-New-core-2nd-condition'  
@@ -219,7 +228,6 @@ case 'ipb2-0907'
      startTime = 1.5;
      endTime = 0; 
      Experiment = AllFiles(11:12)
-     temp = [600 300];
    case '7'
      seqFile ='IPB1-Core-26b-New-core-H2-D2'  
      startTime = 1.5; 
@@ -265,6 +273,7 @@ Experiment'
 loadHHT 
 %change a few messy variable names
 QOccurred = QOccurred0x3F; clear QPulseOccurred0x3F
+SeqStep = SeqStep0x23; clear SeqStep0x23
 QPulseLengthns = QPulseLength0x28ns0x29; clear QPulseLength0x28ns0x29
 QPulseDelays = QPulseDelay0x28s0x29; clear QPulseDelay0x28s0x29
 QkHz = QKHz; clear QKHz;
@@ -273,8 +282,12 @@ dateN=datenum(DateTime,'mm/dd/yyyy HH:MM:SS');
 DateTime(1+startTime*360)
 DateTime(end - endTime*360)
             %1     2           3        4              5    6    7                        8                 9                      10        
-j1 = horzcat(dateN,HeaterPower,CoreTemp,QPulseLengthns,QkHz,QPow,TerminationHeatsinkPower,PressureSensorPSI,QPulsePCBHeatsinkPower,QEnable,CoreQPower);
-j1=j1(1+startTime*360:end-endTime*360,:);
+j1 = horzcat(dateN,HeaterPower,CoreTemp,QPulseLengthns,QkHz,QPow,TerminationHeatsinkPower,PressureSensorPSI,QPulsePCBHeatsinkPower,QEnable,CoreQPower,SeqStep);
+j1 = j1(1+startTime*360:end-endTime*360,:);
+j1(any(isnan(j1),2),:)=[];
+%j1(isnan(j1))=0;
+j1 = j1(j1(:,12) > 0,:);
+j1Size = size(j1,1);
 dt = datetime(j1(:,1), 'ConvertFrom', 'datenum') ; 
 if (dailyPlot == 1)
 figure(1)
@@ -299,107 +312,95 @@ addaxislabel(5,'QPow');
 addaxislabel(6,'CoreQPow'); 
 end
 if (processYes == 1) 
-heatPower = []; 
-heatPower0 = 0;
-dt0 = 0;
+hp0 = []; 
+hp = []; 
+temp1=[];
+ql = [];
+gf=[];
+qPow=[];
+qTerm=[];
+qPCB = [];
 coreQPow = [];
 coreQPowCV = [];
-qPCB = [];
 qPCBCV=[];
-qTerm=[];
 qTermCV=[];
-qPow=[];
 qPowCV=[];
-t2 = [];
-tp = [];
-dt2=[];
-dt1=[];
-j5 =[];
 i=0;
-nj1 = 1;
-ki=1;
-deltaTemp = 3;
-for ti = temp
-   %pick up data with the particular tempareture   
+i1 = 1;
+ii = 40; 
+trim = 25;
+while (i < j1Size-1)  
   i = i+1;
-  j2= j1(nj1:end,:); %continue
-  j2 = j2((abs(j2(:,3)-ti) < deltaTemp),:);
-  nj2 = size(j2(:,1),1);
-  if nj2 > 100 
-    nj1 = 1;
-    nq = 1;
-    for ki = 1:1:qN  
-      heatpower(ki) = 0;
-      qPCB(ki)=0;
-      qTerm(ki)=0;
-      qPow(ki) = 0;
-      coreQPow(ki) = 0;
-      heatpowerCV(ki) = 0;
-      qPCBCV(ki)=0;
-      qTermCV(ki)=0;
-      qPowCV(ki) = 0;
-      coreQPowCV(ki) = 0;
-      %j5(ki)=0;
-      dt1(ki) = j2(1,1);
-      for ni = nj1:1:nj2-1
-        if (j2(ni+1,10)-j2(ni,10))==1 %noQ
-          j3 = j2(nj1:ni,:);
-          fn = ['C:\jinwork\BEC\tmp\' reactor '-' whichDate num2str(ti) num2str(qL(ki)) num2str(ki) 'nq.csv'];          
-          dt = datetime(j3(:,1), 'ConvertFrom', 'datenum') ;                  
-          T = table(dt,j3(:,2),j3(:,3),j3(:,4),j3(:,5), 'VariableName',{'DateTime','HeatPower','Temp','QLen','QkHz'});
-          writetable(T,fn);
-          heatPower0 = j2(ni,2);
-          dt0=j2(ni,1);
-          nj1 = ni+1;  
-          continue
-        end  
-        if ((j2(ni,4)==qL(ki) & j2(ni+1,4)==qL(ki+1) & j2(ni,10) == 1) || (j2(ni,10)-j2(ni+1,10))==1 ) 
-           j3 = j2(nj1:ni,:);
-           fn = ['C:\jinwork\BEC\tmp\' reactor '-' whichDate num2str(ti) num2str(qL(ki)) num2str(ki) '.csv'];          
-           dt = datetime(j3(:,1), 'ConvertFrom', 'datenum') ;               
-           T = table(dt,j3(:,2),j3(:,3),j3(:,6),j3(:,7), j3(:,9),j3(:,11),'VariableName',{'DateTime','HeatPower','Temp','qPow','Term','PCB','coreQPow'});
-           writetable(T,fn);
-           heatPower(ki) = trimmean(j2(nj1:ni,2),25); %j2(ni,2);
-           %heatPower(ki)=mean(j2(ni-20:ni,2));
-           qPow(ki) = trimmean(j2(nj1:ni,6),25);
-           qTerm(ki) = trimmean(j2(nj1:ni,7),25);
-           qPCB(ki) = trimmean(j2(nj1:ni,9),25);
-           coreQPow(ki)=trimmean(j2(nj1:ni,11),25);
-           j6 =mean(j2(nj1:ni,6)); 
-           j7 = mean(j2(nj1:ni,7));
-           j9 =mean(j2(nj1:ni,9)); 
-           j11 = mean(j2(nj1:ni,11));   
-           qPowCV(ki) = std(j2(nj1:ni,6));
-           if j6 > 0
-             qPowCV(ki)= qPowCV(ki)/j6;
-           end   
-           qTermCV(ki) = std(j2(nj1:ni,7));
-           if j7 > 0
-             qTermCV(ki)=qTermCV(ki)/j7;
-           end  
-           qPCBCV(ki) = std(j2(nj1:ni,9))/j9;
-           if j11 > 0 
-            coreQPowCV(ki)=coreQPowCV(ki)/j11;
-           end
-           dt1(ki) = j2(ni,1);
-           j5(ki) = ni-nj1;
-           nj1 = ni+1;     
-           break
-          end                
-       end    
-     end 
-     tpi = [ti heatPower0 heatPower coreQPow qPow qPCB qTerm  coreQPowCV qPowCV ];
-     tp = vertcat(tp,tpi);
-     dti=[dt0 dt1];
-     dt2 = vertcat(dt2,dti); 
-    end   
-end    
+  if (j1(i+1,12) - j1(i,12)) == 1  %'& i-i1 > ii )
+    i2 = i;
+    seq = j1(i2,12)
+    temp1(seq)=trimmean(j1(i2-ii:i2,3),trim);
+    dt1(seq) = j1(i2,1);
+    ql(seq) = j1(i2,4);
+    qf(seq) = trimmean(j1(i2-ii:i2,5),trim);
+    hp0(seq) = 0;
+    hp(seq) = 0;
+    qPow(seq) =0;
+    qTerm(seq) = 0;
+    qPCB(seq) = 0;
+    coreQPow(seq)=0;
+    qPowCV(seq) = 0;
+    qTermCV(seq)=0;
+    qPCBCV(seq) = 0;
+    coreQPowCV(seq)=0;
+    if j1(i2,10) == 0
+      hp0(seq) = j1(i2,2);
+    else
+      hp(seq) = trimmean(j1(i2-ii:i2,2),trim); %j2(ni,2);
+      qPow(seq) = trimmean(j1(i2-ii:i2,6),trim);
+      qTerm(seq) = trimmean(j1(i2-ii:i2,7),trim);
+      qPCB(seq) = trimmean(j1(i2-ii:i2,9),trim);
+      coreQPow(seq)=trimmean(j1(i2-ii:i2,11),trim);
+      
+      j6 =mean(j1(i1:i2,6)); 
+      j7 = mean(j1(i1:i2,7));
+      j9 =mean(j1(i1:i2,9)); 
+      j11 = mean(j1(i1:i2,11));   
+      qPowCV(seq) = std(j1(i1:i2,6));
+      qTermCV(seq)=std(j1(i1:i2,7));
+      qPCBCV(seq) = std(j1(i1:i2,9));
+      coreQPowCV(seq)=std(j1(i1:i2,11));
+      if j6 > 0
+        qPowCV(seq)= qPowCV(seq)/j6;
+      end   
+        qTermCV(seq) =qTermCV(seq)/j7;
+      if j7 > 0
+        qTermCV(seq)=qTermCV(seq)/j7;
+      end  
+        qPCBCV(seq) = qPCBCV(seq)/j9;
+      if j11 > 0 
+        coreQPowCV(seq)=coreQPowCV(seq)/j11;
+      end
+       
+      i1 = i2+1; 
+    end  
+  end
+end 
+dt2 = datetime(dt1, 'ConvertFrom', 'datenum') ;
 fn = ['C:\jinwork\BEC\tmp\' reactor '-' whichDate '.csv'];            
-dt3 = datetime(dt2, 'ConvertFrom', 'datenum') ;
+
 delete(fn);
-%T = table(tp(:,1:19),dt3(:,1:7),'VariableName',{'Qvolts','QkHz','x2','x','c','100','200','275','300','400','500','600','100','200','275','300','400','500','600','100','200','275','300','400','500','600'});
-%T = table(j4(:,1:end),dt3(:,1:end))
-T = table(tp(:,1:end),dt3(:,1:end));
+   temp1(seq)=trimmean(j1(i2-ii:i2,3),trim);
+    dt1(seq) = j1(i2,1);
+    ql(seq) = j1(i2,4);
+    qf(seq) = trimmean(j1(i2-ii:i2,5),trim);
+    hp0(seq) = 0;
+    hp(seq) = 0;
+    qPow(seq) =0;
+    qTerm(seq) = 0;
+    qPCB(seq) = 0;
+    coreQPow(seq)=0;
+    qPowCV(seq) = 0;
+    qTermCV(seq)=0;
+    qPCBCV(seq) = 0;
+    coreQPowCV(seq)=0;
+T=table(temp1(:),ql(:),qf(:),hp0(:),hp(:),coreQPow(:),qPow(:),qPCB(:),qTerm(:),coreQPowCV(:),qPowCV(:),qPCBCV(:),qTermCV(:),dt2(:),...
+    'VariableName',{'Temp','QL','QF','HP0','HP','CoreQPower','qPow','qPCB','qTerm','coreQPowCV','qPowCV','qPCBCV','qTermCV','date'});
 writetable(T,fn);
 
 %fn = ['C:\jinwork\BEC\tmp\tp' whichDate '.csv']

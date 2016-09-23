@@ -78,7 +78,7 @@ case 'sri-08'
 case 'sri-09'
    Directory='C:\jinwork\BEC\Data\SRIdata\2016-09-11'
    AllFiles = getall(Directory);  %SORTED BY DATE....
-   whichDate = '09212016-09222016';
+   whichDate = '09222016-09232016';
    %input which sequence
    switch (whichDate)
    case '1' 
@@ -91,6 +91,14 @@ case 'sri-09'
      startTime = 0.5; %9/4/2016 6 hours after 6:00
      endTime = 0;   %9/5/2016 20:33
      Experiment = AllFiles(7:7);
+     qL = [300 100 300 100 300 100 300];
+     qN = size(qL,2)-1;
+     temp = [100 200 300 400];
+   case '09222016-09232016' 
+     seqFile ='100-600C&300-100ns steps in 100C steps He 30sccm 100psiQV200V-000.csv'
+     startTime = 0.5; %9/4/2016 6 hours after 6:00
+     endTime = 0;   %9/5/2016 20:33
+     Experiment = AllFiles(8:8);
      qL = [300 100 300 100 300 100 300];
      qN = size(qL,2)-1;
      temp = [100 200 300 400];
@@ -230,7 +238,7 @@ for ti = temp
        end 
    
     end 
-    tpi = [ti heatPower0 heatPower qTerm qPow coreIn coreOut H2MakeupLPM powOut qTermStd qPowStd coreInStd coreOutStd H2MakeupLPMStd powOutStd j5];
+    tpi = [ti heatPower0 heatPower qTerm qPow coreIn coreOut H2MakeupLPM powOut qTermStd qPowStd coreInStd coreOutStd H2MakeupLPMStd powOutStd];
     tp = vertcat(tp,tpi);
     dti=[dt0 dt1];
     dt2 = vertcat(dt2,dti);  
