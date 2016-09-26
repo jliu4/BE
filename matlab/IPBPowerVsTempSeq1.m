@@ -331,7 +331,7 @@ qTermCV=[];
 qPowCV=[];
 i=0;
 i1 = 1;
-ii = 40; 
+ii = 40; %400 seconds before to next seq.
 trim = 25;
 while (i < j1Size-1)  
   i = i+1;

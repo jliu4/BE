@@ -41,8 +41,6 @@ function addaxis(varargin)
   
   %  get current axis
   cah = gca;
-  
-  
   hzoom = zoom;
   set(hzoom,'ActionPostCallback',@addaxis_zoom_post);
   set(hzoom,'ActionPreCallback',@addaxis_zoom_pre);

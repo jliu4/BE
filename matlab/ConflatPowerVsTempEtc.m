@@ -3,12 +3,12 @@ addpath('C:\jinwork\BE\matlab')
 addpath('C:\jinwork\BE\matlab\addaxis5')
 dailyPlot = 1;
 detailPlot = 1;
-processYes = 1;
+processYes = 0;
 qpulse = 1;
 temp =[];
 qL=[];
 %input reactor
-reactor = 'sri-09' %'sri-08' 'sri-09'; ,'conflat'
+reactor = 'sri-09-19' %'sri-08' 'sri-09-19'; ,'sri-09-11'
 switch (reactor)
 case 'sri-08'
    Directory='C:\jinwork\BEC\Data\SRIdata\2016-08-12'
@@ -75,10 +75,10 @@ case 'sri-08'
      Experiment = AllFiles(2:2);
    end  
      %for temp=[277 302 327 352]  
-case 'sri-09'
-   Directory='C:\jinwork\BEC\Data\SRIdata\2016-09-11'
+case 'sri-09-19'
+   Directory='C:\jinwork\BEC\Data\SRIdata\2016-09-19'
    AllFiles = getall(Directory);  %SORTED BY DATE....
-   whichDate = '09222016-09232016';
+   whichDate = '09262016';
    %input which sequence
    switch (whichDate)
    case '1' 
@@ -94,19 +94,33 @@ case 'sri-09'
      qL = [300 100 300 100 300 100 300];
      qN = size(qL,2)-1;
      temp = [100 200 300 400];
-   case '09222016-09232016' 
+   case '09222016-09252016' 
      seqFile ='100-600C&300-100ns steps in 100C steps He 30sccm 100psiQV200V-000.csv'
      startTime = 0.5; %9/4/2016 6 hours after 6:00
      endTime = 0;   %9/5/2016 20:33
-     Experiment = AllFiles(8:8);
+     Experiment = AllFiles(4:6);
      qL = [300 100 300 100 300 100 300];
      qN = size(qL,2)-1;
-     temp = [100 200 300 400];
-
-   end  
-   
+     temp = [100 200 300 400 500 600];
+   case '09262016' 
+     seqFile ='100-600C&300-100ns steps in 100C steps He 30sccm 100psiQV200V-001.csv'
+     startTime = 10; %9/4/2016 6 hours after 6:00
+     endTime = 0;   %9/5/2016 20:33
+     Experiment = AllFiles(6:7);
+     qL = [100 300 100 83.33 100 300];
+     qN = size(qL,2)-1;
+     temp = [100 200 300 400 500 600];
+   case '09272016' 
+     seqFile ='100-600C&300-100ns steps in 100C steps He 30sccm 100psiQV200V-001.csv'
+     startTime = 20; %9/4/2016 6 hours after 6:00
+     endTime = 0;   %9/5/2016 20:33
+     Experiment = AllFiles(7:8);
+     qL = [100 300 100 83.33 100 300];
+     qN = size(qL,2)-1;
+     temp = [100 200 300 400 500 600];
    otherwise
      exit
+   end  
 end    
 Experiment'
 loadHHT %TODO change name 
@@ -121,7 +135,7 @@ DateTime(1+startTime*360)
 DateTime(end - endTime*360)
 %            1     2          3               4              5    6     7     
 j1 = horzcat(dateN,CoreHtrPow,CoreReactorTemp,QPulseLengthns,QkHz,QPow, TerminationThermPow,...
-CoreInPress,HGASSOURCEVALVEVH3,QOccurred,CoreGasIn,CoreGasOut,H2MakeupLPM,PowOut,JcktGasCircLPM);
+CoreInPress,HGASSOURCEVALVEVH3,QOccurred,CoreGasIn,CoreGasOut,H2MakeupLPM,PowOut,QPulseVolt);
 %8          9                  10        11        12         13       14
 j1=j1(1+startTime*360:end-endTime*360,:);
 dt = datetime(j1(:,1), 'ConvertFrom', 'datenum') ; 
@@ -129,7 +143,7 @@ if (dailyPlot == 1)
 figure(1)
 hold on
 aa_splot(dt,j1(:,2),'black','linewidth',1.5)
-ylim([0 70])
+ylim([0 120])
 addaxis(dt,j1(:,3),'linewidth',1.5);
 addaxis(dt,j1(:,4))
 addaxis(dt,smooth(j1(:,5),11))
@@ -140,6 +154,7 @@ if detailPlot == 1
   %addaxis(dt,smooth(j1(:,12),11))
   %addaxis(dt,smooth(j1(:,13),11))
  addaxis(dt,smooth(j1(:,14),11))
+ addaxis(dt,smooth(j1(:,15),11))
 end    
 title(seqFile,'fontsize',11)
 addaxislabel(1,'HeaterPower');
@@ -153,6 +168,7 @@ if detailPlot == 1
   %addaxislabel(8,'CoreGasOut'); 
   %addaxislabel(9,'H2Markup'); 
   addaxislabel(7,'PowOut'); 
+  addaxislabel(8,'QPulseVolt'); 
 end 
 end
 if (processYes == 1) 
