@@ -78,7 +78,7 @@ case 'sri-08'
 case 'sri-09-19'
    Directory='C:\jinwork\BEC\Data\SRIdata\2016-09-19'
    AllFiles = getall(Directory);  %SORTED BY DATE....
-   whichDate = '09262016';
+   whichDate = '09282016';
    %input which sequence
    switch (whichDate)
    case '1' 
@@ -112,14 +112,20 @@ case 'sri-09-19'
      temp = [100 200 300 400 500 600];
    case '09272016' 
      seqFile ='100-600C&300-100ns steps in 100C steps He 30sccm 100psiQV200V-001.csv'
-     startTime = 20; %9/4/2016 6 hours after 6:00
+     startTime = 0; %9/4/2016 6 hours after 6:00
      endTime = 0;   %9/5/2016 20:33
-     Experiment = AllFiles(7:8);
+     Experiment = AllFiles(9:9);
      qL = [100 300 100 83.33 100 300];
      qN = size(qL,2)-1;
      temp = [100 200 300 400 500 600];
-   otherwise
-     exit
+  case '09282016' 
+     seqFile ='100-600C&300-100ns steps in 100C steps He 30sccm 100psiQV200V-001.csv'
+     startTime = 0; %9/4/2016 6 hours after 6:00
+     endTime = 0;   %9/5/2016 20:33
+     Experiment = AllFiles(10:10);
+     qL = [100 300 100 83.33 100 300];
+     qN = size(qL,2)-1;
+     temp = [100 200 300 400 500 600];
    end  
 end    
 Experiment'
@@ -130,7 +136,7 @@ QPulseLengthns = QPulseLength0x28ns0x29; clear QPulseLength0x28ns0x29
 QPulseDelays = QPulseDelay0x28s0x29; clear QPulseDelay0x28s0x29
 QkHz = QKHz; clear QKHz;
 %change datetime to number
-dateN=datenum(DateTime,'mm/dd/yyyy HH:MM:SS');
+dateN=datenum(DateTime,'mm/dd/yyyy HH:MM');
 DateTime(1+startTime*360)
 DateTime(end - endTime*360)
 %            1     2          3               4              5    6     7     
