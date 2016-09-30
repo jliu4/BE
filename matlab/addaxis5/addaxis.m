@@ -96,7 +96,7 @@ function addaxis(varargin)
     axcompright = 0.0;
   else 
     axcompright = 0.12;
-    axcompright = 0.05;
+    axcompright = 0.06;
   end
   
   if numax/2 == round(numax/2)

@@ -3,12 +3,12 @@ addpath('C:\jinwork\BE\matlab')
 addpath('C:\jinwork\BE\matlab\addaxis5')
 dailyPlot = 1;
 flowratePlot = 0;
-processYes = 1;
+processYes = 0;
 %'ipb1-0820','ipb1-0915','ipb1-0924-v169-27b''ipb1-0928-crio-v170_core_26b'
 %'ipb2-08''ipb2-0905-164-28b''ipb2-0907-165-28b''ipb2-0909-165-27b''ipb2-0909-166-27b''ipb2-0909-167-27b''ipb2-0909-v169-27b'
 %ipb2-09-24_CRIO_v169-core27b
 %sri-ipb2
-reactor ='ipb1-0928-crio-v170_core_26b' 
+reactor ='ipb2-0909-167-27b' 
 switch (reactor)
 case 'ipb1-0928-crio-v170_core_26b' 
 Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\2016-09-28-CRIO-v170_CORE_26b'
@@ -22,7 +22,7 @@ switch (whichDate)
     Experiment = AllFiles(1:2);
 end
 
-case 'sri-ipb2'
+case 'ipb2-0905-164-28bjunk'
 Directory='C:\Users\Owner\Dropbox (BEC)\SRI-IPB2\2016-09-24_SRI_v170-core27b'
 AllFiles = getall(Directory);  %SORTED BY DATE....
 whichDate = '09282016';
@@ -209,13 +209,18 @@ case 'ipb2-08'
 case 'ipb2-0905-164-28b'
    Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC2_DATA\2016-09-05_Crio_V164_core28b'
    AllFiles = getall(Directory);  %SORTED BY DATE....
-   whichDate = '09052016-09062016'; 
+   whichDate = '09052016'; 
    switch (whichDate)
-   case '09052016-09062016' 
+   case '09062016-09072016' 
    dataFile ='\ISOPERIBOLIC2_DATA\2016-09-05_Crio_V164_core28b\IPB2_Core_28b-_H2_600C-300C_CRIO_V164_day-01.csv : 02.csv'
+   startTime = 7.5; 
+   endTime = 5;  
+   Experiment = AllFiles(6:6);
+   case '09052016' 
+   dataFile ='\ISOPERIBOLIC2_DATA\2016-09-05_Crio_V164_core28b\IPB2_Core_28b-_H2_600C-300C_CRIO_V164_Edited.csv'
    startTime = 0; 
    endTime = 0;  
-   Experiment = AllFiles(5:6);
+   Experiment = AllFiles(4:4);
    end    
 case 'ipb2-0907-165-28b'
    Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC2_DATA\2016-09-07_Crio_V165_core28b'
@@ -268,13 +273,13 @@ case 'ipb2-0909-166-27b'
 case 'ipb2-0909-167-27b'
    Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC2_DATA\2016-09-09_CRIO_v167-core27b'
    AllFiles = getall(Directory);  %SORTED BY DATE....
-   whichDate = '09232016';   
+   whichDate = '09122016';   
    switch (whichDate)
-   case '09121016' 
+   case '09122016' 
      dataFile ='2016-09-09-CRIO-v167-core27b'
-     startTime = 0; 
-     endTime = 0;  
-     Experiment = AllFiles(2:3);
+     startTime = 0.5; 
+     endTime = 9.5;  
+     Experiment = AllFiles(3:3);
    case '09142016-09152016' 
      dataFile ='2016-09-09-CRIO-v167-core27b'
      startTime = 0; 
@@ -282,9 +287,15 @@ case 'ipb2-0909-167-27b'
      Experiment = AllFiles(7:9);    
    case '09162016-09182016' 
      dataFile ='2016-09-09-CRIO-v167-core27b'
-     startTime = 0; 
-     endTime = 15;  
-     Experiment = AllFiles(11:13);    
+     startTime = 5.5; 
+     endTime =7.5 ;  
+     Experiment = AllFiles(12:12);    
+   case '09162016' 
+     dataFile ='2016-09-09-CRIO-v167-core27b'
+     startTime = 6; 
+     endTime =13 ;  
+     Experiment = AllFiles(12:12);    
+  
    case '09192016-09202016' 
      dataFile ='2016-09-09-CRIO-v167-core27b'
      startTime = 0; 
@@ -333,12 +344,13 @@ dt = datetime(j1(:,1), 'ConvertFrom', 'datenum') ;
 if (dailyPlot == 1)
 figure(1)
 hold on
-aa_splot(dt,j1(:,2),'black','linewidth',1.5);
-%ylim([0 80])
+aa_splot(dt,smooth(j1(:,2),11),'black','linewidth',1.5);
+ylim([60 80])
+%ylabel('FontSize',12);
 addaxis(dt,j1(:,3),'linewidth',1.5);
-%addaxis(dt,j1(:,4),'linewidth',1);
+addaxis(dt,j1(:,4),'linewidth',1);
 %addaxis(dt,j1(:,5),'linewidth',1);
-addaxis(dt,smooth(j1(:,6),11));
+%addaxis(dt,smooth(j1(:,6),11));
 %addaxis(dt,smooth(j1(:,7),11))
 %addaxis(dt,smooth(j1(:,9),19))
 addaxis(dt,smooth(j1(:,11),11)) ;
@@ -346,12 +358,12 @@ addaxis(dt,smooth(j1(:,11),11)) ;
 title(dataFile,'fontsize',11);
 addaxislabel(1,'HeaterPower');
 addaxislabel(2,'CoreTemp');
-%addaxislabel(3,'QPulseLen');
+addaxislabel(3,'QPulseLen');
 %addaxislabel(4,'QkHz');
-addaxislabel(5,'QPow');
+%addaxislabel(4,'QPow');
 %addaxislabel(6,'TerminationHeatSinkPower');
 %addaxislabel(7,'QPulsePCBHeatsinkPower');
-addaxislabel(6,'CoreQPow'); 
+addaxislabel(4,'CoreQPow'); 
 
 end 
 if (flowratePlot)
