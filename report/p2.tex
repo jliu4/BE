@@ -1,10 +1,35 @@
 \documentclass{article}
 \usepackage{graphicx}
-\title{Calculate LENR }
+\title{Note with Robert}
 \author{Jin Liu}
 \setlength\parindent{0pt}
 \begin{document}
 \maketitle
+
+$$QPow - TermHS - PCBHS - LT - LPCB -coreQPow = 0 $$
+
+Where\\
+$QPow$ : Q pulse Power in Watts measured at Pi Filter. The power that is going into the Q pulse board and termination\\
+$TermHS$ : Termination Heat Sink Power\\
+calculated by\\
+Termination Heatsink Flowrate LPM\\
+Termination Heatsink H2O In T\\
+Termination Heatsink H2O Out T\\
+
+$PCBHS$ : Q Pulse PCB Heatsink Power \\
+caluclated by\\
+Q PCB Heatsink Flowrate LPM\\
+Q PCB Heatsink H2O In T\\
+Q PCB Heatsink H2O Out T\\
+
+$LT$ : Loss of TermHS, and $LT = \lambda_{T}*TermHS$ \\
+
+$LPCB$ : Loss of PCBHS, and $LPCB = \lambda_{P}*TermHS$ \\
+
+$coreQPow$ : Core Q power is the power deposited in the core\\
+
+$$coreQPow = (Vrms1 - Vrms2)* Vrms2 / Rterm$$
+
 
 
 $$Q_{reaction}=(Q_{flow} + Q_{loss}) - (Q_{heater} + Q_{pusle})   $$\\

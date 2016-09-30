@@ -9,7 +9,7 @@ switch (reactor)
 case 'sri-09-19'
    Directory='C:\jinwork\BEC\Data\SRIdata\2016-09-19'
    AllFiles = getall(Directory);  %SORTED BY DATE....
-   whichDate = '09272016';
+   whichDate = '09282016';
    %input which sequence
    switch (whichDate)
     
@@ -28,7 +28,7 @@ case 'sri-09-19'
      dataFile ='100-600C&300-100ns steps in 100C steps He 30sccm 100psiQV200V-000.csv'
      startTime = 0; %9/4/2016 6 hours after 6:00
      endTime = 0;   %9/5/2016 20:33
-     Experiment = AllFiles(11:11);
+     Experiment = AllFiles(10:11);
    case '09272016' 
      dataFile ='100-600C&300-100ns steps in 100C steps He 30sccm 100psiQV200V-000.csv'
      startTime = 0; %9/4/2016 6 hours after 6:00

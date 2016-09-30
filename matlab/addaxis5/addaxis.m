@@ -91,6 +91,7 @@ function addaxis(varargin)
   
   %  parameters setting axis separation
   axcompleft=0.12;
+  %adjust space among y axis JLIU 8/30/2016
   axcompleft=0.05;
   if numax == 1
     axcompright = 0.0;

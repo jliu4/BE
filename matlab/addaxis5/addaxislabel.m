@@ -30,8 +30,9 @@ function varargout = addaxislabel(varargin)
 %  set current axis to the axis to be labeled
 axes(axhand(axnum));
 htxt = ylabel(label);
-set(htxt,'color',get(axhand(axnum),'ycolor'),'fontSize',14);
-
+%change fontsize JLIU 9/29/2016
+%set(htxt,'color',get(axhand(axnum),'ycolor'),'fontSize',14);
+set(htxt,'color',get(axhand(axnum),'ycolor'));
 %  set current axis back to the main axis
 axes(cah);
 
