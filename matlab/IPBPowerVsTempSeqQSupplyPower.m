@@ -1,10 +1,10 @@
 clear all;close all
 addpath('C:\jinwork\BE\matlab')
 addpath('C:\jinwork\BE\matlab\addaxis5')
-dailyPlot = 1;
+dailyPlot = 0;
 flowratePlot = 1;
 tempPlot = 1;
-processYes = 1;
+processYes = 0;
 %'ipb1-0820','ipb1-0915','ipb1-0924-v169-27b''ipb1-0928-crio-v170_core_26b'2016-09-29-CRIO-v170_CORE_29b
 %'ipb2-08''ipb2-0905-164-28b''ipb2-0907-165-28b''ipb2-0909-165-27b''ipb2-0909-166-27b''ipb2-0909-167-27b''ipb2-0909-v169-27b'
 %ipb2-09-24_CRIO_v169-core27b
@@ -21,7 +21,7 @@ switch (whichDate)
     dataFile ='\SRI-IPB2\2016-09-30_SRI_v171-core27b\SRI-IPB2_H2-250-400C_9-30-16_day-01.csv : 03.csv'   
     startTime = 0;
     endTime = 0; 
-    Experiment = AllFiles(1:4);
+    Experiment = AllFiles(6:7);
 end 
 case 'ipb1-2016-09-30-CRIO-v171_CORE_29b' 
 Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\2016-09-30-CRIO-v171_CORE_29b'
@@ -32,7 +32,7 @@ switch (whichDate)
     dataFile ='\ISOPERIBOLIC_DATA\2016-09-30-CRIO-v171_CORE_29b\IPB1_Core_29b-He-DC_QFLOW_CAL-9-30_16_day-01.csv : 02.csv'   
     startTime = 0;
     endTime = 0; 
-    Experiment = AllFiles(1:4);
+    Experiment = AllFiles(6:7);
 end
 case 'ipb1-0928-crio-v170_core_26b' 
 Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\2016-09-28-CRIO-v170_CORE_26b'
@@ -356,7 +356,7 @@ DateTime(end - endTime*360)
 j1 = horzcat(dateN,HeaterPower,CoreTemp,QPulseLengthns,QkHz,QPow,SeqStep,TerminationHeatsinkPower,QPulsePCBHeatsinkPower,CoreQPower,...
     CalorimeterJacketFlowrateLPM,QPCBHeatsinkFlowrateLPM,TerminationHeatsinkFlowrateLPM,CalorimeterJacketPower,...
     CalorimeterJacketH2OInT,CalorimeterJacketH2OOutT,QPCBHeatsinkH2OInT,QPCBHeatsinkH2OOutT,TerminationHeatsinkH2OInT,...
-    TerminationHeatsinkH2OOutT,RoomTemperature,QSupplyPow);
+    TerminationHeatsinkH2OOutT,RoomTemperature,QSupplyPower);
 %   11                           12                      13                             14                  
 j1 = j1(1+startTime*360:end-endTime*360,:);
 j1(any(isnan(j1),2),:)=[]; %take out rows with Nan
@@ -367,22 +367,22 @@ if (dailyPlot == 1)
 figure(1)
 hold on
 aa_splot(dt,smooth(j1(:,2),11),'black','linewidth',1.5);
-%ylim([60 80])
+ylim([0 50])
 addaxis(dt,j1(:,3),'linewidth',1.5);
-addaxis(dt,j1(:,4),'linewidth',1);
+%addaxis(dt,j1(:,4),'linewidth',1);
 %addaxis(dt,j1(:,5),'linewidth',1);
-addaxis(dt,smooth(j1(:,6),11));
-addaxis(dt,smooth(j1(:,10),11)) ;
+%addaxis(dt,smooth(j1(:,6),11));
+addaxis(dt,smooth(j1(:,22),11)) ;
 %addaxis(dt,smooth(j1(:,13),11)) 
 title(dataFile,'fontsize',11);
 addaxislabel(1,'HeaterPower');
 addaxislabel(2,'CoreTemp');
-addaxislabel(3,'QPulseLen');
+%addaxislabel(3,'QPulseLen');
 %addaxislabel(4,'QkHz');
-addaxislabel(4,'QPow');
+%addaxislabel(4,'QPow');
 %addaxislabel(6,'TerminationHeatSinkPower');
 %addaxislabel(7,'QPulsePCBHeatsinkPower');
-addaxislabel(5,'CoreQPow'); 
+addaxislabel(3,'QSupplyPower'); 
 end 
 if (flowratePlot)
 figure(2)
@@ -459,6 +459,7 @@ while (i < j1Size-1)
     termInT(seq) = trimmean(j1(i2-ii:i2,19),trim);
     termOutT(seq) = trimmean(j1(i2-ii:i2,20),trim);
     roomT(seq) = trimmean(j1(i2-ii:i2,21),trim); 
+    qSupplyP(seq) = trimmean(j1(i2-ii:i2,22),trim); 
     hpM =  mean(j1(i1:i2,2)); 
     qPowM =mean(j1(i1:i2,6)); 
     qTermM = mean(j1(i1:i2,8));
@@ -493,8 +494,8 @@ fn = ['C:\jinwork\BEC\tmp\' reactor '-' whichDate '.csv'];
 delete(fn);
 T=table(temp(:),ql(:),qf(:),hp(:),coreQPow(:),qPow(:),qPCB(:),qTerm(:),cjp(:),...
     roomT(:),jlpm(:),jInT(:),jOutT(:), PCBlpm(:),PCBInT(:),PCBOutT(:),termlpm(:),termInT(:),termOutT(:),...
-    coreQPowCV(:),qPowCV(:),qPCBCV(:),qTermCV(:),cjpCV(:),dt2(:),...
+    coreQPowCV(:),qPowCV(:),qPCBCV(:),qTermCV(:),cjpCV(:),qSupplyP(:),dt2(:),...
 'VariableName',{'Temp','QL','QF','HP','CoreQPower','qPow','qPCB','qTerm','CJP','roomT','jLPM','jInT','jOutT',...
-'PCBLPM','PCBInT','PCBOutT','termLPM','termInT','termOutT','coreQPowCV','qPowCV','qPCBCV','qTermCV','cjpCV','date'});
+'PCBLPM','PCBInT','PCBOutT','termLPM','termInT','termOutT','coreQPowCV','qPowCV','qPCBCV','qTermCV','cjpCV','qSupply','date'});
 writetable(T,fn);
 end

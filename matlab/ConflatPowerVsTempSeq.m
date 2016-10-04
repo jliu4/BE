@@ -9,7 +9,7 @@ switch (reactor)
 case 'sri-09-19'
    Directory='C:\jinwork\BEC\Data\SRIdata\2016-09-19'
    AllFiles = getall(Directory);  %SORTED BY DATE....
-   whichDate = '09282016';
+   whichDate = '10032016';
    %input which sequence
    switch (whichDate)
     
@@ -33,10 +33,14 @@ case 'sri-09-19'
      dataFile ='100-600C&300-100ns steps in 100C steps He 30sccm 100psiQV200V-000.csv'
      startTime = 0; %9/4/2016 6 hours after 6:00
      endTime = 0;   %9/5/2016 20:33
-     Experiment = AllFiles(12:12);
+     Experiment = AllFiles(12:12);    
+   case '10032016' 
+     dataFile ='100-600C&300-100ns steps in 100C steps He 30sccm 100psiQV200V-000.csv'
+     startTime = 0; %9/4/2016 6 hours after 6:00
+     endTime = 0;   %9/5/2016 20:33
+     Experiment = AllFiles(10:15);
    end     
-   otherwise
-     exit
+
 end 
 
 Experiment'
@@ -64,7 +68,7 @@ if (dailyPlot == 1)
 figure(1)
 hold on
 aa_splot(dt,j1(:,2),'black','linewidth',1.5)
-%ylim([0 40])
+ylim([0 40])
 addaxis(dt,j1(:,3),'linewidth',1.5);
 addaxis(dt,j1(:,4))
 %addaxis(dt,smooth(j1(:,5),11))
@@ -95,7 +99,7 @@ coreOutCV=[];
 powOutCV= [];
 i=0;
 i1 = 1;
-ii = 10; 
+ii = 60; 
 trim = 2;
 while (i < j1Size-1)  
   i = i+1;
