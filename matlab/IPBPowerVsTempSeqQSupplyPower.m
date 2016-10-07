@@ -1,17 +1,29 @@
 clear all;close all
 addpath('C:\jinwork\BE\matlab')
 addpath('C:\jinwork\BE\matlab\addaxis5')
-dailyPlot = 0;
-flowratePlot = 1;
-tempPlot = 1;
-processYes = 0;
+dailyPlot = 1;
+flowratePlot = 0;
+tempPlot = 0;
+processYes = 1;
 %'ipb1-0820','ipb1-0915','ipb1-0924-v169-27b''ipb1-0928-crio-v170_core_26b'2016-09-29-CRIO-v170_CORE_29b
 %'ipb2-08''ipb2-0905-164-28b''ipb2-0907-165-28b''ipb2-0909-165-27b''ipb2-0909-166-27b''ipb2-0909-167-27b''ipb2-0909-v169-27b'
 %ipb2-09-24_CRIO_v169-core27b
 %sri-ipb2-0930
+%reactor = '2016-08-20-CORE_28_DC_Heater'
 reactor ='ipb1-2016-09-30-CRIO-v171_CORE_29b' 
 %reactor='sri-ipb2-0930'
 switch (reactor)
+case '2016-08-20-CORE_28_DC_Heater' 
+Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC2_DATA\2016-08-20-CORE_28_DC_Heater'
+AllFiles = getall(Directory);  %SORTED BY DATE....
+whichDate = '10022016';
+switch (whichDate)
+  case '10022016' 
+    dataFile ='\ISOPERIBOLIC2_DATA/2016-08-20-CORE_28_DC_Heater\IPB2_Core_28b-DC_Qk_CAL_H2_200C-600C_day-01.csv : 02.csv'   
+    startTime = 0;
+    endTime = 0; 
+    Experiment = AllFiles(8:9);
+end     
 case 'sri-ipb2-0930' 
 Directory='C:\Users\Owner\Dropbox (BEC)\SRI-IPB2\2016-09-30_SRI_v171-core27b'
 AllFiles = getall(Directory);  %SORTED BY DATE....
@@ -367,12 +379,13 @@ if (dailyPlot == 1)
 figure(1)
 hold on
 aa_splot(dt,smooth(j1(:,2),11),'black','linewidth',1.5);
-ylim([0 50])
+ylim([5 40])
 addaxis(dt,j1(:,3),'linewidth',1.5);
 %addaxis(dt,j1(:,4),'linewidth',1);
 %addaxis(dt,j1(:,5),'linewidth',1);
 %addaxis(dt,smooth(j1(:,6),11));
-addaxis(dt,smooth(j1(:,22),11)) ;
+%addaxis(dt,smooth(j1(:,22),11)) ;
+addaxis(dt,j1(:,22)) ;
 %addaxis(dt,smooth(j1(:,13),11)) 
 title(dataFile,'fontsize',11);
 addaxislabel(1,'HeaterPower');
@@ -432,7 +445,7 @@ qTermCV=[];
 qPowCV=[];
 i=0;
 i1 = 1;
-ii = 60; %600 seconds before to next seq.
+ii = 5; %10 mins from the sequence end.
 trim = 2;
 while (i < j1Size-1)  
   i = i+1;
@@ -440,7 +453,7 @@ while (i < j1Size-1)
     i2 = i;
     seq = j1(i2,7);
     dt1(seq) = j1(i2,1); 
-    hp(seq) = trimmean(j1(i2-ii:i2,2),trim); 
+    hp(seq) = j1(i2,2); 
     temp(seq)=trimmean(j1(i2-ii:i2,3),trim);
     ql(seq) = j1(i2,4);
     qf(seq) = trimmean(j1(i2-ii:i2,5),trim);

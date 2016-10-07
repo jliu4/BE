@@ -32,6 +32,7 @@ axes(axhand(axnum));
 htxt = ylabel(label);
 %change fontsize JLIU 9/29/2016
 %set(htxt,'color',get(axhand(axnum),'ycolor'),'fontSize',14);
+
 set(htxt,'color',get(axhand(axnum),'ycolor'));
 %  set current axis back to the main axis
 axes(cah);

@@ -9,30 +9,54 @@ processYes = 1;
 %'ipb2-08''ipb2-0905-164-28b''ipb2-0907-165-28b''ipb2-0909-165-27b''ipb2-0909-166-27b''ipb2-0909-167-27b''ipb2-0909-v169-27b'
 %ipb2-09-24_CRIO_v169-core27b
 %sri-ipb2-0930
+%reactor = 'ipb2-08'
 reactor ='ipb1-2016-09-30-CRIO-v171_CORE_29b' 
 %reactor='sri-ipb2-0930'
 switch (reactor)
 case 'sri-ipb2-0930' 
 Directory='C:\Users\Owner\Dropbox (BEC)\SRI-IPB2\2016-09-30_SRI_v171-core27b'
 AllFiles = getall(Directory);  %SORTED BY DATE....
-whichDate = '10022016';
+whichDate = '10062016';
 switch (whichDate)
   case '10022016' 
-    dataFile ='\SRI-IPB2\2016-09-30_SRI_v171-core27b\SRI-IPB2_H2-250-400C_9-30-16_day-01.csv : 03.csv'   
+    dataFile ='\SRI-IPB2\2016-09-30_SRI_v171-core27b\SRI-IPB2_H2-250-400C_10-04-16_day-01.csv - 02.csv'   
     startTime = 0;
     endTime = 0; 
-    Experiment = AllFiles(1:4);
+    Experiment = AllFiles(6:7);
+  case '10062016' 
+    dataFile ='\SRI-IPB2\2016-09-30_SRI_v171-core27b\SRI-IPB2_H2-250-400C_10-05-16_day-01.csv'   
+    startTime = 0;
+    endTime = 0; 
+    Experiment = AllFiles(8:9);
+
 end 
 case 'ipb1-2016-09-30-CRIO-v171_CORE_29b' 
 Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\2016-09-30-CRIO-v171_CORE_29b'
 AllFiles = getall(Directory);  %SORTED BY DATE....
-whichDate = '09302016';
+whichDate = '10072016';
 switch (whichDate)
-  case '09302016' 
+  case '093002016' 
     dataFile ='\ISOPERIBOLIC_DATA\2016-09-30-CRIO-v171_CORE_29b\IPB1_Core_29b-He-DC_QFLOW_CAL-9-30_16_day-01.csv : 02.csv'   
     startTime = 0;
     endTime = 0; 
     Experiment = AllFiles(1:4);
+  case '10052016' 
+    dataFile ='\ISOPERIBOLIC_DATA\2016-09-30-CRIO-v171_CORE_29b\IPB1_Core_29b-Helium-150C-400C_10-04-16_day-01.csv'   
+    startTime = 0;
+    endTime = 0; 
+    Experiment = AllFiles(11:11);
+  
+  case '10042016' 
+    dataFile ='\ISOPERIBOLIC_DATA\2016-09-30-CRIO-v171_CORE_29b\IPB1_Core_29b-Helium-150C-400C_10-04-16_day-01.csv'   
+    startTime = 0;
+    endTime = 0; 
+    Experiment = AllFiles(9:9);
+  case '10072016' 
+    dataFile ='\ISOPERIBOLIC_DATA\2016-09-30-CRIO-v171_CORE_29b\IPB1_CoreQ_Pow_cal_day-01.csv'   
+    startTime = 0;
+    endTime = 0; 
+    Experiment = AllFiles(14:14);
+
 end
 case 'ipb1-0928-crio-v170_core_26b' 
 Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\2016-09-28-CRIO-v170_CORE_26b'
@@ -208,11 +232,11 @@ case 'ipb1-0915'
 case 'ipb2-08'
   Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC2_DATA\2016-08-20-CORE_28_DC_Heater'
   AllFiles = getall(Directory);  %SORTED BY DATE....
-  whichDate ='2';
+  whichDate ='1';
   detailPlot = 1;
   switch (whichDate)
   case '1' 
-    dataFile ='IPB2-core-28b-he'   
+    dataFile ='\2016-08-20-CORE_28_DC_Heater\IPB2_Core_28b-New-core_He_150C-400C_day-01.csv : 03.csv'   
     startTime = 0; %11 hours after 6:00
     endTime = 14;   %8/21/2016 20:33
     Experiment = AllFiles(1:3);
@@ -350,13 +374,13 @@ QPulseDelays = QPulseDelay0x28s0x29; clear QPulseDelay0x28s0x29
 QkHz = QKHz; clear QKHz;
 %change datetime to number
 dateN=datenum(DateTime,'mm/dd/yyyy HH:MM:SS');
-DateTime(1+startTime*360)
-DateTime(end - endTime*360)
+DateTime(1+startTime*360);
+DateTime(end - endTime*360);
             %1     2           3        4              5    6    7       8                        9                      10        
 j1 = horzcat(dateN,HeaterPower,CoreTemp,QPulseLengthns,QkHz,QPow,SeqStep,TerminationHeatsinkPower,QPulsePCBHeatsinkPower,CoreQPower,...
     CalorimeterJacketFlowrateLPM,QPCBHeatsinkFlowrateLPM,TerminationHeatsinkFlowrateLPM,CalorimeterJacketPower,...
     CalorimeterJacketH2OInT,CalorimeterJacketH2OOutT,QPCBHeatsinkH2OInT,QPCBHeatsinkH2OOutT,TerminationHeatsinkH2OInT,...
-    TerminationHeatsinkH2OOutT,RoomTemperature,QSupplyPow);
+    TerminationHeatsinkH2OOutT,RoomTemperature);
 %   11                           12                      13                             14                  
 j1 = j1(1+startTime*360:end-endTime*360,:);
 j1(any(isnan(j1),2),:)=[]; %take out rows with Nan
@@ -367,7 +391,7 @@ if (dailyPlot == 1)
 figure(1)
 hold on
 aa_splot(dt,smooth(j1(:,2),11),'black','linewidth',1.5);
-%ylim([60 80])
+%ylim([10 40])
 addaxis(dt,j1(:,3),'linewidth',1.5);
 addaxis(dt,j1(:,4),'linewidth',1);
 %addaxis(dt,j1(:,5),'linewidth',1);

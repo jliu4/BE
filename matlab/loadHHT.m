@@ -5,7 +5,7 @@
 %% Initialize variables.
 
   alldata=[];
-for ff=1:length(Experiment)
+for ff=1:length(Experiment);
     filename = [Directory,'\',Experiment{ff}];
     
     delimiter = ',';
@@ -49,7 +49,7 @@ for ff=1:length(Experiment)
         NDcrap = strncmp(Dtemp,'0',2);
         NDextra = find(NDcrap ==1);
         %NDcrap = find(length(Dtemp(ff)) <= 18); %some dates are '0'
-        extra=union(TFextra,NDextra)
+        extra=union(TFextra,NDextra);
         
         Dtemp(extra)=[];
         coo(extra,:)=[];
