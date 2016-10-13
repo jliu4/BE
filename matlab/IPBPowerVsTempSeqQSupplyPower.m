@@ -38,13 +38,13 @@ end
 case 'ipb1-2016-09-30-CRIO-v171_CORE_29b' 
 Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\2016-09-30-CRIO-v171_CORE_29b'
 AllFiles = getall(Directory);  %SORTED BY DATE....
-whichDate = '09302016';
+whichDate = '10122016';
 switch (whichDate)
-  case '09302016' 
+  case '10122016' 
     dataFile ='\ISOPERIBOLIC_DATA\2016-09-30-CRIO-v171_CORE_29b\IPB1_Core_29b-He-DC_QFLOW_CAL-9-30_16_day-01.csv : 02.csv'   
     startTime = 0;
     endTime = 0; 
-    Experiment = AllFiles(6:7);
+    Experiment = AllFiles(19:19);
 end
 case 'ipb1-0928-crio-v170_core_26b' 
 Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\2016-09-28-CRIO-v170_CORE_26b'

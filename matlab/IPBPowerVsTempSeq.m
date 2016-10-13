@@ -2,8 +2,8 @@ clear all;close all
 addpath('C:\jinwork\BE\matlab')
 addpath('C:\jinwork\BE\matlab\addaxis5')
 dailyPlot = 1;
-flowratePlot = 1;
-tempPlot = 1;
+flowratePlot = 0;
+tempPlot = 0;
 processYes = 1;
 %'ipb1-0820','ipb1-0915','ipb1-0924-v169-27b''ipb1-0928-crio-v170_core_26b'2016-09-29-CRIO-v170_CORE_29b
 %'ipb2-08''ipb2-0905-164-28b''ipb2-0907-165-28b''ipb2-0909-165-27b''ipb2-0909-166-27b''ipb2-0909-167-27b''ipb2-0909-v169-27b'
@@ -27,13 +27,13 @@ switch (whichDate)
     dataFile ='\SRI-IPB2\2016-09-30_SRI_v171-core27b\SRI-IPB2_H2-250-400C_10-05-16_day-01.csv'   
     startTime = 0;
     endTime = 0; 
-    Experiment = AllFiles(8:9);
+    Experiment = AllFiles(8:12);
 
 end 
 case 'ipb1-2016-09-30-CRIO-v171_CORE_29b' 
 Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\2016-09-30-CRIO-v171_CORE_29b'
 AllFiles = getall(Directory);  %SORTED BY DATE....
-whichDate = '10072016';
+whichDate = 'Mark';
 switch (whichDate)
   case '093002016' 
     dataFile ='\ISOPERIBOLIC_DATA\2016-09-30-CRIO-v171_CORE_29b\IPB1_Core_29b-He-DC_QFLOW_CAL-9-30_16_day-01.csv : 02.csv'   
@@ -44,18 +44,22 @@ switch (whichDate)
     dataFile ='\ISOPERIBOLIC_DATA\2016-09-30-CRIO-v171_CORE_29b\IPB1_Core_29b-Helium-150C-400C_10-04-16_day-01.csv'   
     startTime = 0;
     endTime = 0; 
-    Experiment = AllFiles(11:11);
-  
+    Experiment = AllFiles(11:11);  
   case '10042016' 
     dataFile ='\ISOPERIBOLIC_DATA\2016-09-30-CRIO-v171_CORE_29b\IPB1_Core_29b-Helium-150C-400C_10-04-16_day-01.csv'   
     startTime = 0;
     endTime = 0; 
     Experiment = AllFiles(9:9);
-  case '10072016' 
-    dataFile ='\ISOPERIBOLIC_DATA\2016-09-30-CRIO-v171_CORE_29b\IPB1_CoreQ_Pow_cal_day-01.csv'   
-    startTime = 0;
+  case 'Mark' 
+    dataFile ='\ISOPERIBOLIC_DATA\2016-09-30-CRIO-v171_CORE_29b\IPB1_CoreQ_Pow_cal_day-01.csv:05.csv'   
+    startTime = 1;
     endTime = 0; 
-    Experiment = AllFiles(14:14);
+    Experiment = AllFiles(13:17);
+  case '10112016' 
+    dataFile ='\ISOPERIBOLIC_DATA\2016-09-30-CRIO-v171_CORE_29b\IPB1_CoreQ_Pow_cal_day-05.csv'   
+    startTime = 7;
+    endTime = 0; 
+    Experiment = AllFiles(17:17);
 
 end
 case 'ipb1-0928-crio-v170_core_26b' 
@@ -391,7 +395,7 @@ if (dailyPlot == 1)
 figure(1)
 hold on
 aa_splot(dt,smooth(j1(:,2),11),'black','linewidth',1.5);
-%ylim([10 40])
+ylim([15 40])
 addaxis(dt,j1(:,3),'linewidth',1.5);
 addaxis(dt,j1(:,4),'linewidth',1);
 %addaxis(dt,j1(:,5),'linewidth',1);
@@ -460,9 +464,11 @@ ii = 60; %600 seconds before to next seq.
 trim = 2;
 while (i < j1Size-1)  
   i = i+1;
-  if (j1(i+1,7) - j1(i,7)) == 1 %sequence changed
+  if (j1(i+1,7) - j1(i,7) == 1 ) %sequence changed or at least sequence has run more than an half hour
     i2 = i;
+    if i2-i1 > 1 
     seq = j1(i2,7);
+    seq1(seq)=seq;
     dt1(seq) = j1(i2,1); 
     hp(seq) = trimmean(j1(i2-ii:i2,2),trim); 
     temp(seq)=trimmean(j1(i2-ii:i2,3),trim);
@@ -510,6 +516,7 @@ while (i < j1Size-1)
       cjpCV(seq)=cjpCV(seq)/cjpM;
     end    
     i1 = i2+1; 
+    end
   end
 end 
 dt2 = datetime(dt1, 'ConvertFrom', 'datenum') ;
@@ -517,8 +524,8 @@ fn = ['C:\jinwork\BEC\tmp\' reactor '-' whichDate '.csv'];
 delete(fn);
 T=table(temp(:),ql(:),qf(:),hp(:),coreQPow(:),qPow(:),qPCB(:),qTerm(:),cjp(:),...
     roomT(:),jlpm(:),jInT(:),jOutT(:), PCBlpm(:),PCBInT(:),PCBOutT(:),termlpm(:),termInT(:),termOutT(:),...
-    coreQPowCV(:),qPowCV(:),qPCBCV(:),qTermCV(:),cjpCV(:),dt2(:),...
+    coreQPowCV(:),qPowCV(:),qPCBCV(:),qTermCV(:),cjpCV(:),seq1(:),dt2(:),...
 'VariableName',{'Temp','QL','QF','HP','CoreQPower','qPow','qPCB','qTerm','CJP','roomT','jLPM','jInT','jOutT',...
-'PCBLPM','PCBInT','PCBOutT','termLPM','termInT','termOutT','coreQPowCV','qPowCV','qPCBCV','qTermCV','cjpCV','date'});
+'PCBLPM','PCBInT','PCBOutT','termLPM','termInT','termOutT','coreQPowCV','qPowCV','qPCBCV','qTermCV','cjpCV','seq','date'});
 writetable(T,fn);
 end
