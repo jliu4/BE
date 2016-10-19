@@ -5,135 +5,139 @@ dailyPlot = 1;
 flowratePlot = 0;
 tempPlot = 0;
 processYes = 1;
+p1 = 0;
+p2=40;
 %'ipb1-0820','ipb1-0915','ipb1-0924-v169-27b''ipb1-0928-crio-v170_core_26b'2016-09-29-CRIO-v170_CORE_29b
 %'ipb2-08''ipb2-0905-164-28b''ipb2-0907-165-28b''ipb2-0909-165-27b''ipb2-0909-166-27b''ipb2-0909-167-27b''ipb2-0909-v169-27b'
 %ipb2-09-24_CRIO_v169-core27b
 %sri-ipb2-0930
-%reactor = 'ipb2-08'
-reactor ='ipb1-2016-09-30-CRIO-v171_CORE_29b' 
-%reactor='sri-ipb2-0930'
+%reactor = 'ipb2-08';
+reactor ='ipb1-2016-09-30-CRIO-v171_CORE_29b' ;
+%reactor='sri-ipb2-0930';
 switch (reactor)
 case 'sri-ipb2-0930' 
-Directory='C:\Users\Owner\Dropbox (BEC)\SRI-IPB2\2016-09-30_SRI_v171-core27b'
+Directory='C:\Users\Owner\Dropbox (BEC)\SRI-IPB2\2016-09-30_SRI_v171-core27b';
 AllFiles = getall(Directory);  %SORTED BY DATE....
 whichDate = '10062016';
 switch (whichDate)
   case '10022016' 
-    dataFile ='\SRI-IPB2\2016-09-30_SRI_v171-core27b\SRI-IPB2_H2-250-400C_10-04-16_day-01.csv - 02.csv'   
+    dataFile ='\SRI-IPB2\2016-09-30_SRI_v171-core27b\SRI-IPB2_H2-250-400C_10-04-16_day-01.csv - 02.csv';   
     startTime = 0;
     endTime = 0; 
     Experiment = AllFiles(6:7);
   case '10062016' 
-    dataFile ='\SRI-IPB2\2016-09-30_SRI_v171-core27b\SRI-IPB2_H2-250-400C_10-05-16_day-01.csv'   
-    startTime = 0;
+    dataFile ='\SRI-IPB2\2016-09-30_SRI_v171-core27b\SRI-IPB2_H2-250-400C_10-05-16_day-07.csv:08.csv'; 
+    startTime = 20;
     endTime = 0; 
-    Experiment = AllFiles(8:12);
+    Experiment = AllFiles(14:15);
 
 end 
 case 'ipb1-2016-09-30-CRIO-v171_CORE_29b' 
-Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\2016-09-30-CRIO-v171_CORE_29b'
+Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\2016-09-30-CRIO-v171_CORE_29b';
 AllFiles = getall(Directory);  %SORTED BY DATE....
-whichDate = 'Mark';
+whichDate = '10182016';
 switch (whichDate)
   case '093002016' 
-    dataFile ='\ISOPERIBOLIC_DATA\2016-09-30-CRIO-v171_CORE_29b\IPB1_Core_29b-He-DC_QFLOW_CAL-9-30_16_day-01.csv : 02.csv'   
+    dataFile ='\ISOPERIBOLIC_DATA\2016-09-30-CRIO-v171_CORE_29b\IPB1_Core_29b-He-DC_QFLOW_CAL-9-30_16_day-01.csv : 02.csv' ;  
     startTime = 0;
     endTime = 0; 
     Experiment = AllFiles(1:4);
   case '10052016' 
-    dataFile ='\ISOPERIBOLIC_DATA\2016-09-30-CRIO-v171_CORE_29b\IPB1_Core_29b-Helium-150C-400C_10-04-16_day-01.csv'   
+    dataFile ='\ISOPERIBOLIC_DATA\2016-09-30-CRIO-v171_CORE_29b\IPB1_Core_29b-Helium-150C-400C_10-04-16_day-01.csv' ;  
     startTime = 0;
     endTime = 0; 
-    Experiment = AllFiles(11:11);  
+    Experiment = AllFiles(10:12);  
   case '10042016' 
-    dataFile ='\ISOPERIBOLIC_DATA\2016-09-30-CRIO-v171_CORE_29b\IPB1_Core_29b-Helium-150C-400C_10-04-16_day-01.csv'   
+    dataFile ='\ISOPERIBOLIC_DATA\2016-09-30-CRIO-v171_CORE_29b\IPB1_Core_29b-Helium-150C-400C_10-04-16_day-01.csv' ;  
     startTime = 0;
     endTime = 0; 
     Experiment = AllFiles(9:9);
   case 'Mark' 
-    dataFile ='\ISOPERIBOLIC_DATA\2016-09-30-CRIO-v171_CORE_29b\IPB1_CoreQ_Pow_cal_day-01.csv:05.csv'   
+    dataFile ='\ISOPERIBOLIC_DATA\2016-09-30-CRIO-v171_CORE_29b\IPB1_CoreQ_Pow_cal_day-01.csv:05.csv' ;  
     startTime = 1;
     endTime = 0; 
     Experiment = AllFiles(13:17);
-  case '10112016' 
-    dataFile ='\ISOPERIBOLIC_DATA\2016-09-30-CRIO-v171_CORE_29b\IPB1_CoreQ_Pow_cal_day-05.csv'   
-    startTime = 7;
+  case '10182016' 
+    dataFile ='\ISOPERIBOLIC_DATA\2016-09-30-CRIO-v171_CORE_29b\PB1_Core_29b-Helium-150C-400C_10-18-16_Run2_day-01.csv:02.csv'  ; 
+    startTime = 0;
     endTime = 0; 
-    Experiment = AllFiles(17:17);
+    p1=4;
+    p2=35;
+    Experiment = AllFiles(29:30);
 
 end
 case 'ipb1-0928-crio-v170_core_26b' 
-Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\2016-09-28-CRIO-v170_CORE_26b'
+Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\2016-09-28-CRIO-v170_CORE_26b';
 AllFiles = getall(Directory);  %SORTED BY DATE....
 whichDate = '09282016';
 switch (whichDate)
   case '09282016' 
-    dataFile ='\ISOPERIBOLIC_DATA\2016-09-28-CRIO-v170_CORE_26b\IPB1_Core_26b-H2-DC_QFLOW_CAL-9-28_16_day-01.csv : 02.csv'   
+    dataFile ='\ISOPERIBOLIC_DATA\2016-09-28-CRIO-v170_CORE_26b\IPB1_Core_26b-H2-DC_QFLOW_CAL-9-28_16_day-01.csv : 02.csv' ;  
     startTime = 0;
     endTime = 0; 
     Experiment = AllFiles(1:2);
 end
 case 'sri-ipb2'
-Directory='C:\Users\Owner\Dropbox (BEC)\SRI-IPB2\2016-09-24_SRI_v170-core27b'
+Directory='C:\Users\Owner\Dropbox (BEC)\SRI-IPB2\2016-09-24_SRI_v170-core27b';
 AllFiles = getall(Directory);  %SORTED BY DATE....
 whichDate = '09282016';
 switch (whichDate)
   case '09282016' 
-    dataFile ='SRI-IPB2\_H2-250-400C\_9-28-16\_day-01.csv'   
+    dataFile ='SRI-IPB2\_H2-250-400C\_9-28-16\_day-01.csv' ;  
     startTime = 0;
     endTime = 0; 
     Experiment = AllFiles(2:3);
    case '09262016' 
-    dataFile ='IPB1_Core_27b-_H2-250-400C__9-24-16_day-01.csv:02.csv'   
+    dataFile ='IPB1_Core_27b-_H2-250-400C__9-24-16_day-01.csv:02.csv';   
     startTime = 9;
     endTime = 0; 
     Experiment = AllFiles(2:3);   
 end
 case 'ipb1-0924-v169-27b'
-Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\2016-09-24-CRIO-v169_CORE_26b'
+Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\2016-09-24-CRIO-v169_CORE_26b';
 AllFiles = getall(Directory);  %SORTED BY DATE....
 whichDate = '09252016-09262016';
 switch (whichDate)
   case '09025016-09262016' 
-    dataFile ='IPB1_Core_27b-_H2-250-400C__9-24-16_day-01.csv:02.csv'   
+    dataFile ='IPB1_Core_27b-_H2-250-400C__9-24-16_day-01.csv:02.csv' ;  
     startTime = 3;
     endTime = 10; 
     Experiment = AllFiles(1:2);
    case '09262016' 
-    dataFile ='IPB1_Core_27b-_H2-250-400C__9-24-16_day-01.csv:02.csv'   
+    dataFile ='IPB1_Core_27b-_H2-250-400C__9-24-16_day-01.csv:02.csv' ;  
     startTime = 9;
     endTime = 0; 
     Experiment = AllFiles(2:3);  
 end
 case 'ipb2-0909-v169-27b' %coreqpow =0
-Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC2_DATA\2016-09-09_CRIO_v169-core27b'
+Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC2_DATA\2016-09-09_CRIO_v169-core27b';
 AllFiles = getall(Directory);  %SORTED BY DATE....
 whichDate = '09024016';
 switch (whichDate)
   case '09024016' 
-    dataFile ='IPB2_Core_27b-_H2-250-400C__9-24-16_day-01.csv'   
+    dataFile ='IPB2_Core_27b-_H2-250-400C__9-24-16_day-01.csv';   
     startTime = 0;
     endTime = 0; 
     Experiment = AllFiles(1:1);
 end
 case 'ipb2-09-24_CRIO_v169-core27b'
-Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC2_DATA\2016-09-24_CRIO_v169-core27b'
+Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC2_DATA\2016-09-24_CRIO_v169-core27b';
 AllFiles = getall(Directory);  %SORTED BY DATE....
 whichDate = '09024016-09252016';
 switch (whichDate)
   case '09024016-09252016' 
-    dataFile ='IPB2_Core_27b-_H2-250-400C__9-24-16_day-03.csv'   
+    dataFile ='IPB2_Core_27b-_H2-250-400C__9-24-16_day-03.csv';   
     startTime = 2;
     endTime = 0; 
     Experiment = AllFiles(1:2);
   case '09262016' 
-    dataFile ='IPB2_Core_27b-_H2-250-400C__9-24-16_day-03.csv'   
+    dataFile ='IPB2_Core_27b-_H2-250-400C__9-24-16_day-03.csv';   
     startTime = 0;
     endTime = 0; 
     Experiment = AllFiles(3:3);   
 end
 case 'ipb1-0820'
-  Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\2016-08-20-CORE_26b'
+  Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\2016-08-20-CORE_26b';
   AllFiles = getall(Directory);  %SORTED BY DATE....
   whichDate = '08022016-08212016';
   switch (whichDate)
@@ -148,58 +152,58 @@ case 'ipb1-0820'
     endTime = 13.5; 
     Experiment = AllFiles(1:3);
   case '3'
-    dataFile ='IPB1-Core-26b-New-core-H2'   
+    dataFile ='IPB1-Core-26b-New-core-H2' ; 
     startTime = 1.0;
     endTime = 9;
     Experiment = AllFiles(4:6);
   case '4'
-    dataFile ='IPB1-Core-26b-New-core-1st-condition'   
+    dataFile ='IPB1-Core-26b-New-core-1st-condition'  ; 
     startTime = 1.0; 
     endTime = 0; 
     Experiment = AllFiles(7:8);    
   case '5'
-    dataFile ='IPB1-Core-26b-New-core-2nd-condition'  
+    dataFile ='IPB1-Core-26b-New-core-2nd-condition';  
     startTime = 1.5;
     endTime = 19; 
     Experiment = AllFiles(9:10);
   case '6'
-    dataFile ='IPB1-Core-26b-New-core-3rd-condition'  
+    dataFile ='IPB1-Core-26b-New-core-3rd-condition' ; 
     startTime = 1.5;
     endTime = 0; 
     Experiment = AllFiles(11:12)
   case '7'
-    dataFile ='IPB1-Core-26b-New-core-H2-D2'  
+    dataFile ='IPB1-Core-26b-New-core-H2-D2' ; 
     startTime = 1.5; 
     endTime = 16; 
     Experiment = AllFiles(16:18);
   case '8'
-    dataFile ='IPB1-Core-26b-New-core-H2-D2-Run2'  
+    dataFile ='IPB1-Core-26b-New-core-H2-D2-Run2' ; 
     startTime = 3.5; 
     endTime = 12; 
     Experiment = AllFiles(19:21);
   case '9'
-    dataFile ='IPB1-Core-26b-New-core-H2-D2-Run3'  
+    dataFile ='IPB1-Core-26b-New-core-H2-D2-Run3';  
     startTime = 0; 
     endTime = 15; 
     Experiment = AllFiles(22:24);
   case '10'
-    dataFile ='IPB1-Core-26b-New-core-H2-D2-Run5'  
+    dataFile ='IPB1-Core-26b-New-core-H2-D2-Run5';  
     startTime = 0; 
     endTime = 0; 
     Experiment = AllFiles(25:26);
   case '11'
-    dataFile ='IPB1-Core-26b-New-core-H2-D2-Run5'  
+    dataFile ='IPB1-Core-26b-New-core-H2-D2-Run5';  
     startTime = 0; 
     endTime = 0; 
     Experiment = AllFiles(27:27);
   case '12'
-    dataFile ='IPB1-Temp-sequence-150-100-150ns-50W-150C-400C-H2.csv'   
+    dataFile ='IPB1-Temp-sequence-150-100-150ns-50W-150C-400C-H2.csv' ;  
     %IPB1_Core_26b-New-core_He_150C-400C_day-01(02)(03).csv (8/20/2016 11:00 - 8/22/2016 10:28)
     startTime = 0; 
     endTime = 15;    
     Experiment = AllFiles(19:21);   
   case '13'
-    dataFile ='IPB1-Temp-sequence-150-100-150ns-50W-150C-400C-H2.csv'   
+    dataFile ='IPB1-Temp-sequence-150-100-150ns-50W-150C-400C-H2.csv';   
     %IPB1_Core_26b-New-core_He_150C-400C_day-01(02)(03).csv (8/20/2016 11:00 - 8/22/2016 10:28)
     startTime = 0; 
     endTime = 0;   
@@ -208,22 +212,22 @@ case 'ipb1-0820'
     exit
   end;    
 case 'ipb1-0915'
-   Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\2016-09-15-CRIO-v167_CORE_26b'
+   Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\2016-09-15-CRIO-v167_CORE_26b';
    AllFiles = getall(Directory);  %SORTED BY DATE....
    whichDate = '09222016-09232016'; 
    switch (whichDate)
    case '09162016-09182016' 
-     dataFile ='IPB1_Core\_26b-H2-CRIO\_v167\_150C-400C\_Run1\_day-01.csv : 04.csv'
+     dataFile ='IPB1_Core\_26b-H2-CRIO\_v167\_150C-400C\_Run1\_day-01.csv : 04.csv';
      startTime = 1; 
      endTime = 20;  
      Experiment = AllFiles(1:4);
    case '09182016-09192016' 
-     dataFile ='IPB1\_Core\_26b-H2-650C-300C\_Run1\_day-01.csv : 02.csv'
+     dataFile ='IPB1\_Core\_26b-H2-650C-300C\_Run1\_day-01.csv : 02.csv';
      startTime = 0; 
      endTime = 0;  
      Experiment = AllFiles(6:7);
    case '09212016-09222016' 
-     dataFile ='\ISOPERIBOLIC_DATA\2016-09-15-CRIO-v167_CORE_26b\IPB1_Core_26b-H2-250C-400C_Run2_day-01.csv : 02.csv'
+     dataFile ='\ISOPERIBOLIC_DATA\2016-09-15-CRIO-v167_CORE_26b\IPB1_Core_26b-H2-250C-400C_Run2_day-01.csv : 02.csv';
      startTime = 0; 
      endTime = 9;  
      Experiment = AllFiles(12:13);
@@ -234,7 +238,7 @@ case 'ipb1-0915'
      Experiment = AllFiles(15:15);
    end      
 case 'ipb2-08'
-  Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC2_DATA\2016-08-20-CORE_28_DC_Heater'
+  Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC2_DATA\2016-08-20-CORE_28_DC_Heater';
   AllFiles = getall(Directory);  %SORTED BY DATE....
   whichDate ='1';
   detailPlot = 1;
@@ -258,111 +262,111 @@ case 'ipb2-08'
     exit
   end    
 case 'ipb2-0905-164-28b'
-   Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC2_DATA\2016-09-05_Crio_V164_core28b'
+   Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC2_DATA\2016-09-05_Crio_V164_core28b';
    AllFiles = getall(Directory);  %SORTED BY DATE....
    whichDate = '09052016'; 
    switch (whichDate)
    case '09062016-09072016' 
-   dataFile ='\ISOPERIBOLIC2_DATA\2016-09-05_Crio_V164_core28b\IPB2_Core_28b-_H2_600C-300C_CRIO_V164_day-01.csv : 02.csv'
+   dataFile ='\ISOPERIBOLIC2_DATA\2016-09-05_Crio_V164_core28b\IPB2_Core_28b-_H2_600C-300C_CRIO_V164_day-01.csv : 02.csv';
    startTime = 7.5; 
    endTime = 5;  
    Experiment = AllFiles(6:6);
    case '09052016' 
-   dataFile ='\ISOPERIBOLIC2_DATA\2016-09-05_Crio_V164_core28b\IPB2_Core_28b-_H2_600C-300C_CRIO_V164_Edited.csv'
+   dataFile ='\ISOPERIBOLIC2_DATA\2016-09-05_Crio_V164_core28b\IPB2_Core_28b-_H2_600C-300C_CRIO_V164_Edited.csv';
    startTime = 0; 
    endTime = 0;  
    Experiment = AllFiles(4:4);
    end    
 case 'ipb2-0907-165-28b'
-   Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC2_DATA\2016-09-07_Crio_V165_core28b'
+   Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC2_DATA\2016-09-07_Crio_V165_core28b';
    AllFiles = getall(Directory);  %SORTED BY DATE....
    whichDate = '09072016-09082016'; 
    switch (whichDate)
    case '09072016-09082016' 
-     dataFile ='ISOPERIBOLIC2_DATA\2016-09-07_Crio_V165_core28b\IPB2-Core-28b--H2-150C-400C-Run1-day-01 : 02.csv'
+     dataFile ='ISOPERIBOLIC2_DATA\2016-09-07_Crio_V165_core28b\IPB2-Core-28b--H2-150C-400C-Run1-day-01 : 02.csv';
      startTime = 1; 
      endTime = 0;  
      Experiment = AllFiles(1:2);
    case '09072016-09082016-200' 
-     dataFile ='ISOPERIBOLIC2_DATA\2016-09-07_Crio_V165_core28b\IPB2-Core-28b--H2-150C-400C-Run1-day-01 : 02.csv'
+     dataFile ='ISOPERIBOLIC2_DATA\2016-09-07_Crio_V165_core28b\IPB2-Core-28b--H2-150C-400C-Run1-day-01 : 02.csv';
      startTime = 1; 
      endTime = 0;  
      Experiment = AllFiles(1:2);
    case '09072016-09082016-250' 
-     dataFile ='ISOPERIBOLIC2_DATA\2016-09-07_Crio_V165_core28b\2016-09-07-Crio-V165-core28b-IPB2-Core-28b--H2-150C-400C-Run1-day-01 : 02.csv'
+     dataFile ='ISOPERIBOLIC2_DATA\2016-09-07_Crio_V165_core28b\2016-09-07-Crio-V165-core28b-IPB2-Core-28b--H2-150C-400C-Run1-day-01 : 02.csv';
      startTime = 1; 
      endTime = 0;  
      Experiment = AllFiles(2:2);
    end
 case 'ipb2-0909-165-27b'
-   Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC2_DATA\2016-09-09_CRIO_v165-core27b'
+   Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC2_DATA\2016-09-09_CRIO_v165-core27b';
    AllFiles = getall(Directory);  %SORTED BY DATE....
    whichDate = '1';
    switch (whichDate)
    case '1' 
-     dataFile ='2016-09-09-CRIO-v165-core27b'
+     dataFile ='2016-09-09-CRIO-v165-core27b';
      startTime = 0; 
      endTime = 0;  
      Experiment = AllFiles(1:1);  
    end        
 case 'ipb2-0909-166-27b'
-   Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC2_DATA\2016-09-09_CRIO_v166-core27b'
+   Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC2_DATA\2016-09-09_CRIO_v166-core27b';
    AllFiles = getall(Directory);  %SORTED BY DATE....
    whichDate = '09112016-09122016';
    switch (whichDate)
    case '09112016-09122016' 
-     dataFile ='2016-09-09-CRIO-v166-core27b-IPB2\_Core\_27b-\_H2\_600C-300C\_\_Run1_day-01.csv : 02.csv'
+     dataFile ='2016-09-09-CRIO-v166-core27b-IPB2\_Core\_27b-\_H2\_600C-300C\_\_Run1_day-01.csv : 02.csv';
      startTime = 0; 
      endTime = 15;  
      Experiment = AllFiles(1:2);
    case '09122016' 
-     dataFile ='IPB2\_Core\_27b-\_H2_600c-300C\_2probetest1\_EDITED.csv'
+     dataFile ='IPB2\_Core\_27b-\_H2_600c-300C\_2probetest1\_EDITED.csv';
      startTime = 0; 
      endTime = 10;  
      Experiment = AllFiles(6:6);
    end    
 case 'ipb2-0909-167-27b'
-   Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC2_DATA\2016-09-09_CRIO_v167-core27b'
+   Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC2_DATA\2016-09-09_CRIO_v167-core27b';
    AllFiles = getall(Directory);  %SORTED BY DATE....
    whichDate = '09122016';   
    switch (whichDate)
    case '09122016' 
-     dataFile ='2016-09-09-CRIO-v167-core27b'
+     dataFile ='2016-09-09-CRIO-v167-core27b';
      startTime = 0.5; 
      endTime = 9.5;  
      Experiment = AllFiles(3:3);
    case '09142016-09152016' 
-     dataFile ='2016-09-09-CRIO-v167-core27b'
+     dataFile ='2016-09-09-CRIO-v167-core27b';
      startTime = 0; 
      endTime = 10;  
      Experiment = AllFiles(7:9);    
    case '09162016-09182016' 
-     dataFile ='2016-09-09-CRIO-v167-core27b'
+     dataFile ='2016-09-09-CRIO-v167-core27b';
      startTime = 5.5; 
      endTime =7.5 ;  
      Experiment = AllFiles(12:12);    
    case '09162016' 
-     dataFile ='2016-09-09-CRIO-v167-core27b'
+     dataFile ='2016-09-09-CRIO-v167-core27b';
      startTime = 6; 
      endTime =13 ;  
      Experiment = AllFiles(12:12);    
    case '09192016-09202016' 
-     dataFile ='2016-09-09-CRIO-v167-core27b'
+     dataFile ='2016-09-09-CRIO-v167-core27b';
      startTime = 0; 
      endTime = 0;  
      Experiment = AllFiles(16:17);    
    case '09212016' 
-     dataFile ='2016-09-09-CRIO-v167-core27b data file IPB2_Core\_27b-\_H2-250-400C\_RUN1\_9-20-16\_day-01.csv'
+     dataFile ='2016-09-09-CRIO-v167-core27b data file IPB2_Core\_27b-\_H2-250-400C\_RUN1\_9-20-16\_day-01.csv';
      startTime = 0; 
      endTime = 0;  
      Experiment = AllFiles(18:18);    
    case '09222016' 
-     dataFile ='2016-09-09-CRIO-v167-core27b data file: IPB2\_Core\_27b-\_H2-250-400C\_RUN1\_9-21-16\_day-01csv.csv'
+     dataFile ='2016-09-09-CRIO-v167-core27b data file: IPB2\_Core\_27b-\_H2-250-400C\_RUN1\_9-21-16\_day-01csv.csv';
      startTime = 0; 
      endTime = 0;  
      Experiment = AllFiles(20:20); 
    case '09232016' 
-     dataFile ='2016-09-09-CRIO-v167-core27b data file: IPB2\_Core\_27b-\_H2-250-400C\_RUN1\_9-21-16\_day-02csv.csv'
+     dataFile ='2016-09-09-CRIO-v167-core27b data file: IPB2\_Core\_27b-\_H2-250-400C\_RUN1\_9-21-16\_day-02csv.csv';
      startTime = 0; 
      endTime = 0;  
      Experiment = AllFiles(21:21); 
@@ -372,7 +376,7 @@ Experiment'
 loadHHT 
 %change a few messy variable names
 QOccurred = QOccurred0x3F; clear QPulseOccurred0x3F
-SeqStep = SeqStep0x23; clear SeqStep0x23
+%SeqStepNum = SeqStep0x23; clear SeqStep0x23
 QPulseLengthns = QPulseLength0x28ns0x29; clear QPulseLength0x28ns0x29
 QPulseDelays = QPulseDelay0x28s0x29; clear QPulseDelay0x28s0x29
 QkHz = QKHz; clear QKHz;
@@ -381,10 +385,29 @@ dateN=datenum(DateTime,'mm/dd/yyyy HH:MM:SS');
 DateTime(1+startTime*360);
 DateTime(end - endTime*360);
             %1     2           3        4              5    6    7       8                        9                      10        
-j1 = horzcat(dateN,HeaterPower,CoreTemp,QPulseLengthns,QkHz,QPow,SeqStep,TerminationHeatsinkPower,QPulsePCBHeatsinkPower,CoreQPower,...
-    CalorimeterJacketFlowrateLPM,QPCBHeatsinkFlowrateLPM,TerminationHeatsinkFlowrateLPM,CalorimeterJacketPower,...
-    CalorimeterJacketH2OInT,CalorimeterJacketH2OOutT,QPCBHeatsinkH2OInT,QPCBHeatsinkH2OOutT,TerminationHeatsinkH2OInT,...
-    TerminationHeatsinkH2OOutT,RoomTemperature);
+j1 = horzcat(dateN,...
+     HeaterPower,...
+     CoreTemp,...
+     QPulseLengthns,...
+     QkHz,...
+     QPow,...
+     SeqStepNum,...
+     TerminationHeatsinkPower,...
+     QPulsePCBHeatsinkPower,...
+     CoreQPower,...
+     CalorimeterJacketFlowrateLPM,...
+     QPCBHeatsinkFlowrateLPM,...
+     TerminationHeatsinkFlowrateLPM,...
+     CalorimeterJacketPower,...
+     CalorimeterJacketH2OInT,...
+     CalorimeterJacketH2OOutT,...
+     QPCBHeatsinkH2OInT,...
+     QPCBHeatsinkH2OOutT,...
+     TerminationHeatsinkH2OInT,...
+     TerminationHeatsinkH2OOutT,...
+     RoomTemperature,...
+     QPulseVolt,...
+     PressureSensorPSI);
 %   11                           12                      13                             14                  
 j1 = j1(1+startTime*360:end-endTime*360,:);
 j1(any(isnan(j1),2),:)=[]; %take out rows with Nan
@@ -394,23 +417,26 @@ dt = datetime(j1(:,1), 'ConvertFrom', 'datenum') ;
 if (dailyPlot == 1)
 figure(1)
 hold on
-aa_splot(dt,smooth(j1(:,2),11),'black','linewidth',1.5);
-ylim([15 40])
+aa_splot(dt,j1(:,2),'black','linewidth',1.5);
+ylim([p1 p2])
 addaxis(dt,j1(:,3),'linewidth',1.5);
 addaxis(dt,j1(:,4),'linewidth',1);
 %addaxis(dt,j1(:,5),'linewidth',1);
 addaxis(dt,smooth(j1(:,6),11));
 addaxis(dt,smooth(j1(:,10),11)) ;
-%addaxis(dt,smooth(j1(:,13),11)) 
+addaxis(dt,smooth(j1(:,8),11)); 
+addaxis(dt,smooth(j1(:,9),11));
 title(dataFile,'fontsize',11);
 addaxislabel(1,'HeaterPower');
 addaxislabel(2,'CoreTemp');
 addaxislabel(3,'QPulseLen');
 %addaxislabel(4,'QkHz');
 addaxislabel(4,'QPow');
-%addaxislabel(6,'TerminationHeatSinkPower');
-%addaxislabel(7,'QPulsePCBHeatsinkPower');
+addaxislabel(6,'TerminationHeatSinkPower');
+addaxislabel(7,'QPulsePCBHeatsinkPower');
 addaxislabel(5,'CoreQPow'); 
+%addaxislabel(6,'QPulseVolt'); 
+%addaxislabel(7,'PressureSensorPSI'); 
 end 
 if (flowratePlot)
 figure(2)
@@ -436,7 +462,7 @@ addaxis(dt,smooth(j1(:,17),30));
 addaxis(dt,smooth(j1(:,20),30));
 addaxis(dt,smooth(j1(:,10),30));
 
-title(dataFile,'fontsize',20)
+title(dataFile,'fontsize',20);
 addaxislabel(1,'Room Temp');
 addaxislabel(2,'JacketOutT');
 addaxislabel(3,'JacketInT');
@@ -461,7 +487,11 @@ qPowCV=[];
 i=0;
 i1 = 1;
 ii = 60; %600 seconds before to next seq.
-trim = 2;
+if ii > 5;
+  trim = round(200/ii); %k = ii*(trim/100)/2 through away one highset/lowest point trim = 200/ii
+else
+  trim = 0;
+end    
 while (i < j1Size-1)  
   i = i+1;
   if (j1(i+1,7) - j1(i,7) == 1 ) %sequence changed or at least sequence has run more than an half hour

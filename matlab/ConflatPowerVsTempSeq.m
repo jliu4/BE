@@ -23,7 +23,7 @@ case 'conf'
 case 'sri-09-19'
    Directory='C:\jinwork\BEC\Data\SRIdata\2016-09-19';
    AllFiles = getall(Directory);  %SORTED BY DATE....
-   whichDate = '09282016-10092016';
+   whichDate = '10152016-10172016';
    %input which sequence
    switch (whichDate)
      
@@ -135,9 +135,17 @@ case 'sri-09-19'
      dataFile ='100-600C&300-100ns steps in 100C steps He 30sccm 100psiQV200V-005.csv';
      startTime = 10; 
      endTime = 0;   
-     Experiment = AllFiles(21:23);
+     Experiment = AllFiles(21:25);
      p1=5;
-     p2=60;
+     p2=140;
+   case '10152016-10172016' 
+     dataFile ='100-600C&300-100ns steps in 100C steps He 30sccm 100psiQV200V-005.csv';
+     startTime = 0; 
+     endTime = 0;   
+     Experiment = AllFiles(29:29);
+     p1=5;
+     p2=10;
+     
    end     
 end 
 Experiment'
@@ -172,7 +180,7 @@ addaxis(dt,j1(:,4))
 %addaxis(dt,smooth(j1(:,5),11))
 %addaxis(dt,smooth(j1(:,6),11))
 addaxis(dt,smooth(j1(:,7),11))
-addaxis(dt,smooth(j1(:,14),11))
+%addaxis(dt,smooth(j1(:,14),11))
 %addaxis(dt,smooth(j1(:,16),11))
 %addaxis(dt,smooth(j1(:,17),11))
 %addaxis(dt,smooth(j1(:,18),11))
@@ -186,7 +194,7 @@ addaxislabel(3,'QPulseLen');
 %addaxislabel(4,'QPow');
 %addaxislabel(7,'CoreInPress');
 addaxislabel(4,'Term');
-addaxislabel(5,'PowOut');
+%addaxislabel(5,'PowOut');
 %addaxislabel(9,'TermOut');
 %addaxislabel(10,'TermLPM');
 %addaxislabel(8,'QPulseVolt');
@@ -211,8 +219,12 @@ coreOutCV=[];
 powOutCV= [];
 i=0;
 i1 = 1;
-ii = 60; 
-trim = 2;
+ii = 60; %600 seconds before to next seq.
+if ii > 5;
+  trim = round(200/ii); %k = ii*(trim/100)/2 through away one highset/lowest point trim = 200/ii
+else
+  trim = 0;
+end    
 while (i < j1Size-1)  
   i = i+1;
   if ((j1(i+1,15) - j1(i,15)) == 1 || i+1 == j1Size )
