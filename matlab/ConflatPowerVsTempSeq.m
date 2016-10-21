@@ -29,19 +29,19 @@ case 'sri-09-19'
      
    case '09212016-09222016' 
      dataFile ='100-600C&300-100ns steps in 100C steps He 30sccm 100psiQV200V-000.csv';
-     startTime = 0.5; %9/4/2016 6 hours after 6:00
-     endTime = 0;   %9/5/2016 20:33
+     startTime = 0.5;
+     endTime = 0;   
      Experiment = AllFiles(7:7);
  
    case '09222016-09232016' 
      dataFile ='100-600C&300-100ns steps in 100C steps He 30sccm 100psiQV200V-000.csv';
-     startTime = 0.5; %9/4/2016 6 hours after 6:00
-     endTime = 0;   %9/5/2016 20:33
+     startTime = 0.5; 
+     endTime = 0;  
      Experiment = AllFiles(8:8);
    case '09282016' 
      dataFile ='100-600C&300-100ns steps in 100C steps He 30sccm 100psiQV200V-000.csv';
-     startTime = 0; %9/4/2016 6 hours after 6:00
-     endTime = 0;   %9/5/2016 20:33
+     startTime = 0; 
+     endTime = 0;   
      Experiment = AllFiles(10:11);
    case '09272016' 
      dataFile ='100-600C&300-100ns steps in 100C steps He 30sccm 100psiQV200V-000.csv';
@@ -139,12 +139,12 @@ case 'sri-09-19'
      p1=5;
      p2=140;
    case '10152016-10172016' 
-     dataFile ='100-600C&300-100ns steps in 100C steps He 30sccm 100psiQV200V-005.csv';
+     dataFile ='SRIdata\100-600C&300-100-91-83ns steps in 100C steps H 30…siQV200V-000.csv SRIdata\2016-0919_day-29.csv: 31.csv';
      startTime = 0; 
      endTime = 0;   
-     Experiment = AllFiles(29:29);
-     p1=5;
-     p2=10;
+     Experiment = AllFiles(29:31);
+     p1=7;
+     p2=30;
      
    end     
 end 

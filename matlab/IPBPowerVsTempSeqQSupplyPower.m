@@ -28,7 +28,7 @@ AllFiles = getall(Directory);  %SORTED BY DATE....
 whichDate = '10172016';
 switch (whichDate)
   case '10172016' 
-    dataFile ='\SRI-IPB2\2016-09-30_SRI_v171-core27b\SRI-IPB2_H2-250-400C_9-30-16_day-11.csv : 12.csv' ;  
+    dataFile ='\SRI-IPB2\2016-09-30_SRI_v171-core27b\SRI-IPB2_H2-250-400C_9-30-16_day-11.csv : 13.csv' ;  
     startTime = 12.5;
     endTime = 12; 
     Experiment = AllFiles(18:20);  

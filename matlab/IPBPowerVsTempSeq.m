@@ -12,8 +12,8 @@ p2=40;
 %ipb2-09-24_CRIO_v169-core27b
 %sri-ipb2-0930
 %reactor = 'ipb2-08';
-reactor ='ipb1-2016-09-30-CRIO-v171_CORE_29b' ;
-%reactor='sri-ipb2-0930';
+%reactor ='ipb1-2016-09-30-CRIO-v171_CORE_29b' ;
+reactor='sri-ipb2-0930';
 switch (reactor)
 case 'sri-ipb2-0930' 
 Directory='C:\Users\Owner\Dropbox (BEC)\SRI-IPB2\2016-09-30_SRI_v171-core27b';
@@ -26,16 +26,16 @@ switch (whichDate)
     endTime = 0; 
     Experiment = AllFiles(6:7);
   case '10062016' 
-    dataFile ='\SRI-IPB2\2016-09-30_SRI_v171-core27b\SRI-IPB2_H2-250-400C_10-05-16_day-07.csv:08.csv'; 
-    startTime = 20;
+    dataFile ='\SRI-IPB2\2016-09-30_SRI_v171-core27b\SRI-IPB2_H2-250-400C_10-05-16_day-16.csv'; 
+    startTime = 0;
     endTime = 0; 
-    Experiment = AllFiles(14:15);
+    Experiment = AllFiles(23:23);
 
 end 
 case 'ipb1-2016-09-30-CRIO-v171_CORE_29b' 
 Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\2016-09-30-CRIO-v171_CORE_29b';
 AllFiles = getall(Directory);  %SORTED BY DATE....
-whichDate = '10182016';
+whichDate = 'Mark-He';
 switch (whichDate)
   case '093002016' 
     dataFile ='\ISOPERIBOLIC_DATA\2016-09-30-CRIO-v171_CORE_29b\IPB1_Core_29b-He-DC_QFLOW_CAL-9-30_16_day-01.csv : 02.csv' ;  
@@ -52,7 +52,7 @@ switch (whichDate)
     startTime = 0;
     endTime = 0; 
     Experiment = AllFiles(9:9);
-  case 'Mark' 
+  case 'Mark-He' 
     dataFile ='\ISOPERIBOLIC_DATA\2016-09-30-CRIO-v171_CORE_29b\IPB1_CoreQ_Pow_cal_day-01.csv:05.csv' ;  
     startTime = 1;
     endTime = 0; 
@@ -61,8 +61,8 @@ switch (whichDate)
     dataFile ='\ISOPERIBOLIC_DATA\2016-09-30-CRIO-v171_CORE_29b\PB1_Core_29b-Helium-150C-400C_10-18-16_Run2_day-01.csv:02.csv'  ; 
     startTime = 0;
     endTime = 0; 
-    p1=4;
-    p2=35;
+    p1=5;
+    p2=40;
     Experiment = AllFiles(29:30);
 
 end
@@ -376,7 +376,7 @@ Experiment'
 loadHHT 
 %change a few messy variable names
 QOccurred = QOccurred0x3F; clear QPulseOccurred0x3F
-%SeqStepNum = SeqStep0x23; clear SeqStep0x23
+SeqStepNum = SeqStep0x23; clear SeqStep0x23
 QPulseLengthns = QPulseLength0x28ns0x29; clear QPulseLength0x28ns0x29
 QPulseDelays = QPulseDelay0x28s0x29; clear QPulseDelay0x28s0x29
 QkHz = QKHz; clear QKHz;
@@ -424,16 +424,16 @@ addaxis(dt,j1(:,4),'linewidth',1);
 %addaxis(dt,j1(:,5),'linewidth',1);
 addaxis(dt,smooth(j1(:,6),11));
 addaxis(dt,smooth(j1(:,10),11)) ;
-addaxis(dt,smooth(j1(:,8),11)); 
-addaxis(dt,smooth(j1(:,9),11));
+%addaxis(dt,smooth(j1(:,8),11)); 
+%addaxis(dt,smooth(j1(:,9),11));
 title(dataFile,'fontsize',11);
 addaxislabel(1,'HeaterPower');
 addaxislabel(2,'CoreTemp');
 addaxislabel(3,'QPulseLen');
 %addaxislabel(4,'QkHz');
 addaxislabel(4,'QPow');
-addaxislabel(6,'TerminationHeatSinkPower');
-addaxislabel(7,'QPulsePCBHeatsinkPower');
+%addaxislabel(6,'TerminationHeatSinkPower');
+%addaxislabel(7,'QPulsePCBHeatsinkPower');
 addaxislabel(5,'CoreQPow'); 
 %addaxislabel(6,'QPulseVolt'); 
 %addaxislabel(7,'PressureSensorPSI'); 
@@ -494,9 +494,9 @@ else
 end    
 while (i < j1Size-1)  
   i = i+1;
-  if (j1(i+1,7) - j1(i,7) == 1 ) %sequence changed or at least sequence has run more than an half hour
+  if abs(j1(i+1,7) - j1(i,7)) >= 1  %sequence changed or at least sequence has run more than an half hour
     i2 = i;
-    if i2-i1 > 1 
+    if i2-i1 > 90 
     seq = j1(i2,7);
     seq1(seq)=seq;
     dt1(seq) = j1(i2,1); 
@@ -544,7 +544,8 @@ while (i < j1Size-1)
     end    
     if cjpM > 0 
       cjpCV(seq)=cjpCV(seq)/cjpM;
-    end    
+    end 
+    i12(seq)=i2-i1;
     i1 = i2+1; 
     end
   end
@@ -554,8 +555,8 @@ fn = ['C:\jinwork\BEC\tmp\' reactor '-' whichDate '.csv'];
 delete(fn);
 T=table(temp(:),ql(:),qf(:),hp(:),coreQPow(:),qPow(:),qPCB(:),qTerm(:),cjp(:),...
     roomT(:),jlpm(:),jInT(:),jOutT(:), PCBlpm(:),PCBInT(:),PCBOutT(:),termlpm(:),termInT(:),termOutT(:),...
-    coreQPowCV(:),qPowCV(:),qPCBCV(:),qTermCV(:),cjpCV(:),seq1(:),dt2(:),...
+    coreQPowCV(:),qPowCV(:),qPCBCV(:),qTermCV(:),cjpCV(:),seq1(:),i12(:),dt2(:),...
 'VariableName',{'Temp','QL','QF','HP','CoreQPower','qPow','qPCB','qTerm','CJP','roomT','jLPM','jInT','jOutT',...
-'PCBLPM','PCBInT','PCBOutT','termLPM','termInT','termOutT','coreQPowCV','qPowCV','qPCBCV','qTermCV','cjpCV','seq','date'});
+'PCBLPM','PCBInT','PCBOutT','termLPM','termInT','termOutT','coreQPowCV','qPowCV','qPCBCV','qTermCV','cjpCV','seq','steps','date'});
 writetable(T,fn);
 end
