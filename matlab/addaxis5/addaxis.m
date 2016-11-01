@@ -177,5 +177,5 @@ function addaxis(varargin)
       set(axhand(indshift(I)+1),'position',[postot(indshift(I)+1,1)-axcompright*totwid, ...
 		    postot(indshift(I)+1,2:end)]);
     end
- 
+    
   end

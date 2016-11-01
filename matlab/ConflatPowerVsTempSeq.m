@@ -139,12 +139,12 @@ case 'sri-09-19'
      p1=5;
      p2=140;
    case '10152016-10172016' 
-     dataFile ='SRIdata\100-600C&300-100-91-83ns steps in 100C steps H 30…siQV200V-000.csv SRIdata\2016-0919_day-29.csv: 31.csv';
+     dataFile ='SRIdata\100-600C&300-100-91-83ns steps in 100C steps H 30…siQV200V-000.csv SRIdata\2016-0919_day-29.csv: 39.csv';
      startTime = 0; 
      endTime = 0;   
-     Experiment = AllFiles(29:31);
+     Experiment = AllFiles(29:42);
      p1=7;
-     p2=30;
+     p2=115;
      
    end     
 end 
@@ -179,7 +179,7 @@ addaxis(dt,j1(:,3),'linewidth',1.5);
 addaxis(dt,j1(:,4))
 %addaxis(dt,smooth(j1(:,5),11))
 %addaxis(dt,smooth(j1(:,6),11))
-addaxis(dt,smooth(j1(:,7),11))
+%addaxis(dt,smooth(j1(:,7),11))
 %addaxis(dt,smooth(j1(:,14),11))
 %addaxis(dt,smooth(j1(:,16),11))
 %addaxis(dt,smooth(j1(:,17),11))
@@ -193,7 +193,7 @@ addaxislabel(3,'QPulseLen');
 %addaxislabel(4,'QkHz');
 %addaxislabel(4,'QPow');
 %addaxislabel(7,'CoreInPress');
-addaxislabel(4,'Term');
+%addaxislabel(4,'Term');
 %addaxislabel(5,'PowOut');
 %addaxislabel(9,'TermOut');
 %addaxislabel(10,'TermLPM');

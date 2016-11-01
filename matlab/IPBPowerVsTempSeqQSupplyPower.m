@@ -5,12 +5,24 @@ dailyPlot = 1;
 flowratePlot = 0;
 tempPlot = 0;
 processYes = 1;
-p1 =0;
-p2 = 40;
-reactor = '2016-08-20-CORE_28_DC_Heater';
+p1 =5;
+p2 = 60;
+%reactor = '2016-08-20-CORE_28_DC_Heater';
 %reactor ='ipb1-2016-09-30-CRIO-v171_CORE_29b' 
-%reactor='sri-ipb2-0930'
+reactor='sri-ipb2-0930'
+%reactor='2016-10-24-CRIO-v173_CORE_29b_H2'
 switch (reactor)
+case '2016-10-24-CRIO-v173_CORE_29b_H2' 
+Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\2016-10-24-CRIO-v173_CORE_29b_H2';
+AllFiles = getall(Directory);  %SORTED BY DATE....
+whichDate = '10252016';
+switch (whichDate)
+  case '10252016' 
+    dataFile ='\ISOPERIBOLIC_DATA\2016-10-24-CRIO-v173_CORE_29b_H2\PB1_Core_29b_DC_Qkcal_150C-500C_H2_day-01.cs';   
+    startTime = 0;
+    endTime = 0; 
+    Experiment = AllFiles(1:3);
+end    
 case '2016-08-20-CORE_28_DC_Heater' 
 Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC2_DATA\2016-08-20-CORE_28_DC_Heater';
 AllFiles = getall(Directory);  %SORTED BY DATE....
@@ -20,6 +32,8 @@ switch (whichDate)
     dataFile ='\ISOPERIBOLIC2_DATA/2016-08-20-CORE_28_DC_Heater\IPB2_Core_28b-DC_Qk_CAL_H2_200C-600C_day-01.csv : 02.csv' ;  
     startTime = 0;
     endTime = 0; 
+    p1 =10;
+    p2 = 80;
     Experiment = AllFiles(8:9);
 end     
 case 'sri-ipb2-0930' 
@@ -43,13 +57,21 @@ case '10122016'
   startTime = 0;
   endTime = 0; 
   Experiment = AllFiles(19:21);
+    
+case '09302016' 
+  dataFile ='\ISOPERIBOLIC_DATA\2016-09-30-CRIO-v171_CORE_29b\IPB1_CoreQ_DC_cal_10-02-16_day-01.csv : 02.csv';  
+  startTime = 0;
+  endTime = 0;
+  p1 =5;
+  p2 = 40;
+  Experiment = AllFiles(6:7);
 end
 end    
 Experiment'
 loadHHT 
 %change a few messy variable names
 QOccurred = QOccurred0x3F; clear QPulseOccurred0x3F
-SeqStep = SeqStep0x23; clear SeqStep0x23
+SeqStepNum = SeqStep0x23; clear SeqStep0x23
 QPulseLengthns = QPulseLength0x28ns0x29; clear QPulseLength0x28ns0x29
 QPulseDelays = QPulseDelay0x28s0x29; clear QPulseDelay0x28s0x29
 QkHz = QKHz; clear QKHz;
@@ -58,10 +80,10 @@ dateN=datenum(DateTime,'mm/dd/yyyy HH:MM:SS');
 DateTime(1+startTime*360)
 DateTime(end - endTime*360)
             %1     2           3        4              5    6    7       8                        9                      10        
-j1 = horzcat(dateN,HeaterPower,CoreTemp,QPulseLengthns,QkHz,QPow,SeqStep,TerminationHeatsinkPower,QPulsePCBHeatsinkPower,CoreQPower,...
+j1 = horzcat(dateN,HeaterPower,CoreTemp,QPulseLengthns,QkHz,QPow,SeqStepNum,TerminationHeatsinkPower,QPulsePCBHeatsinkPower,CoreQPower,...
     CalorimeterJacketFlowrateLPM,QPCBHeatsinkFlowrateLPM,TerminationHeatsinkFlowrateLPM,CalorimeterJacketPower,...
     CalorimeterJacketH2OInT,CalorimeterJacketH2OOutT,QPCBHeatsinkH2OInT,QPCBHeatsinkH2OOutT,TerminationHeatsinkH2OInT,...
-    TerminationHeatsinkH2OOutT,RoomTemperature,QSupplyPower);
+    TerminationHeatsinkH2OOutT,RoomTemperature,QSupplyPower,QSupplyVolt);
 %   11                           12                      13                             14                  
 j1 = j1(1+startTime*360:end-endTime*360,:);
 j1(any(isnan(j1),2),:)=[]; %take out rows with Nan
@@ -78,17 +100,19 @@ addaxis(dt,j1(:,3),'linewidth',1.5);
 %addaxis(dt,j1(:,5),'linewidth',1);
 %addaxis(dt,smooth(j1(:,6),11));
 %addaxis(dt,smooth(j1(:,22),11)) ;
-addaxis(dt,j1(:,22)) ;
+addaxis(dt,j1(:,22),'linewidth',1.5) ;
+addaxis(dt,j1(:,23),'linewidth',1.5) ;
 %addaxis(dt,smooth(j1(:,13),11)) 
 title(dataFile,'fontsize',11);
-addaxislabel(1,'HeaterPower');
-addaxislabel(2,'CoreTemp');
+addaxislabel(1,'Heater Power (W)');
+addaxislabel(2,'Core Tempetature (C)');
 %addaxislabel(3,'QPulseLen');
 %addaxislabel(4,'QkHz');
 %addaxislabel(4,'QPow');
 %addaxislabel(6,'TerminationHeatSinkPower');
 %addaxislabel(7,'QPulsePCBHeatsinkPower');
-addaxislabel(3,'QSupplyPower'); 
+addaxislabel(3,'DC Power (W)'); 
+addaxislabel(4,'DC Volt'); 
 end 
 if (flowratePlot)
 figure(2)
@@ -138,7 +162,7 @@ qTermCV=[];
 qPowCV=[];
 i=0;
 i1 = 1;
-ii = 30; %10 mins from the sequence end.
+ii = 30; %5 mins from the sequence end.
 if ii > 5;
   trim = round(200/ii); %k = ii*(trim/100)/2 through away one highest/lowest point trim = 200/ii
 else
