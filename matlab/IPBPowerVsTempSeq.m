@@ -1,30 +1,85 @@
-clear all;close all
+% Initial housekeeping
+clear; close all
 addpath('C:\jinwork\BE\matlab')
 addpath('C:\jinwork\BE\matlab\addaxis5')
-dailyPlot = 1;
+%Control parameters
+dailyPlot = 0;
 flowratePlot = 0;
 tempPlot = 0;
-tempBlockPlot = 0;
-processYes = 1;
+qPowOnlyPlot = 1;
+heaterPowerOnlyPlot = 0;
+processYes = 0;
 errorBarPlot = 0;
 p1 = 0;
-p2=40;
-%'ipb1-0820','ipb1-0915','ipb1-0924-v169-27b''ipb1-0928-crio-v170_core_26b'2016-09-29-CRIO-v170_CORE_29b
-%'ipb2-08''ipb2-0905-164-28b''ipb2-0907-165-28b''ipb2-0909-165-27b''ipb2-0909-166-27b''ipb2-0909-167-27b''ipb2-0909-v169-27b'
-%ipb2-09-24_CRIO_v169-core27b
-%sri-ipb2-0930
-%reactor = 'ipb2-08';
-%reactor ='ipb1-2016-09-30-CRIO-v171_CORE_29b' ;
-reactor='sri-ipb2-0930';
-%reactor='2016-10-24-CRIO-v173_CORE_29b_H2';
+p2=40; 
+% list reactors,cores and directories starting from the most recent ones
+%reactor='2016-10-27-CRIO-v174_CORE_30b_He';
+reactor='sri-ipb2-27b';
 %reactor='2016-10-27-CRIO-v174_CORE_29b_H2';
+%reactor='2016-10-24-CRIO-v173_CORE_29b_H2';
+%reactor ='ipb1-2016-09-30-CRIO-v171_CORE_29b' ;
+%reactor = '2016-09-29-CRIO-v170_CORE_29b';
+%reactor = 'ipb2-0907-165-28b';
+%reactor = 'ipb2-0905-164-28b';
+%reactor = 'ipb1-0924-v169-27b';
+%reactor='ipb2-0909-v169-27b';
+%reactor = 'ipb2-0909-167-27b';
+%reactor='ipb2-0909-166-27b';
+%reactor = 'ipb2-0909-165-27b';
+%reactor = 'ipb1-0928-crio-v170_core_26b'
 switch (reactor)
+case '2016-10-27-CRIO-v174_CORE_30b_He' 
+Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\2016-11-01-CRIO-v174_CORE_30b_He';
+AllFiles = getall(Directory);  %SORTED BY DATE....
+whichDate = '11152016';
+switch (whichDate)
+case '11012016' 
+    %dataFile ='\ISOPERIBOLIC_DATA\2016-10-27-CRIO-v174_CORE_29b_H2\PB1_Core_29b_H2_150C-400C_QP50W_300VDC-day-01.csv';  
+    dataFile ='IPB1_Temp_sequence_150-100-150ns_50W_150C-400C_Helium_Run3_10-07-16_day-01.csv:02.csv';
+    startTime = 0;
+    endTime = 0; 
+    p1 = 5;
+    p2=40;
+    Experiment = AllFiles(1:2);        
+case '11112016' 
+    %dataFile ='\ISOPERIBOLIC_DATA\2016-10-27-CRIO-v174_CORE_29b_H2\PB1_Core_29b_H2_150C-400C_QP50W_300VDC-day-01.csv';  
+    dataFile ='IPB1_Temp_sequence_150-100-150ns_50W_150C-400C_Helium_Run3_10-07-16_day-01.csv:02.csv';
+    startTime = 0;
+    endTime = 0; 
+    p1 = 5;
+    p2=10;
+    Experiment = AllFiles(1:15);
+case '11122016' 
+    %dataFile ='\ISOPERIBOLIC_DATA\2016-10-27-CRIO-v174_CORE_29b_H2\PB1_Core_29b_H2_150C-400C_QP50W_300VDC-day-01.csv';  
+    dataFile ='IPB1_Temp_sequence_150-100-150ns_50W_150C-400C_Helium_Run3_10-07-16_day-01.csv:02.csv';
+    startTime = 0;
+    endTime = 0; 
+    p1 = 0;
+    p2=20;
+    Experiment = AllFiles(14:17);    
+case '11152016' 
+    %dataFile ='\ISOPERIBOLIC_DATA\2016-10-27-CRIO-v174_CORE_29b_H2\PB1_Core_29b_H2_150C-400C_QP50W_300VDC-day-01.csv';  
+    dataFile ='IPB1-Q-Power-only-sequence-HeliumDFR-day-01.csv-02.csv';
+    startTime = 0;
+    endTime = 0; 
+    p1 = 10;
+    p2=20;
+    Experiment = AllFiles(18:20);    
+case '11172016' 
+    %dataFile ='\ISOPERIBOLIC_DATA\2016-10-27-CRIO-v174_CORE_29b_H2\PB1_Core_29b_H2_150C-400C_QP50W_300VDC-day-01.csv';  
+    dataFile ='IPB1-Heater-Power-10W-to-50W-day-01.csv';
+    startTime = 0;
+    endTime = 0; 
+    p1 = 10;
+    p2=20;
+    Experiment = AllFiles(22:23);    
+end    
 case '2016-10-27-CRIO-v174_CORE_29b_H2' 
 Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\2016-10-27-CRIO-v174_CORE_29b_H2';
 AllFiles = getall(Directory);  %SORTED BY DATE....
 whichDate = '10292016';
 switch (whichDate)
-  case '10292016' 
+  case '10282016' 
     %dataFile ='\ISOPERIBOLIC_DATA\2016-10-27-CRIO-v174_CORE_29b_H2\PB1_Core_29b_H2_150C-400C_QP50W_300VDC-day-01.csv';  
     dataFile ='IPB1 H2';
     startTime = 0;
@@ -32,7 +87,7 @@ switch (whichDate)
     p1 = 5;
     p2=40;
     Experiment = AllFiles(1:2);
-  case '10312016' 
+  case '10292016' 
     %dataFile ='\ISOPERIBOLIC_DATA\2016-10-27-CRIO-v174_CORE_29b_H2\PB1_Core_29b_H2_150C-400C_QP50W_300VDC-Run2_10-28-16_day-01.csv:03.csv';   
     dataFile='IPB1 H2';
     startTime = 4;
@@ -52,10 +107,10 @@ switch (whichDate)
     endTime = 0; 
     Experiment = AllFiles(5:5);
 end    
-case 'sri-ipb2-0930' 
+case 'sri-ipb2-27b' 
 Directory='C:\Users\Owner\Dropbox (BEC)\SRI-IPB2\2016-09-30_SRI_v171-core27b';
 AllFiles = getall(Directory);  %SORTED BY DATE....
-whichDate = '10282016';
+whichDate = '11172016';
 switch (whichDate)
   case '10042016' 
     dataFile ='\SRI-IPB2\2016-09-30_SRI_v171-core27b\SRI-IPB2_H2-250-400C_10-04-16_day-01.csv - 02.csv';   
@@ -66,8 +121,7 @@ switch (whichDate)
     dataFile ='\SRI-IPB2\2016-09-30_SRI_v171-core27b\SRI-IPB2_H2-250-400C_10-04-16_day-01.csv - 02.csv';   
     startTime = 0;
     endTime = 0; 
-    Experiment = AllFiles(14:15);
-  
+    Experiment = AllFiles(14:15);  
   case '10062016' 
     dataFile ='\SRI-IPB2\2016-09-30_SRI_v171-core27b\SRI-IPB2_H2-250-400C_10-05-16_day-16.csv : 22.csv'; 
     startTime = 0;
@@ -83,12 +137,68 @@ switch (whichDate)
     startTime = 12;
     endTime = 3; 
     Experiment = AllFiles(32:35);
-
+  case '11012016' 
+    dataFile ='\SRI-IPB2\2016-09-30_SRI_v171-core27b\SRI-IPB2_H2-250-400C_10-05-16_day-25.csv-29.csv'; 
+    startTime = 0;
+    endTime = 0; 
+    Experiment = AllFiles(32:36);
+  case '11032016' 
+    dataFile ='\SRI-IPB2\2016-09-30_SRI_v171-core27b\SRI-IPB2_H2-250-400C_10-05-16_day-25.csv-29.csv'; 
+    startTime = 0;
+    endTime = 0; 
+    Experiment = AllFiles(37:37);
+  case '11062016' 
+    dataFile ='\SRI-IPB2\2016-09-30_SRI_v171-core27b\SRI-IPB2_H2-250-400C_10-05-16_day-25.csv-29.csv'; 
+    startTime = 0;
+    endTime = 0; 
+    Experiment = AllFiles(43:44);
+  case '11112016-11122016' 
+    dataFile ='\SRI-IPB2\2016-09-30_SRI_v171-core27b\SRI-IPB2_H2-250-400C_10-05-16_day-38.csv-40.csv'; 
+    startTime = 19.5;
+    endTime = 0; 
+    Experiment = AllFiles(45:50);
+    p1 = 5;
+    p2=40;
+  case '11112016' 
+    dataFile ='\SRI-IPB2\2016-09-30_SRI_v171-core27b\SRI-IPB2_H2-250-400C_10-05-16_day-38.csv-40.csv'; 
+    startTime = 19.5; %150
+    endTime = 2; 
+    Experiment = AllFiles(45:46);
+    p1 = 5;
+    p2=10;  
+  case '11122016' %250c
+    dataFile ='\SRI-IPB2\2016-09-30_SRI_v171-core27b\SRI-IPB2_H2-250-400C_10-05-16_day-38.csv-40.csv'; 
+    startTime = 0;
+    endTime = 23; 
+    Experiment = AllFiles(47:48);
+    p1 = 15;
+    p2=20;
+  case '11152016' %300c
+    dataFile ='\SRI-IPB2\2016-09-30_SRI_v171-core27b\SRI-IPB2_H2-250-400C_10-05-16_day-38.csv-40.csv'; 
+    startTime = 3;
+    endTime = 18.5; 
+    Experiment = AllFiles(48:49);
+    p1 = 19;
+    p2=24;
+  case '11162016' %400c
+    dataFile ='\SRI-IPB2\2016-09-30_SRI_v171-core27b\SRI-IPB2_H2-250-400C_10-05-16_day-38.csv-40.csv'; 
+    startTime = 7;
+    endTime = 2; 
+    Experiment = AllFiles(49:50);
+    p1 = 35;
+    p2=40;
+  case '11172016'
+    dataFile ='\SRI-IPB2\2016-09-30_SRI_v171-core27b\2016-11-16_day-1.csv'; 
+    startTime = 7;
+    endTime = 0; 
+    Experiment = AllFiles(51:51);
+    p1 = 0;
+    p2=0;
 end 
 case 'ipb1-2016-09-30-CRIO-v171_CORE_29b' 
 Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\2016-09-30-CRIO-v171_CORE_29b';
 AllFiles = getall(Directory);  %SORTED BY DATE....
-whichDate = '10182016';
+whichDate = '10212016';
 switch (whichDate)
   case '093002016' 
     dataFile ='\ISOPERIBOLIC_DATA\2016-09-30-CRIO-v171_CORE_29b\IPB1_Core_29b-He-DC_QFLOW_CAL-9-30_16_day-01.csv : 02.csv' ;  
@@ -101,8 +211,8 @@ switch (whichDate)
     endTime = 0; 
     Experiment = AllFiles(10:12);  
   case '10042016' 
-    %dataFile ='\ISOPERIBOLIC_DATA\2016-09-30-CRIO-v171_CORE_29b\IPB1_Core_29b-Helium-150C-400C_10-04-16_day-01.csv' ;  
-    dataFile ='IPB1 He' ;  
+    dataFile ='\ISOPERIBOLIC_DATA\2016-09-30-CRIO-v171_CORE_29b\IPB1_Core_29b-Helium-150C-400C_10-04-16_day-01.csv' ;  
+    %dataFile ='IPB1 He' ;  
     startTime = 0;
     endTime = 0; 
     p1=5;
@@ -118,7 +228,6 @@ switch (whichDate)
     startTime = 1;
     endTime = 0; 
     Experiment = AllFiles(24:28);
-  
   case '10182016' 
     dataFile ='\ISOPERIBOLIC_DATA\2016-09-30-CRIO-v171_CORE_29b\PB1_Core_29b-Helium-150C-400C_10-18-16_Run2_day-01.csv:02.csv'  ; 
     startTime = 0;
@@ -133,7 +242,6 @@ switch (whichDate)
     p1=5;
     p2=40;
     Experiment = AllFiles(32:35);
-
 end
 case 'ipb1-0928-crio-v170_core_26b' 
 Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\2016-09-28-CRIO-v170_CORE_26b';
@@ -309,20 +417,20 @@ case 'ipb1-0915'
 case 'ipb2-08'
   Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC2_DATA\2016-08-20-CORE_28_DC_Heater';
   AllFiles = getall(Directory);  %SORTED BY DATE....
-  whichDate ='1';
+  whichDate ='09022016';
   detailPlot = 1;
   switch (whichDate)
-  case '1' 
+  case '08202016' 
     dataFile ='\2016-08-20-CORE_28_DC_Heater\IPB2_Core_28b-New-core_He_150C-400C_day-01.csv : 03.csv'   
     startTime = 0; %11 hours after 6:00
     endTime = 14;   %8/21/2016 20:33
     Experiment = AllFiles(1:3);
-  case '2' 
+  case '08222016' 
     dataFile ='IPB2-core-28b-h2'   
     startTime = 2; %11 hours after 6:00
     endTime = 7;   %8/21/2016 20:33
     Experiment = AllFiles(4:6);
-  case '3'  
+  case '09022016'  
     dataFile ='H2-150C-400C-DEUG-NEW-SW'   
     startTime = 0.5; %11 hours after 6:00
     endTime = 32;   %8/21/2016 20:33
@@ -445,7 +553,7 @@ Experiment'
 loadHHT 
 %change a few messy variable names
 QOccurred = QOccurred0x3F; clear QPulseOccurred0x3F
-SeqStepNum = SeqStep0x23; clear SeqStep0x23
+%SeqStepNum = SeqStep0x23; clear SeqStep0x23
 QPulseLengthns = QPulseLength0x28ns0x29; clear QPulseLength0x28ns0x29
 QPulseDelays = QPulseDelay0x28s0x29; clear QPulseDelay0x28s0x29
 QkHz = QKHz; clear QKHz;
@@ -484,7 +592,7 @@ j1 = horzcat(dateN,...
 %   11                           12                      13                             14                  
 j1 = j1(1+startTime*360:end-endTime*360,:);
 %j1(any(isnan(j1),2),:)=[]; %take out rows with Nan
-j1(isnan(j1)) = 0 ;
+j1(isnan(j1)) = -2 ;
 j1 = j1(j1(:,7) > 0,:); %only process data with seq
 j1Size = size(j1,1);
 dt = datetime(j1(:,1), 'ConvertFrom', 'datenum') ; 
@@ -496,8 +604,8 @@ ylim([p1 p2])
 addaxis(dt,j1(:,3),'linewidth',1.5);
 addaxis(dt,j1(:,4),'linewidth',1);
 %addaxis(dt,j1(:,5),'linewidth',1);
-addaxis(dt,smooth(j1(:,6),11));
-addaxis(dt,smooth(j1(:,10),11),[2,7]) ;
+addaxis(dt,j1(:,6));
+addaxis(dt,j1(:,10),[0,7]) ;
 %addaxis(dt,smooth(j1(:,8),11)); 
 %addaxis(dt,smooth(j1(:,9),11));
 title(dataFile,'fontsize',11);
@@ -508,7 +616,7 @@ addaxislabel(3,'QPulseLen(ns)');
 addaxislabel(4,'QPow(W)');
 %addaxislabel(6,'TerminationHeatSinkPower');
 %addaxislabel(7,'QPulsePCBHeatsinkPower');
-addaxislabel(5,'CoreQPow(W)'); 
+%addaxislabel(5,'CoreQPow(W)'); 
 %addaxislabel(6,'QPulseVolt'); 
 %addaxislabel(7,'PressureSensorPSI'); 
 end 
@@ -546,22 +654,43 @@ addaxislabel(5,'PCBInT');
 addaxislabel(6,'TermOutT');
 addaxislabel(7,'TermInT');
 end
-if (tempBlockPlot)
+if (qPowOnlyPlot)
 figure(4)
 hold on
-aa_splot(dt,j1(:,21),'black','linewidth',1.5);
+aa_splot(dt,j1(:,3),'black','linewidth',1.5);
+ylim([25 50])
+addaxis(dt,j1(:,24),[25,50]);
+%addaxis(dt,j1(:,25));
+addaxis(dt,smooth(j1(:,26),30),[25.,25.44]);
+addaxis(dt,j1(:,6),[5,55]);
+addaxis(dt,j1(:,10),[0,5]) ;
+addaxis(dt,smooth(j1(:,15),30),[25.,25.44]) ;
+title(dataFile,'fontsize',20);
+addaxislabel(1,'Core Temp(C)');
+addaxislabel(2,'InnerTemp1(C)');
+addaxislabel(3,'Smoothed OuterTemp1(C)');
+addaxislabel(4,'qPow(w)');
+addaxislabel(5,'coreQPow(w)');
+addaxislabel(6,'jacketInT(C)');
+end
+if (heaterPowerOnlyPlot)
+figure(4)
+hold on
+aa_splot(dt,j1(:,3),'black','linewidth',1.5);
 %ylim([0 80])
 addaxis(dt,j1(:,24));
 %addaxis(dt,j1(:,25));
-addaxis(dt,j1(:,26));
-%addaxis(dt,j1(:,27));
+addaxis(dt,smooth(j1(:,26),30));
+addaxis(dt,j1(:,2));
+%addaxis(dt,j1(:,10),[0,7]) ;
 title(dataFile,'fontsize',20);
-addaxislabel(1,'Room Temp');
-addaxislabel(2,'InnerTemp1');
-%addaxislabel(3,'InnerTemp2');
-addaxislabel(3,'OuterTemp1');
-%addaxislabel(5,'OuterTemp2');
+addaxislabel(1,'Core Temp(C)');
+addaxislabel(2,'InnerTemp1(C)');
+addaxislabel(3,'Smoothed OuterTemp1(C)');
+addaxislabel(4,'heaterPower(w)');
+%addaxislabel(5,'coreQPow(w)');
 end
+
 if (processYes == 1) 
 hp = []; 
 temp=[];
@@ -588,7 +717,7 @@ while (i < j1Size-1)
   i = i+1;
   if abs(j1(i+1,7) - j1(i,7)) >= 1  %sequence changed or at least sequence has run more than an half hour
     i2 = i;
-    if i2-i1 > 0
+    if i2-i1 > 30 %only pick up the sequence has more then half hours runs
     seq2=seq2+1;
     seq = j1(i2,7);
     seq1(seq2)=seq;
@@ -652,10 +781,13 @@ while (i < j1Size-1)
     i1 = i2+1; 
     end
   end
+  
 end 
 
 dt2 = datetime(dt1, 'ConvertFrom', 'datenum') ;
+if errorBarPlot ==1 
 fi = 5;
+
 figure(fi)
 hold on
 aa_splot(dt2,hp,'black','linewidth',1.5);
@@ -693,7 +825,7 @@ addaxislabel(2,'CoreTemp');
 addaxislabel(3,'CoreQPow(W)');
 addaxislabel(4,'InnerBlockTemp');
 addaxislabel(5,'OutBlockTemp');
-
+end
 fn = ['C:\jinwork\BEC\tmp\' reactor '-' whichDate '.csv'];            
 delete(fn);
 T=table(temp(:),ql(:),qf(:),hp(:),coreQPow(:),qPow(:),qPCB(:),qTerm(:),cjp(:),...

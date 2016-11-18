@@ -3,15 +3,32 @@ addpath('C:\jinwork\BE\matlab')
 addpath('C:\jinwork\BE\matlab\addaxis5')
 dailyPlot = 1;
 flowratePlot = 0;
-tempPlot = 0;
+tempPlot = 0; 
 processYes = 1;
 p1 =5;
 p2 = 60;
 %reactor = '2016-08-20-CORE_28_DC_Heater';
 %reactor ='ipb1-2016-09-30-CRIO-v171_CORE_29b' 
-reactor='sri-ipb2-0930'
+%reactor='sri-ipb2-0930'
 %reactor='2016-10-24-CRIO-v173_CORE_29b_H2'
+reactor='2016-10-27-CRIO-v174_CORE_30b_He'
 switch (reactor)
+case '2016-10-27-CRIO-v174_CORE_30b_He' 
+Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\2016-11-01-CRIO-v174_CORE_30b_He';
+AllFiles = getall(Directory);  %SORTED BY DATE....
+whichDate = '11092016';
+switch (whichDate)
+case '11092016' 
+    %dataFile ='\ISOPERIBOLIC_DATA\2016-10-27-CRIO-v174_CORE_29b_H2\PB1_Core_29b_H2_150C-400C_QP50W_300VDC-day-01.csv';  
+    %dataFile ='IPB1_Temp_sequence_150-100-150ns_50W_150C-400C_Helium_Run3_10-07-16_day-01.csv:02.csv';
+    dataFile = 'IPB1-DC-He';
+    startTime = 0;
+    endTime = 0; 
+    p1 = 0;
+    p2=60;
+    Experiment = AllFiles(8:10);    
+end    
+
 case '2016-10-24-CRIO-v173_CORE_29b_H2' 
 Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\2016-10-24-CRIO-v173_CORE_29b_H2';
 AllFiles = getall(Directory);  %SORTED BY DATE....
@@ -71,7 +88,7 @@ Experiment'
 loadHHT 
 %change a few messy variable names
 QOccurred = QOccurred0x3F; clear QPulseOccurred0x3F
-SeqStepNum = SeqStep0x23; clear SeqStep0x23
+%SeqStepNum = SeqStep0x23; clear SeqStep0x23
 QPulseLengthns = QPulseLength0x28ns0x29; clear QPulseLength0x28ns0x29
 QPulseDelays = QPulseDelay0x28s0x29; clear QPulseDelay0x28s0x29
 QkHz = QKHz; clear QKHz;

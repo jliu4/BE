@@ -4,7 +4,7 @@ addpath('C:\jinwork\BE\matlab\addaxis5')
 dailyPlot = 1;
 processYes = 1;
 p1 = 0;
-p2 = 40;
+p2 =  40;
 %'sri-08' 'sri-09-11' 'sri-09-19; ,'conflat'
 %reactor='conf';
 reactor = 'sri-09-19'; 
@@ -23,7 +23,7 @@ case 'conf'
 case 'sri-09-19'
    Directory='C:\jinwork\BEC\Data\SRIdata\2016-09-19';
    AllFiles = getall(Directory);  %SORTED BY DATE....
-   whichDate = '10152016-10172016';
+   whichDate = '11072016-11102016';
    %input which sequence
    switch (whichDate)
      
@@ -145,7 +145,21 @@ case 'sri-09-19'
      Experiment = AllFiles(29:42);
      p1=7;
      p2=115;
-     
+   case '11032016-11042016' 
+     dataFile ='SRIdata\100-600C&300-100-91-83ns steps in 100C steps H 30…siQV200V-000.csv SRIdata\2016-0919_day-29.csv: 39.csv';
+     startTime = 5; 
+     endTime = 0;   
+     Experiment = AllFiles(45:47);
+     p1=70;
+     p2=80;
+   case '11072016-11102016' 
+     dataFile ='SRIdata\100-600C&300-100-91-83ns steps in 100C steps H 30…siQV200V-000.csv SRIdata\2016-0919_day-29.csv: 39.csv';
+     startTime = 5; 
+     endTime = 0;   
+     Experiment = AllFiles(48:49);
+     p1=70;
+     p2=85;
+
    end     
 end 
 Experiment'
@@ -177,27 +191,27 @@ aa_splot(dt,j1(:,2),'black','linewidth',1.5)
 ylim([p1 p2])
 addaxis(dt,j1(:,3),'linewidth',1.5);
 addaxis(dt,j1(:,4))
-%addaxis(dt,smooth(j1(:,5),11))
-%addaxis(dt,smooth(j1(:,6),11))
+addaxis(dt,smooth(j1(:,11),11))
+addaxis(dt,smooth(j1(:,12),11))
 %addaxis(dt,smooth(j1(:,7),11))
 %addaxis(dt,smooth(j1(:,14),11))
 %addaxis(dt,smooth(j1(:,16),11))
 %addaxis(dt,smooth(j1(:,17),11))
 %addaxis(dt,smooth(j1(:,18),11))
-%addaxis(dt,smooth(j1(:,10),11))
+addaxis(dt,smooth(j1(:,10),11))
 
 title(dataFile,'fontsize',11)
 addaxislabel(1,'HeaterPower');
 addaxislabel(2,'CoreTemp');
 addaxislabel(3,'QPulseLen');
-%addaxislabel(4,'QkHz');
-%addaxislabel(4,'QPow');
-%addaxislabel(7,'CoreInPress');
+addaxislabel(4,'CoreGasIn');
+addaxislabel(5,'CoreGasOut');
+%addaxislabel(6,'CoreInPress');
 %addaxislabel(4,'Term');
-%addaxislabel(5,'PowOut');
+%addaxislabel(7,'PowOut');
 %addaxislabel(9,'TermOut');
 %addaxislabel(10,'TermLPM');
-%addaxislabel(8,'QPulseVolt');
+addaxislabel(6,'QPulseVolt');
 
 end
 if (processYes == 1) 
