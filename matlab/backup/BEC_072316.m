@@ -6,9 +6,11 @@ addpath('C:\Users\jen_g\MATLAB scripts\addaxis5')
 %looking at Berkeley HHT
 SYS = 'BEC Core B37';
 hpt = 2 %how many hours per tick mark in graphs...
-Directory='C:\Users\jen_g\Data\ConF00_copy\2016-07-21';
+%Directory='C:\Users\jen_g\Data\ConF00_copy\2016-07-21';
+Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\2016-11-01-CRIO-v174_CORE_30b_He';
 AllFiles = getall(Directory);  %SORTED BY DATE....
-Experiment = AllFiles(2:8);
+%Experiment = AllFiles(2:8);
+Experiment = AllFiles(35:38);
 
 loadHHT 
 %change a few messy variable names

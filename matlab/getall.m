@@ -1,6 +1,4 @@
 %%get all data file names from directory and put in Experiment variable for loading
-%%Directory='C:/Users/jen_g/Data/WetBoiler2_copy/2014-05-24'
-
 function Experiment = getall(Directory)
 cd(Directory)
 Experiment={};
