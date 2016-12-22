@@ -10,11 +10,30 @@ p2 = 60;
 %reactor = '2016-08-20-CORE_28_DC_Heater';
 %reactor ='ipb1-2016-09-30-CRIO-v171_CORE_29b' 
 %reactor='sri-ipb2-0930'
+%reactor='sri-ipb2-1216'
 %reactor='2016-10-24-CRIO-v173_CORE_29b_H2'
 reactor='2016-11-01-CRIO-v180_CORE_30b_He'
-%reactor='ipb3'
+%reactor='ipb3-he'
+%reactor='ipb3-h2'
 switch (reactor)
-case 'ipb3' 
+case 'sri-ipb2-1216' 
+Directory='C:\Users\Owner\Dropbox (BEC)\SRI-IPB2\2016-12-16_SRI_v181-core27b';
+Directory='C:\Users\Owner\Dropbox (BEC)\BECteam\Jin\google\sri-ipb2-27b\DC-calibration';
+AllFiles = getall(Directory);  %SORTED BY DATE....
+whichDate = '12192016';
+switch (whichDate)
+case '12192016' 
+    %dataFile ='\ISOPERIBOLIC_DATA\2016-10-27-CRIO-v174_CORE_29b_H2\PB1_Core_29b_H2_150C-400C_QP50W_300VDC-day-01.csv';  
+    %dataFile ='IPB1_Temp_sequence_150-100-150ns_50W_150C-400C_Helium_Run3_10-07-16_day-01.csv:02.csv';
+    dataFile = 'IPB2-DC-H2';
+    startTime = 12;
+    endTime = 0; 
+    p1 = 0;
+    p2=60;
+    %Experiment = AllFiles(4:8);  
+    Experiment = AllFiles(6:6);  
+end        
+case 'ipb3-he' 
 Directory='C:\Users\Owner\Dropbox (BEC)\IPB3_DATA\2016-12-05-16-crio-V181-CORE_B31_He';
 AllFiles = getall(Directory);  %SORTED BY DATE....
 whichDate = '12092016';
@@ -28,17 +47,42 @@ case '12092016'
     p1 = 0;
     p2=60;
     Experiment = AllFiles(4:5);    
+end  
+case 'ipb3-h2' 
+Directory='C:\Users\Owner\Dropbox (BEC)\IPB3_DATA\2016-12-19-16-crio-V181-CORE_B32_H2';
+AllFiles = getall(Directory);  %SORTED BY DATE....
+whichDate = '12092016';
+switch (whichDate)
+case '12222016' 
+    %dataFile ='\ISOPERIBOLIC_DATA\2016-10-27-CRIO-v174_CORE_29b_H2\PB1_Core_29b_H2_150C-400C_QP50W_300VDC-day-01.csv';  
+    %dataFile ='IPB1_Temp_sequence_150-100-150ns_50W_150C-400C_Helium_Run3_10-07-16_day-01.csv:02.csv';
+    dataFile = 'IPB3-DC-He';
+    startTime = 0;
+    endTime = 0; 
+    p1 = 0;
+    p2=60;
+    Experiment = AllFiles(7:8);    
 end    
 
 case '2016-11-01-CRIO-v180_CORE_30b_He' 
-
-Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\2016-11-01-CRIO-v174_CORE_30b_He';
-Directory='C:\Users\Owner\Dropbox (BEC)\BECteam\Jin\google\ipb1_30b\DC-temp-control';
+%Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\2016-11-01-CRIO-v174_CORE_30b_He';
+%Directory='C:\Users\Owner\Dropbox (BEC)\BECteam\Jin\google\ipb1_30b\DC-temp-control';
 Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\2016-11-01-CRIO-v180_CORE_30b_He';
+%Directory='C:\Users\Owner\Dropbox (BEC)\BECteam\Jin\google\ipb1_30b\DC-temp-control-12212016';
 AllFiles = getall(Directory);  %SORTED BY DATE....
-whichDate = '11092016';
+whichDate = '12212016';
 switch (whichDate)
-case '11092016' 
+case '11082016' 
+    %dataFile ='\ISOPERIBOLIC_DATA\2016-10-27-CRIO-v174_CORE_29b_H2\PB1_Core_29b_H2_150C-400C_QP50W_300VDC-day-01.csv';  
+    %dataFile ='IPB1_Temp_sequence_150-100-150ns_50W_150C-400C_Helium_Run3_10-07-16_day-01.csv:02.csv';
+    dataFile = 'IPB1-DC-He-temperature';
+    startTime = 0;
+    endTime = 0; 
+    p1 = 0;
+    p2=60;
+    Experiment = AllFiles(4:4);    
+    
+case '12142016' 
     %dataFile ='\ISOPERIBOLIC_DATA\2016-10-27-CRIO-v174_CORE_29b_H2\PB1_Core_29b_H2_150C-400C_QP50W_300VDC-day-01.csv';  
     %dataFile ='IPB1_Temp_sequence_150-100-150ns_50W_150C-400C_Helium_Run3_10-07-16_day-01.csv:02.csv';
     dataFile = 'IPB1-DC-He';
@@ -47,6 +91,25 @@ case '11092016'
     p1 = 0;
     p2=60;
     Experiment = AllFiles(14:15);    
+case '12192016' 
+    %dataFile ='\ISOPERIBOLIC_DATA\2016-10-27-CRIO-v174_CORE_29b_H2\PB1_Core_29b_H2_150C-400C_QP50W_300VDC-day-01.csv';  
+    %dataFile ='IPB1_Temp_sequence_150-100-150ns_50W_150C-400C_Helium_Run3_10-07-16_day-01.csv:02.csv';
+    dataFile = 'IPB1-DC-He';
+    startTime = 0;
+    endTime = 0; 
+    p1 = 0;
+    p2=60;
+    Experiment = AllFiles(16:21);    
+case '12212016' 
+    %dataFile ='\ISOPERIBOLIC_DATA\2016-10-27-CRIO-v174_CORE_29b_H2\PB1_Core_29b_H2_150C-400C_QP50W_300VDC-day-01.csv';  
+    %dataFile ='IPB1_Temp_sequence_150-100-150ns_50W_150C-400C_Helium_Run3_10-07-16_day-01.csv:02.csv';
+    dataFile = 'IPB1-DC-He';
+    startTime = 2;
+    endTime = 0; 
+    p1 = 0;
+    p2=60;
+    Experiment = AllFiles(25:25);    
+    %Experiment = AllFiles(3:3);     
 end    
 
 case '2016-10-24-CRIO-v173_CORE_29b_H2' 
