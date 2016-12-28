@@ -23,10 +23,10 @@ coreqpow1 = 0;
 coreqpow2 = 5;
 % list reactors,cores and directories starting from the most recent ones
 %reactor='google'; %merge files for google, test before the loading
-%reactor='2016-11-01-CRIO-v174_CORE_30b_He';
+reactor='2016-11-01-CRIO-v174_CORE_30b_He';
 %reactor='2016-11-01-CRIO-v180_CORE_30b_He'
 %reactor='sri-ipb2-27b-1116';
-reactor='ipb3-32b-h2';
+%reactor='ipb3-32b-h2';
 %reactor='ipb3-32b-he';
 
 %reactor='ipb3-36b';
@@ -81,7 +81,8 @@ case '12132016'
     hp2= 110;
     coreqpow1=1;
     coreqpow2=6;
-    Experiment = AllFiles(8:9);          
+    Experiment = AllFiles(8:9);        
+    
 end 
 case 'ipb3-32b-he' 
 %Directory='C:\Users\Owner\Dropbox (BEC)\IPB3_DATA\2016-12-05-16-crio-V181-CORE_B31_He';
@@ -106,7 +107,7 @@ case 'ipb3-32b-h2'
 Directory='C:\Users\Owner\Dropbox (BEC)\IPB3_DATA\2016-12-14-16-crio-V181-CORE_B32_He';
 Directory='C:\Users\Owner\Dropbox (BEC)\IPB3_DATA\2016-12-19-16-crio-V181-CORE_B32_H2';
 AllFiles = getall(Directory);  %SORTED BY DATE....
-whichDate = '12282016';
+whichDate = '12272016';
 switch (whichDate)
 case '12172016' 
     %dataFile ='\ISOPERIBOLIC_DATA\2016-10-27-CRIO-v174_CORE_29b_H2\PB1_Core_29b_H2_150C-400C_QP50W_300VDC-day-01.csv';  
@@ -178,16 +179,7 @@ case '12272016'
     coreqpow1=1;
     coreqpow2=6;
     Experiment = AllFiles(16:17);        
-case '12282016' 
-    %dataFile ='\ISOPERIBOLIC_DATA\2016-10-27-CRIO-v174_CORE_29b_H2\PB1_Core_29b_H2_150C-400C_QP50W_300VDC-day-01.csv';  
-    dataFile ='ipb3-d2-32b';
-    startTime = 0;
-    endTime = 0; 
-    hp1 = 10;
-    hp2= 60;
-    coreqpow1=1;
-    coreqpow2=6;
-    Experiment = AllFiles(18:19);      
+    
 end    
 case '2016-11-01-CRIO-v180_CORE_30b_He' 
 Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\2016-11-01-CRIO-v180_CORE_30b_He';
@@ -215,11 +207,11 @@ case '12242016'
     coreqpow2=10;
     Experiment = AllFiles(24:27);     
 end    
-case '2016-11-01-CRIO-v174_CORE_30b_He' 
+case '2016-10-27-CRIO-v174_CORE_30b_He' 
 Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\2016-11-01-CRIO-v174_CORE_30b_He';
 %Directory='C:\Users\Owner\Dropbox (BEC)\BECteam\Jen';
 AllFiles = getall(Directory);  %SORTED BY DATE....
-whichDate = '11102016';
+whichDate = '12122016';
 switch (whichDate)
 case '11012016' 
     %dataFile ='\ISOPERIBOLIC_DATA\2016-10-27-CRIO-v174_CORE_29b_H2\PB1_Core_29b_H2_150C-400C_QP50W_300VDC-day-01.csv';  
