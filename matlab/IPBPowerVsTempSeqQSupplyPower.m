@@ -12,9 +12,9 @@ p2 = 60;
 %reactor='sri-ipb2-0930'
 %reactor='sri-ipb2-1216'
 %reactor='2016-10-24-CRIO-v173_CORE_29b_H2'
-reactor='2016-11-01-CRIO-v180_CORE_30b_He'
+%reactor='2016-11-01-CRIO-v180_CORE_30b_He'
 %reactor='ipb3-he'
-%reactor='ipb3-h2'
+reactor='ipb3-h2'
 switch (reactor)
 case 'sri-ipb2-1216' 
 Directory='C:\Users\Owner\Dropbox (BEC)\SRI-IPB2\2016-12-16_SRI_v181-core27b';
@@ -130,7 +130,7 @@ case '12262016'
     p1 = 0;
     p2=60;
     %Experiment = AllFiles(28:30);        
-    Experiment = AllFiles(31:32);     
+    Experiment = AllFiles(31:34);     
 end    
 
 case '2016-10-24-CRIO-v173_CORE_29b_H2' 
@@ -171,6 +171,21 @@ switch (whichDate)
     endTime = 12; 
     %Experiment = AllFiles(18:20); 
     Experiment = AllFiles(4:4); 
+end 
+case 'sri-ipb2-12-16' 
+Directory='C:\Users\Owner\Dropbox (BEC)\SRI-IPB2\2016-12-16_SRI_v181-core27b';
+Directory='C:\Users\Owner\Dropbox (BEC)\BECteam\Jin\google\sri-ipb2-27b\DC-cali2';
+%Directory='C:\Users\Owner\Dropbox (BEC)\BECteam\Jin\google\sri-ipb2-27b\DC-h2-temp-control';
+AllFiles = getall(Directory);  %SORTED BY DATE....
+whichDate = '12292016';
+switch (whichDate)
+  case '12292016' 
+    dataFile ='\SRI-IPB2\2016-09-30_SRI_v171-core27b\SRI-IPB2_H2-250-400C_9-30-16_day-11.csv : 13.csv' ;  
+    
+    startTime = 0;
+    endTime = 0; 
+    %Experiment = AllFiles(18:20); 
+    Experiment = AllFiles(6:6); 
 end 
 case 'ipb1-2016-09-30-CRIO-v171_CORE_29b' 
 Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\2016-09-30-CRIO-v171_CORE_29b';

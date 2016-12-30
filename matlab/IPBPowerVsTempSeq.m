@@ -3,16 +3,16 @@ clear; close all
 addpath('C:\jinwork\BE\matlab')
 addpath('C:\jinwork\BE\matlab\addaxis5')
 %Control parameters
-dailyPlot = 1;
+dailyPlot = 0;
 exponentialFit = 0;
-debugQPow = 0;
+debugQPow = 1;
 flowratePlot = 0;
 tempPlot = 0;
 qPowOnlyPlot = 0;
 heaterPowerOnlyPlot = 0;
 qPowHeaterPowerPlot = 0;
 qpulseLen = 0;
-processYes = 1;
+processYes = 0;
 errorBarPlot = 0;
 %plot bounds setting
 hp1 = 10;
@@ -28,7 +28,6 @@ coreqpow2 = 5;
 %reactor='sri-ipb2-27b-1116';
 reactor='ipb3-32b-h2';
 %reactor='ipb3-32b-he';
-
 %reactor='ipb3-36b';
 switch (reactor)
 case 'google' 
@@ -187,7 +186,7 @@ case '12282016'
     hp2= 60;
     coreqpow1=1;
     coreqpow2=6;
-    Experiment = AllFiles(18:19);      
+    Experiment = AllFiles(18:20);      
 end    
 case '2016-11-01-CRIO-v180_CORE_30b_He' 
 Directory='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\2016-11-01-CRIO-v180_CORE_30b_He';
@@ -429,21 +428,21 @@ switch (whichDate)
     hp1 =5;
     hp2=40;
     Experiment = AllFiles(8:8);    
-   case '11302016-12012016' %heater power at 20w and qpow form 10-50-10, 100ns
+  case '11302016-12012016' %heater power at 20w and qpow form 10-50-10, 100ns
     dataFile ='\SRI-IPB2\2016-09-30_SRI_v171-core27b\heatpowerQpow-100ns';   
     startTime =0;
     endTime = 0; 
     hp1 =15;
     hp2=25;
     Experiment = AllFiles(11:13);   
-   case '12032016' 
+  case '12032016' 
     dataFile ='\SRI-IPB2\2016-09-30_SRI_v171-core27b\heatpowerQpow-83ns';   
     startTime =0;
     endTime = 0; 
     hp1 =15;
     hp2=25;
     Experiment = AllFiles(14:15);      
-   case '12042016' 
+  case '12042016' 
     dataFile ='\SRI-IPB2\2016-09-30_SRI_v171-core27b\temp-83ns';   
     startTime =0;
     endTime = 0; 
@@ -452,7 +451,7 @@ switch (whichDate)
     hp1 =15;
     hp2=40;
     Experiment = AllFiles(17:18);      
-   case '12062016' 
+  case '12062016' 
     dataFile ='\SRI-IPB2\2016-09-30_SRI_v171-core27b\heaterpower-qpow-9167ns';   
     startTime =0;
     endTime = 0; 
@@ -461,7 +460,7 @@ switch (whichDate)
     hp1 =15;
     hp2=40;
     Experiment = AllFiles(19:21);      
-   case '12072016' 
+  case '12072016' 
     dataFile ='\SRI-IPB2\2016-09-30_SRI_v171-core27b\heaterpower-qpow-9167ns';   
     startTime =0;
     endTime = 0; 
@@ -470,7 +469,7 @@ switch (whichDate)
     hp1 =10;
     hp2=21;
     Experiment = AllFiles(23:25);
-   case '12082016' 
+  case '12082016' 
     dataFile ='\SRI-IPB2\2016-09-30_SRI_v171-core27b\hp012525-qpow02550';   
     startTime =0;
     endTime = 0; 
@@ -479,7 +478,7 @@ switch (whichDate)
     hp1 =10;
     hp2=26;
     Experiment = AllFiles(26:29);        
-   case '12162016' 
+  case '12162016' 
     dataFile ='\SRI-IPB2\2016-09-30_SRI_v171-core27b\hp012525-qpow02550';   
     startTime =0;
     endTime = 0; 
@@ -505,6 +504,7 @@ DateTime(end - int16(endTime*360));
 j1 = horzcat(dateN,...
      HeaterPower,...
      CoreTemp,...
+     InnerBlockTemp1,...
      QPulseLengthns,...
      QkHz,...
      QPow,...
@@ -512,6 +512,9 @@ j1 = horzcat(dateN,...
      TerminationHeatsinkPower,...
      QPulsePCBHeatsinkPower,...
      CoreQPower,...
+     CoreQV1Rms,...
+     CoreQV2Rms,...);
+
      CalorimeterJacketFlowrateLPM,...
      QPCBHeatsinkFlowrateLPM,...
      TerminationHeatsinkFlowrateLPM,...
@@ -526,9 +529,7 @@ j1 = horzcat(dateN,...
      QPulseVolt,...
      PressureSensorPSI,...
      InnerBlockTemp1,...
-     InnerBlockTemp2,...
      OuterBlockTemp1,...
-     OuterBlockTemp2,...
      QCur,...
      QSupplyPower,...
      QSupplyVolt,...
@@ -591,8 +592,8 @@ addaxis(dt,j1(:,3),'linewidth',1.5); %temp
 addaxis(dt,j1(:,4),'linewidth',1); %QpulseLeng
 addaxis(dt,j1(:,6),[qpow1,qpow2]); %qPow
 addaxis(dt,j1(:,10),[coreqpow1,coreqpow2]) ; %coreQPow
-%addaxis(dt,j1(:,31),[0,12]); %CoreQV1Rms
-%addaxis(dt,j1(:,32),[0,12]) ; %CoreQV2Rms
+addaxis(dt,j1(:,31),[0,12]); %CoreQV1Rms
+addaxis(dt,j1(:,32),[0,12]) ; %CoreQV2Rms
 %addaxis(dt,j1(:,5)) ; %qkHz
 title(dataFile,'fontsize',11);
 addaxislabel(1,'Heater Power(W)');
@@ -600,8 +601,8 @@ addaxislabel(2,'CoreTemp(C)');
 addaxislabel(3,'QPulseWid(ns)');
 addaxislabel(4,'QPow(W)');
 addaxislabel(5,'CoreQPow(W)'); 
-%addaxislabel(6,'CoreQV1Rms(Volt)');
-%addaxislabel(7,'CoreQV2Rms(Volt)'); 
+addaxislabel(6,'CoreQV1Rms(Volt)');
+addaxislabel(7,'CoreQV2Rms(Volt)'); 
 %addaxislabel(8,'qkHz'); 
 end 
 if (flowratePlot)
@@ -737,9 +738,10 @@ while (i < j1Size-1)
     end  
     qTerm(seq2) = trimmean(j1(i2-ii:i2,8),trim);
     qPCB(seq2) = trimmean(j1(i2-ii:i2,9),trim);
-    coreQPow(seq2)=trimmean(j1(i2-ii:i2,10),trim);
-    coreQV1RMS(seq2)=trimmean(j1(i2-ii:i2,31),trim);
-    coreQV2RMS(seq2)=trimmean(j1(i2-ii:i2,32),trim);
+    coreQPow(seq2)=trimmean(j1(i1:i2,10),trim);
+    coreQV1RMS(seq2)=trimmean(j1(i1:i2,31),trim);
+    coreQV2RMS(seq2)=trimmean(j1(i1:i2,32),trim);
+    qSupplyP(seq2) = trimmean(j1(i2-ii:i2,22),trim); 
     coreQPowError(seq2)=std(j1(i2-ii:i2,10));
     cjp(seq2) = trimmean(j1(i2-ii:i2,14),trim);
     jlpm(seq2) = trimmean(j1(i2-ii:i2,11),trim);
