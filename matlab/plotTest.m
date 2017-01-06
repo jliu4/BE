@@ -36,15 +36,13 @@ heunitemp = unique(int16(Mhe(:,1)));
 figure
 grid
 hold on
-
 for qli = 1:numel(h2uniql)
    qM = Mh2(Mh2(:,4) == h2uniql(qli),:); 
    xlabel('coreTemp(C)');
    ylabel('V1-V2(volt)');
  
    plot(qM(:,1),qM(:,8)-qM(:,9));
-   labels{qli}=strcat('H2QPulse=',num2str(h2uniql(qli)));
-   
+   labels{qli}=strcat('H2QPulse=',num2str(h2uniql(qli)));  
 end
 for qli = 1:numel(heuniql)
    qM = Mhe(Mhe(:,4) == heuniql(qli),:); 
@@ -52,8 +50,7 @@ for qli = 1:numel(heuniql)
    ylabel('V1-V2(volt)');
  
    plot(qM(:,1),qM(:,8)-qM(:,9),'--');
-   labels{qli+3}=strcat('HeQPulse=',num2str(heuniql(qli)));
-   
+   labels{qli+3}=strcat('HeQPulse=',num2str(heuniql(qli)));   
 end
 legend(labels);
 figure
@@ -62,19 +59,15 @@ hold on
 for tli = 1:numel(h2unitemp)
    qM = Mh2(int16(Mh2(:,1)) == h2unitemp(tli),:);
    xlabel('QPulseLength(ns)');
-   ylabel('V1-V2(volt)');
-  
+   ylabel('V1-V2(volt)'); 
    plot(qM(:,4),qM(:,8)-qM(:,9));
-   labels{tli}=strcat('H2coreTemp=',num2str(h2unitemp(tli)));
-  
+   labels{tli}=strcat('H2coreTemp=',num2str(h2unitemp(tli))); 
 end
 for tli = 1:numel(heunitemp)
    qM = Mhe(int16(Mhe(:,1)) == heunitemp(tli),:);
    xlabel('QPulseLength(ns)');
-   ylabel('V1-V2(volt)');
-  
+   ylabel('V1-V2(volt)');  
    plot(qM(:,4),qM(:,8)-qM(:,9),'--');
-   labels{tli+numel(heunitemp)}=strcat('HecoreTemp=',num2str(heunitemp(tli)));
-  
+   labels{tli+numel(heunitemp)}=strcat('HecoreTemp=',num2str(heunitemp(tli)));  
 end
 legend(labels)

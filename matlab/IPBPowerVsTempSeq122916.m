@@ -20,8 +20,8 @@ coreqpow2 = 12;
 % list reactors,cores and directories starting from the most recent ones
 %reactor = 'ipb1-29b';
 %reactor = 'ipb1-30b';
-reactor='sri-ipb2';
-%reactor='ipb3-32b';
+%reactor='sri-ipb2';
+reactor='ipb3-32b';
 %reactor='google'; %merge files for google, test before the loading
 %reactor='ipb3-36b';
 switch (reactor)
@@ -89,12 +89,12 @@ subFolder = {'2016-11-28-16-crio-V177-CORE_B31_He',...
  '2016-12-05-16-crio-V181-CORE_B31_He',...
  '2016-12-14-16-crio-V181-CORE_B32_He',...
  '2016-12-19-16-crio-V181-CORE_B32_H2'};
-folder = 4;
+folder = 6;
 switch folder 
 case 6    
 Directory=char(strcat(rtFolder,subFolder(folder)));
 AllFiles = getall(Directory);  
-whichDate = '01022017';
+whichDate = '01042017';
 switch (whichDate)
 case '12172016'    
     dataFile =strcat(Directory,whichDate); 
@@ -132,6 +132,15 @@ case '01022017'
     coreqpow1=1;
     coreqpow2=6;
     Experiment = AllFiles(27:28);     
+case '01042017'    
+    dataFile =strcat(Directory,whichDate); 
+    startTime = 0;
+    endTime = 0; 
+    hp1 = 5; 
+    hp2= 60;
+    coreqpow1=1;
+    coreqpow2=6;
+    Experiment = AllFiles(29:32);     
     
 end    
 case 4
