@@ -26,7 +26,7 @@ coreqpow2 = 5;
 %reactor='2016-11-01-CRIO-v174_CORE_30b_He';
 %reactor='2016-11-01-CRIO-v180_CORE_30b_He'
 %reactor='sri-ipb2-27b-1116';
-reactor='ipb3-32b-h2';
+%reactor='ipb3-32b-h2';
 %reactor='ipb3-32b-he';
 %reactor='ipb3-36b';
 switch (reactor)

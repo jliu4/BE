@@ -6,54 +6,54 @@ addpath('C:\jinwork\BE\matlab\addaxis5')
 qPlot = 1;
 dcPlot = 0;
 exponentialFit = 0;
-debugQPow = 0;
-flowratePlot = 0;
-tempPlot = 0;
-qPowOnlyPlot = 0;
-heaterPowerOnlyPlot = 0;
-qPowHeaterPowerPlot = 0;
 qpulseLen = 0;
 processYes = 1;
 errorBarPlot = 0;
+coreRes = 0.5;
 %plot bounds setting
 hp1 = 10;
 hp2 = 25; 
 qpow1 = 5;
 qpow2 = 55;
 coreqpow1 = 0;
-coreqpow2 = 5;
+coreqpow2 = 12;
 % list reactors,cores and directories starting from the most recent ones
+%reactor = 'ipb1-29b';
 %reactor = 'ipb1-30b';
-%reactor='sri-ipb2-27b';
-reactor='ipb3-32b';
+reactor='sri-ipb2';
+%reactor='ipb3-32b';
 %reactor='google'; %merge files for google, test before the loading
 %reactor='ipb3-36b';
 switch (reactor)
 case 'google' 
 rtFolder='C:\Users\Owner\Dropbox (BEC)\BECteam\Jin\google\';
 %list subfolders under google 
-subFolder = {'ipb1_30b\6-qpow-only'...
-             'sri-ipb2-27b\2-heaterpow-only'...
+subFolder = {'sri-ipb2-27b\2-heaterpow-only'...
              'sri-ipb2-27b\3-qpow8hours'...
              'sri-ipb2-27b\4-qpow-heaterpow-83ns'...
              'sri-ipb2-27b\7-qpow-heaterpow-100ns'...
              'sri-ipb2-27b\qpow-heatpower125w'...
              'sri-ipb2-27b\q-calibration'...
+             'sri-ipb2-27b\DC-cali2'...
              'ipb3-32b'...
+             'ipb1_30b\6-qpow-only'...
              'ipb1_30b\DC-calibration'...
              'ipb1_30b\5-heaterpower-only'...
-             'ipb1_30b\DC-cali2'};
-Directory=char(strcat(rtFolder,subFolder(11)));
+             'ipb1_30b\DC-cali2'...
+             'ipb1_30b\DC-temp-control'...
+             'ipb1_30b\DC-temp-control-12212016'...
+             };
+Directory=char(strcat(rtFolder,subFolder(6)));
 AllFiles = getall(Directory);  %SORTED BY DATE....
-whichDate = 'anydate';
+whichDate = 'qpulse-calibration';
 switch (whichDate)
-case 'anydate' 
+case 'qpulse-calibration' 
     dataFile =Directory;
     startTime = 0;
     endTime = 0; 
-    hp1 = 5;
-    hp2= 40;
-    Experiment = AllFiles(6:6);            
+    hp1 = 0;
+    hp2= 60;
+    Experiment = AllFiles(1:5);            
 end  
 case 'ipb3-36b'    
 Directory='C:\Users\Owner\Dropbox (BEC)\IPB3_DATA\2016-12-09-16-crio-V181-CORE_B36_FOIL_H2'
@@ -89,12 +89,12 @@ subFolder = {'2016-11-28-16-crio-V177-CORE_B31_He',...
  '2016-12-05-16-crio-V181-CORE_B31_He',...
  '2016-12-14-16-crio-V181-CORE_B32_He',...
  '2016-12-19-16-crio-V181-CORE_B32_H2'};
-folder = 6;
+folder = 4;
 switch folder 
 case 6    
 Directory=char(strcat(rtFolder,subFolder(folder)));
 AllFiles = getall(Directory);  
-whichDate = '12302016';
+whichDate = '01022017';
 switch (whichDate)
 case '12172016'    
     dataFile =strcat(Directory,whichDate); 
@@ -114,6 +114,25 @@ case '12302016'
     coreqpow1=1;
     coreqpow2=6;
     Experiment = AllFiles(21:22);    
+case '12312016'    
+    dataFile =strcat(Directory,whichDate); 
+    startTime = 0;
+    endTime = 20; 
+    hp1 = 5; 
+    hp2= 60;
+    coreqpow1=1;
+    coreqpow2=6;
+    Experiment = AllFiles(23:25);     
+case '01022017'    
+    dataFile =strcat(Directory,whichDate); 
+    startTime = 0;
+    endTime = 0; 
+    hp1 = 5; 
+    hp2= 60;
+    coreqpow1=1;
+    coreqpow2=6;
+    Experiment = AllFiles(27:28);     
+    
 end    
 case 4
 Directory=char(strcat(rtFolder,subFolder(folder)));
@@ -219,7 +238,7 @@ switch folder
 case 2    
 Directory=char(strcat(rtFolder,subFolder(folder)));
 AllFiles = getall(Directory);
-whichDate = '12302016';
+whichDate = '01052017';
 dataFile =strcat(Directory,whichDate); 
 switch (whichDate)
 case '12092016' 
@@ -230,23 +249,54 @@ case '12092016'
     coreqpow1=0;
     coreqpow2=10;
     Experiment = AllFiles(12:13);  
-case '12242016' 
+case '12182016' %DC temperature control
+    startTime = 5;
+    endTime = 0; 
+    hp1 = 0;
+    hp2= 50;
+    coreqpow1=0;
+    coreqpow2=12;
+    Experiment = AllFiles(21:23);     
+case '12242016' %not useful, something went to wrong with excitation, 
     startTime = 5;
     endTime = 0; 
     hp1 = 0;
     hp2= 15;
     coreqpow1=0;
     coreqpow2=10;
-    Experiment = AllFiles(24:27);     
-case '12302016' 
+    Experiment = AllFiles(24:27); 
+case '12262016' %40 hours excitation
     startTime = 5;
     endTime = 0; 
     hp1 = 0;
     hp2= 45;
     coreqpow1=0;
-    coreqpow2=10;
+    coreqpow2=12;
+    Experiment = AllFiles(28:30);         
+case '12302016' %100 hours calibration
+    startTime = 5;
+    endTime = 0; 
+    hp1 = 0;
+    hp2= 45;
+    coreqpow1=0;
+    coreqpow2=12;
     Experiment = AllFiles(31:35);     
-    
+case '01012017' 
+    startTime = 0;
+    endTime = 0; 
+    hp1 = 0;
+    hp2= 45;
+    coreqpow1=0;
+    coreqpow2=12;
+    Experiment = AllFiles(36:38); 
+case '01052017' 
+    startTime = 0;
+    endTime = 0; 
+    hp1 = 0;
+    hp2= 45;
+    coreqpow1=0;
+    coreqpow2=12;
+    Experiment = AllFiles(48:49);       
 end    
 case 1
 Directory=char(strcat(rtFolder,subFolder(folder)));
@@ -266,6 +316,12 @@ case '11102016'
     hp1 = 5;
     hp2=10;
     Experiment = AllFiles(1:15);
+case '11082016' 
+    startTime = 0;
+    endTime = 0; 
+    hp1 = 0;
+    hp2=20;
+    Experiment = AllFiles(14:17);      
 case '11112016' 
     startTime = 0;
     endTime = 0; 
@@ -402,8 +458,19 @@ subFolder = {'2016-09-24_SRI_v170-core27b'...
     '2016-09-30_SRI_v171-core27b',...
     '2016-11-16_SRI_v174-core27b',...
     '2016-12-16_SRI_v181-core27b'};
-folder = 3;
+folder = 4;
 switch folder 
+case 2    
+Directory=char(strcat(rtFolder,subFolder(folder)));
+AllFiles = getall(Directory);
+whichDate = '10152016';
+dataFile =strcat(Directory,whichDate); 
+switch (whichDate)
+  case '10152016' 
+    startTime = 0;
+    endTime = 0; 
+    Experiment = AllFiles(20:22);
+end     
 case 3    
 Directory=char(strcat(rtFolder,subFolder(folder)));
 AllFiles = getall(Directory);
@@ -488,17 +555,37 @@ end
 case 4
 Directory=char(strcat(rtFolder,subFolder(folder)));
 AllFiles = getall(Directory);
-whichDate = '12292016';
+whichDate = '01052017';
 dataFile =strcat(Directory,whichDate); 
 switch (whichDate)
   case '12222016' 
     startTime = 4;
     endTime = 0; 
     Experiment = AllFiles(9:11);
-   case '12292016' 
+  case '12292016' 
     startTime = 5;
     endTime = 0; 
     Experiment = AllFiles(17:18);  
+  case '12312016' 
+    startTime = 0;
+    endTime = 0; 
+    Experiment = AllFiles(20:21);
+    hp1 =0;
+    hp2=40;
+  case '01032017' 
+    startTime = 0;
+    endTime = 0; 
+    Experiment = AllFiles(24:25);
+    hp1 =0;
+    hp2=40;
+   
+  case '01052017' 
+    startTime = 0;
+    endTime = 0; 
+    Experiment = AllFiles(27:28);
+    hp1 =0;
+    hp2=40;
+ 
 end %date
 end %folder
 end %reactor
@@ -545,6 +632,7 @@ rawData = horzcat(dateN,...
      QPulseVolt,...
      PressureSensorPSI);
 %asignColumn name 
+
 dataset({rawData,'dateN',...
      'SeqStepNum',...
      'HeaterPower',...
@@ -576,9 +664,10 @@ dataset({rawData,'dateN',...
      'QPulseVolt',...
      'PressureSensorPSI'}); 
 %filter rawData out 
-rawData = rawData(1+startTime*360:end-endTime*360,:);
 dataSize = size(rawData,1)
-rawData(any(isnan(rawData)),:)=[]; %take out rows with Nan
+rawData = rawData(1+int16(startTime*360):end-int16(endTime*360),:);
+dataSize = size(rawData,1)
+%rawData(any(isnan(rawData)),:)=[]; %take out rows with Nan
 dataSize = size(rawData,1)
 %(isnan(j1)) = -2 ;
 rawData = rawData(rawData(:,2) > 0,:); %only process data with seq
@@ -588,40 +677,41 @@ if (dcPlot == 1)
 figure
 hold on
 aa_splot(dt,HeaterPower,'black','linewidth',1.5);
+ylim([hp1, hp2]);
 addaxis(dt,CoreTemp,'linewidth',1.5);
 addaxis(dt,InnerBlockTemp1);
-addaxis(dt,QSupplyPower) ;
-%addaxis(dt,QCur); 
 addaxis(dt,QSupplyVolt);
-%addaxis(dt,QSetV);
+addaxis(dt,QSupplyPower) ;
+addaxis(dt,QSetV);
+%addaxis(dt,QCur); 
 title(dataFile,'fontsize',11);
 addaxislabel(1,'HeaterPower');
 addaxislabel(2,'CoreT');
 addaxislabel(3,'InnerT');
 addaxislabel(4,'QSupply');
-%addaxislabel(5,'QCur');
 addaxislabel(5,'QSupplyVolt'); 
-%addaxislabel(7,'QSetV'); 
+addaxislabel(6,'QSetV'); 
+%addaxislabel(7,'QCur');
 end 
 if (qPlot == 1)
 figure(1)
 hold on
 aa_splot(dt,HeaterPower,'black','linewidth',1.5); 
-ylim([hp1, hp2])
+ylim([hp1, hp2]);
 addaxis(dt,CoreTemp,'linewidth',1.5); 
-addaxis(dt,QPulseLengthns,'linewidth',1); 
 addaxis(dt,QPow,[qpow1,qpow2]); 
 addaxis(dt,CoreQPower,[coreqpow1,coreqpow2]) ;
 addaxis(dt,CoreQV1Rms,[0,12]); 
 addaxis(dt,CoreQV2Rms,[0,12]) ;
+addaxis(dt,(CoreQV1Rms-CoreQV2Rms).*(CoreQV1Rms-CoreQV2Rms)/coreRes,[coreqpow1,coreqpow2]) ;
 title(dataFile,'fontsize',11);
 addaxislabel(1,'Heater Power(W)');
 addaxislabel(2,'CoreTemp(C)');
-addaxislabel(3,'QPulseWid(ns)');
-addaxislabel(4,'QPow(W)');
-addaxislabel(5,'CoreQPow(W)'); 
-addaxislabel(6,'V1Rms(Volt)');
-addaxislabel(7,'V2Rms(Volt)'); 
+addaxislabel(3,'QPow(W)');
+addaxislabel(4,'CoreQPow(W)'); 
+addaxislabel(5,'V1Rms(Volt)');
+addaxislabel(6,'V2Rms(Volt)'); 
+addaxislabel(7,strcat('(V1-V2)^2/',num2str(coreRes))); 
 end 
 if (processYes == 1) 
 ctFit = [];

@@ -51,8 +51,8 @@ for qli = 1:numel(heuniql)
    xlabel('coreTemp(C)');
    ylabel('V1-V2(volt)');
  
-   plot(qM(:,1),qM(:,8)-qM(:,9));
-   labels{qli+3}=strcat('H2QPulse=',num2str(heuniql(qli)));
+   plot(qM(:,1),qM(:,8)-qM(:,9),'--');
+   labels{qli+3}=strcat('HeQPulse=',num2str(heuniql(qli)));
    
 end
 legend(labels);
@@ -65,8 +65,16 @@ for tli = 1:numel(h2unitemp)
    ylabel('V1-V2(volt)');
   
    plot(qM(:,4),qM(:,8)-qM(:,9));
-   labels{tli}=strcat('coreTemp=',num2str(h2unitemp(tli)));
+   labels{tli}=strcat('H2coreTemp=',num2str(h2unitemp(tli)));
   
 end
-
+for tli = 1:numel(heunitemp)
+   qM = Mhe(int16(Mhe(:,1)) == heunitemp(tli),:);
+   xlabel('QPulseLength(ns)');
+   ylabel('V1-V2(volt)');
+  
+   plot(qM(:,4),qM(:,8)-qM(:,9),'--');
+   labels{tli+numel(heunitemp)}=strcat('HecoreTemp=',num2str(heunitemp(tli)));
+  
+end
 legend(labels)

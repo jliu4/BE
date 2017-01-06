@@ -3,16 +3,16 @@ clear; close all
 addpath('C:\jinwork\BE\matlab')
 addpath('C:\jinwork\BE\matlab\addaxis5')
 %Control parameters
-dailyPlot = 0;
+dailyPlot = 1;
 debugQPow = 0;
 flowratePlot = 0;
 tempPlot = 0;
-qPowOnlyPlot = 1;
+qPowOnlyPlot = 0;
 heaterPowerOnlyPlot = 0;
 qPowHeaterPowerPlot = 0;
 qpulseLen = 0;
-processYes = 0;
-errorBarPlot = 0;
+processYes = 1;
+errorBarPlot = 1;
 hp1 = 0;
 hp2 = 40; 
 qpow1 = 5;
@@ -24,7 +24,7 @@ coreqpow2 = 8.2;
 %reactor='2016-10-27-CRIO-v174_CORE_30b_He';
 %reactor='sri-ipb2-27b-1116';
 %reactor='sri-ipb2-27b';
-reactor='2016-10-27-CRIO-v174_CORE_29b_H2';
+%reactor='2016-10-27-CRIO-v174_CORE_29b_H2';
 %reactor='2016-10-24-CRIO-v173_CORE_29b_H2';
 %reactor ='ipb1-2016-09-30-CRIO-v171_CORE_29b' ;
 %reactor = '2016-09-29-CRIO-v170_CORE_29b';
@@ -33,7 +33,7 @@ reactor='2016-10-27-CRIO-v174_CORE_29b_H2';
 %reactor = 'ipb1-0924-v169-27b';
 %reactor='ipb2-0909-v169-27b';
 %reactor = 'ipb2-0909-167-27b';
-%reactor='ipb2-0909-166-27b';
+reactor='ipb2-0909-166-27b';
 %reactor = 'ipb2-0909-165-27b';
 %reactor = 'ipb1-0928-crio-v170_core_26b'
 switch (reactor)
@@ -701,7 +701,7 @@ Experiment'
 loadHHT 
 %change a few messy variable names
 QOccurred = QOccurred0x3F; clear QPulseOccurred0x3F
-%SeqStepNum = SeqStep0x23; clear SeqStep0x23
+SeqStepNum = SeqStep0x23; clear SeqStep0x23
 QPulseLengthns = QPulseLength0x28ns0x29; clear QPulseLength0x28ns0x29
 QPulseDelays = QPulseDelay0x28s0x29; clear QPulseDelay0x28s0x29
 QkHz = QKHz; clear QKHz;
