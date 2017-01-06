@@ -2,7 +2,7 @@
 clear; close all
 addpath('C:\jinwork\BE\matlab')
 addpath('C:\jinwork\BE\matlab\addaxis5')
-filename='C:\jinwork\BEC\tmp\ipb3-32b-he-h2.csv';
+filename='C:\jinwork\BE\ipb3-32b-he-h2.csv';
 %filenamehe='C:\jinwork\BEC\tmp\ipb3-32b-he-121416-12172016.csv';
 M = csvread(filename,1,0);
 dataset({M,'coreTemp',...
@@ -31,6 +31,7 @@ Mhe = M(M(:,17)==4,:);
 dataSize = size(M,1)
 h2uniql = unique(Mh2(:,4));
 h2unitemp = unique(int16(Mh2(:,1)));
+
 heuniql = unique(Mhe(:,4));
 heunitemp = unique(int16(Mhe(:,1)));
 figure
@@ -39,8 +40,7 @@ hold on
 for qli = 1:numel(h2uniql)
    qM = Mh2(Mh2(:,4) == h2uniql(qli),:); 
    xlabel('coreTemp(C)');
-   ylabel('V1-V2(volt)');
- 
+   ylabel('V1-V2(volt)'); 
    plot(qM(:,1),qM(:,8)-qM(:,9));
    labels{qli}=strcat('H2QPulse=',num2str(h2uniql(qli)));  
 end
@@ -48,7 +48,6 @@ for qli = 1:numel(heuniql)
    qM = Mhe(Mhe(:,4) == heuniql(qli),:); 
    xlabel('coreTemp(C)');
    ylabel('V1-V2(volt)');
- 
    plot(qM(:,1),qM(:,8)-qM(:,9),'--');
    labels{qli+3}=strcat('HeQPulse=',num2str(heuniql(qli)));   
 end
