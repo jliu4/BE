@@ -42,18 +42,20 @@ subFolder = {'sri-ipb2-27b\2-heaterpow-only'...
              'ipb1_30b\DC-cali2'...
              'ipb1_30b\DC-temp-control'...
              'ipb1_30b\DC-temp-control-12212016'...
+             'ipb1-29b\ipb1-29b-he-DC'...
+             'ipb1-29b\ipb1-29b-h2-DC'...
              };
-Directory=char(strcat(rtFolder,subFolder(6)));
+Directory=char(strcat(rtFolder,subFolder(15)));
 AllFiles = getall(Directory);  %SORTED BY DATE....
-whichDate = 'qpulse-calibration';
+whichDate = 'dc-29b-he';
 switch (whichDate)
-case 'qpulse-calibration' 
+case 'dc-29b-he' 
     dataFile =Directory;
     startTime = 0;
     endTime = 0; 
     hp1 = 0;
     hp2= 60;
-    Experiment = AllFiles(1:5);            
+    Experiment = AllFiles(1:3);            
 end  
 case 'ipb3-36b'    
 Directory='C:\Users\Owner\Dropbox (BEC)\IPB3_DATA\2016-12-09-16-crio-V181-CORE_B36_FOIL_H2'
@@ -91,85 +93,25 @@ subFolder = {'2016-11-28-16-crio-V177-CORE_B31_He',...
  '2016-12-19-16-crio-V181-CORE_B32_H2'};
 folder = 6;
 switch folder 
-case 6    
+case 5    
 Directory=char(strcat(rtFolder,subFolder(folder)));
 AllFiles = getall(Directory);  
-whichDate = '01042017';
-switch (whichDate)
-case '12172016'    
-    dataFile =strcat(Directory,whichDate); 
-    startTime = 0;
-    endTime = 0; 
-    hp1 = 5; 
-    hp2= 40;
-    coreqpow1=1;
-    coreqpow2=6;
-    Experiment = AllFiles(1:3);
-case '12302016'    
-    dataFile =strcat(Directory,whichDate); 
-    startTime = 0;
-    endTime = 0; 
-    hp1 = 5; 
-    hp2= 40;
-    coreqpow1=1;
-    coreqpow2=6;
-    Experiment = AllFiles(21:22);    
-case '12312016'    
-    dataFile =strcat(Directory,whichDate); 
-    startTime = 0;
-    endTime = 20; 
-    hp1 = 5; 
-    hp2= 60;
-    coreqpow1=1;
-    coreqpow2=6;
-    Experiment = AllFiles(23:25);     
-case '01022017'    
-    dataFile =strcat(Directory,whichDate); 
-    startTime = 0;
-    endTime = 0; 
-    hp1 = 5; 
-    hp2= 60;
-    coreqpow1=1;
-    coreqpow2=6;
-    Experiment = AllFiles(27:28);     
-case '01042017'    
-    dataFile =strcat(Directory,whichDate); 
-    startTime = 0;
-    endTime = 0; 
-    hp1 = 5; 
-    hp2= 60;
-    coreqpow1=1;
-    coreqpow2=6;
-    Experiment = AllFiles(29:32);     
-    
-end    
-case 4
-Directory=char(strcat(rtFolder,subFolder(folder)));
-AllFiles = getall(Directory);     
-whichDate = '12092016';
+whichDate = '12182016';
 dataFile =strcat(Directory,whichDate); 
 switch (whichDate)
-case '12092016' 
+case '12182016' 
     startTime = 0;
     endTime = 0; 
     hp1 = 5; 
     hp2= 40;
     coreqpow1=1;
     coreqpow2=6;
-    Experiment = AllFiles(4:5);
-case '12172016'    
-    startTime = 0;
-    endTime = 0; 
-    hp1 = 5; 
-    hp2= 40;
-    coreqpow1=1;
-    coreqpow2=6;
-    Experiment = AllFiles(1:3);
+    Experiment = AllFiles(4:4); 
 end    
 case 6
 Directory=char(strcat(rtFolder,subFolder(folder)));
 AllFiles = getall(Directory); 
-whichDate = '12242016';
+whichDate = '01092017';
 dataFile =strcat(Directory,whichDate); 
 switch (whichDate)
 case '12172016' 
@@ -235,19 +177,87 @@ case '12282016'
     hp2= 60;
     coreqpow1=1;
     coreqpow2=6;
-    Experiment = AllFiles(18:20);      
+    Experiment = AllFiles(18:20);    
+case '12302016'    
+    dataFile =strcat(Directory,whichDate); 
+    startTime = 0;
+    endTime = 0; 
+    hp1 = 5; 
+    hp2= 40;
+    coreqpow1=1;
+    coreqpow2=6;
+    Experiment = AllFiles(21:22);    
+case '12312016'    
+    dataFile =strcat(Directory,whichDate); 
+    startTime = 0;
+    endTime = 20; 
+    hp1 = 5; 
+    hp2= 60;
+    coreqpow1=1;
+    coreqpow2=6;
+    Experiment = AllFiles(23:25);     
+case '01022017'    
+    dataFile =strcat(Directory,whichDate); 
+    startTime = 0;
+    endTime = 0; 
+    hp1 = 5; 
+    hp2= 60;
+    coreqpow1=1;
+    coreqpow2=6;
+    Experiment = AllFiles(27:28);     
+case '01042017'    
+    dataFile =strcat(Directory,whichDate); 
+    startTime = 0;
+    endTime = 0; 
+    hp1 = 5; 
+    hp2= 60;
+    coreqpow1=1;
+    coreqpow2=6;
+    Experiment = AllFiles(29:32);     
+case '01092017'    
+    dataFile =strcat(Directory,whichDate); 
+    startTime = 0;
+    endTime = 0; 
+    hp1 = 5; 
+    hp2= 60;
+    coreqpow1=1;
+    coreqpow2=6;
+    Experiment = AllFiles(34:34);      
+end    
+case 4
+Directory=char(strcat(rtFolder,subFolder(folder)));
+AllFiles = getall(Directory);     
+whichDate = '12092016';
+dataFile =strcat(Directory,whichDate); 
+switch (whichDate)
+case '12092016' 
+    startTime = 0;
+    endTime = 0; 
+    hp1 = 5; 
+    hp2= 40;
+    coreqpow1=1;
+    coreqpow2=6;
+    Experiment = AllFiles(4:5);
+case '12172016'    
+    startTime = 0;
+    endTime = 0; 
+    hp1 = 5; 
+    hp2= 40;
+    coreqpow1=1;
+    coreqpow2=6;
+    Experiment = AllFiles(1:3);
 end %date
 end %folder
 case 'ipb1-30b';
 rtFolder='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\';    
 subFolder = {'2016-11-01-CRIO-v174_CORE_30b_He'...
     '2016-11-01-CRIO-v180_CORE_30b_He'};
-folder = 2;
+folder = 1;
 switch folder 
 case 2    
 Directory=char(strcat(rtFolder,subFolder(folder)));
 AllFiles = getall(Directory);
-whichDate = '01052017';
+whichDate = '01072017';
 dataFile =strcat(Directory,whichDate); 
 switch (whichDate)
 case '12092016' 
@@ -305,12 +315,20 @@ case '01052017'
     hp2= 45;
     coreqpow1=0;
     coreqpow2=12;
-    Experiment = AllFiles(48:49);       
+    Experiment = AllFiles(48:51);       
+case '01072017' 
+    startTime = 0;
+    endTime = 0; 
+    hp1 = 0;
+    hp2= 45;
+    coreqpow1=0;
+    coreqpow2=12;
+    Experiment = AllFiles(52:53);           
 end    
 case 1
 Directory=char(strcat(rtFolder,subFolder(folder)));
 AllFiles = getall(Directory);
-whichDate = '11102016';
+whichDate = '11112016';
 dataFile =strcat(Directory,whichDate); 
 switch (whichDate)
 case '11012016' 
@@ -330,7 +348,7 @@ case '11082016'
     endTime = 0; 
     hp1 = 0;
     hp2=20;
-    Experiment = AllFiles(14:17);      
+    Experiment = AllFiles(11:17);      
 case '11112016' 
     startTime = 0;
     endTime = 0; 
@@ -472,7 +490,7 @@ switch folder
 case 2    
 Directory=char(strcat(rtFolder,subFolder(folder)));
 AllFiles = getall(Directory);
-whichDate = '10152016';
+whichDate = '01052017';
 dataFile =strcat(Directory,whichDate); 
 switch (whichDate)
   case '10152016' 
@@ -564,7 +582,7 @@ end
 case 4
 Directory=char(strcat(rtFolder,subFolder(folder)));
 AllFiles = getall(Directory);
-whichDate = '01052017';
+whichDate = '01072017';
 dataFile =strcat(Directory,whichDate); 
 switch (whichDate)
   case '12222016' 
@@ -586,15 +604,19 @@ switch (whichDate)
     endTime = 0; 
     Experiment = AllFiles(24:25);
     hp1 =0;
-    hp2=40;
-   
+    hp2=40;   
   case '01052017' 
     startTime = 0;
     endTime = 0; 
-    Experiment = AllFiles(27:28);
+    Experiment = AllFiles(27:29);
     hp1 =0;
     hp2=40;
- 
+ case '01072017' 
+    startTime = 0;
+    endTime = 0; 
+    Experiment = AllFiles(30:32);
+    hp1 =0;
+    hp2=40;
 end %date
 end %folder
 end %reactor
@@ -639,7 +661,8 @@ rawData = horzcat(dateN,...
      TerminationHeatsinkH2OInT,...
      TerminationHeatsinkH2OOutT,...
      QPulseVolt,...
-     PressureSensorPSI);
+     PressureSensorPSI,...
+     HydrogenValves);
 %asignColumn name 
 
 dataset({rawData,'dateN',...
@@ -671,7 +694,8 @@ dataset({rawData,'dateN',...
      'TerminationHeatsinkH2OInT',...
      'TerminationHeatsinkH2OOutT',...
      'QPulseVolt',...
-     'PressureSensorPSI'}); 
+     'PressureSensorPSI'...
+     'HydrogenValves'}); 
 %filter rawData out 
 dataSize = size(rawData,1)
 rawData = rawData(1+int16(startTime*360):end-int16(endTime*360),:);
@@ -727,11 +751,12 @@ ctFit = [];
 itFit = [];
 i=0;
 i1 = 1;
+trim = 10; %10% outliers throw away.
 ii = 30; %30*10=300 seconds before to next seq.
 if ii > 5;
-  trim = round(200/ii); %k = ii*(trim/100)/2 through away one highset/lowest point trim = 200/ii
+  trim1 = round(200/ii); %k = ii*(trim/100)/2 through away one highset/lowest point trim = 200/ii
 else
-  trim = 0;
+  trim1 = 0;
 end    
 seq2 = 0;
 while (i < dataSize-1)  
@@ -740,23 +765,29 @@ while (i < dataSize-1)
     i2 = i;
     if i2-i1 > 30 %only pick up the sequence has more then half hours runs
     seq2=seq2+1;
+    %one point
     seq = SeqStepNum(i);
     seq1(seq2)=seq;
     dt1(seq2) = dateN(i2); 
-    hp(seq2) = trimmean(HeaterPower(i2-ii:i2),trim);
-    coreT(seq2)=trimmean(CoreTemp(i2-ii:i2),trim);
+    h2(seq2) = HydrogenValves(i);
     ql(seq2) = QPulseLengthns(i);
-    qf(seq2) = trimmean(QkHz(i2-ii:i2),trim);
-    qPow(seq2) = trimmean(QPow(i2-ii:i2),trim);
+    %last few points or exponentialFit
+    hp(seq2) = trimmean(HeaterPower(i2-ii:i2),trim1);
+    coreT(seq2)=trimmean(CoreTemp(i2-ii:i2),trim1);
+    inT(seq2) = trimmean(InnerBlockTemp1(i2-ii:i2),trim1);
+    outT(seq2) = trimmean(OuterBlockTemp1(i2-ii:i2),trim1);
+    %all points
+    qf(seq2) = trimmean(QkHz(ii:i2),trim);
+    qPow(seq2) = trimmean(QPow(i1:i2),trim);
     coreQPow(seq2)=trimmean(CoreQPower(i1:i2),trim);
     v1(seq2)=trimmean(CoreQV1Rms(i1:i2),trim);
     v2(seq2)=trimmean(CoreQV2Rms(i1:i2),trim);
-    qSP(seq2) = trimmean(QSupplyPower(i2-ii:i2),trim); 
-    inT(seq2) = trimmean(InnerBlockTemp1(i2-ii:i2),trim);
-    outT(seq2) = trimmean(OuterBlockTemp1(i2-ii:i2),trim);
-    qSV(seq2) = trimmean(QSupplyVolt(i2-ii:i2),trim);
-    qCur(seq2) = trimmean(QCur(i2-ii:i2),trim);
-    qSetV(seq2) = trimmean(QSetV(i2-ii:i2),trim);
+    qSP(seq2) = trimmean(QSupplyPower(i1:i2),trim); 
+    qSV(seq2) = trimmean(QSupplyVolt(i1:i2),trim);
+    qCur(seq2) = trimmean(QCur(ii:i2),trim);
+    qSetV(seq2) = trimmean(QSetV(i1:i2),trim);
+    termP(seq2)= trimmean(TerminationHeatsinkPower(i1:i2),trim);
+    pcbP(seq2)= trimmean(QPulsePCBHeatsinkPower(i1:i2),trim);
     if exponentialFit 
       size1 = length(CoreTemp(i1:i2));
       x=1:size1;
@@ -776,8 +807,8 @@ end
 dt2 = datetime(dt1, 'ConvertFrom', 'datenum') ;
 fn = ['C:\jinwork\BEC\tmp\' reactor '-' whichDate '.csv'];            
 delete(fn);
-T=table(coreT(:),inT(:),outT(:),ql(:),qf(:),hp(:),coreQPow(:),v1(:),v2(:),qPow(:),qSP(:),qSV(:),qCur(:),qSetV(:),seq1(:),i12(:),dt2(:),...
-'VariableName',{'coreT','inT','outT','QL','QF','HP','CoreQPower','v1','v2','qPow','qSP','qSV','qCur','qSetV','seq','steps','date'});
+T=table(coreT(:),inT(:),outT(:),ql(:),qf(:),hp(:),coreQPow(:),v1(:),v2(:),qPow(:),qSP(:),qSV(:),qCur(:),qSetV(:),h2(:),termP(:),pcbP(:),seq1(:),i12(:),dt2(:),...
+'VariableName',{'coreT','inT','outT','QL','QF','HP','CoreQPower','v1','v2','qPow','qSP','qSV','qCur','qSetV','h2','termP','pcbP','seq','steps','date'});
 writetable(T,fn);
 
 if exponentialFit 

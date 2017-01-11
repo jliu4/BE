@@ -57,6 +57,10 @@ grid
 hold on
 for tli = 1:numel(h2unitemp)
    qM = Mh2(int16(Mh2(:,1)) == h2unitemp(tli),:);
+   qMHp0 = qM((qM(:,10) < 2),6);
+   qMHp = qM((qM(:,10) > 2),6);
+   qMHp0Max = max(qMHp0);
+   qMHpDrop = qMHp0Max-qMHp
    xlabel('QPulseLength(ns)');
    ylabel('V1-V2(volt)'); 
    plot(qM(:,4),qM(:,8)-qM(:,9));
