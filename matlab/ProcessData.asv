@@ -229,30 +229,39 @@ uniqCT = unique(int16(coreT));
 %for each ql and temp get hp0
 i = 0;
 j = 0;
+hpdrop = [];
+qp = [];
+tp = [];
+pp = [];
+v12 = [];
+v122 = [];
+figure
+grid
+hold on
 for ti = uniqCT
   i = i + 1;  
   tdata = pdata(int16(pdata(:,1)) == ti,:);
-  hp0=tdata(1,1);
+  hp0=tdata(1,6);
   qp0=tdata(1,9);
   termP0=tdata(1,10);
- 
   pcbP0 = tdata(1,11);
-  for qi = unitQl
+  for qi = uniqQl
     %q-pusle length only valid when there is q-pulse  
-    if tdata(:,9)> 2      
-      j = j + 1;  
-      disp(ti);
-      disp(qi);
-      qtdata = tdata((tdata(:,4)) == qi,:);
-      hpdrop(i,j) = hp0-qtdata(:,6);
-      qp(i,j) = hp0-qtdata(:,9);
-      tp(i,j) = hp0-qtdata(:,10);
-      pp(i,j) = hp0-qtdata(:,11);
-      v2(i,j)=q
-    end
+    j = j + 1;  
+    qtdata = tdata((tdata(:,4)) == qi,:);
+    qtdata = qtdata(2:end-1,:);
+    tq(:,i,j) = [ti,qi];
+    hpdrop(:,i,j) = hp0-qtdata(:,6);
+    qp(:,i,j) = qtdata(:,9) - qp0;
+    tp(:,i,j) = qtdata(:,10) - termP0;
+    pp(:,i,j) = qtdata(:,11) - pcbP0;
+    v12(:,i,j)= qtdata(:,7)-qtdata(:,8) ;
+    v122=v12.*v12; 
   end
+  plot(uniqCT,hpdrop(:,i,:));
 end    
 
+disp(hpdrop);
 fn = char(strcat('C:\jinwork\BEC\tmp\', reactors(reactor), '-', whichDate, '.csv') );          
 delete(fn);
 T=table(coreT(:),inT(:),outT(:),ql(:),qf(:),hp(:),coreQPow(:),v1(:),v2(:),qPow(:),qSP(:),qSV(:),qCur(:),qSetV(:),h2(:),termP(:),pcbP(:),seq1(:),i12(:),dt2(:),...
