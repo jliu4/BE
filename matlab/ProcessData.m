@@ -21,30 +21,30 @@ qp1 = 5;
 qp2 = 55;
 cqp1 = 0;
 cqp2 = 12;
-%analyzeSet
 reactors = {'ipb1-29',...
             'ipb1-30'...
             'sri-ipb2-27'...
             'ipb3-32'...
             'google'...
             'ipb3-36b'};
-field = 1;
-analyzeSet = table([3; 3], [4; 6], ['12092016'; '12312016'],[4; 16], [5; 16],'VariableName',{'reactor','folder','runDate','startF','endF'});
-value = {'ipb3 dc he vs h2';analyzeSet};
-c(1,:) = {'ipb3 dc he vs h2',analyzeSet};
-c(2,:) = {'ipb3 dc he vs h2',analyzeSet};
-t=c(1,2)
-for ai = 1:size(analyzeSet)
- ri = analyzeSet(ai,1)
- fi  = analyzeSet(ai,2)
- rdi = analyzeSet(ai,3);
- startF = analyzeSet(ai,4);
- endF = analyzeSet(ai,5);
-reactor =3;
+ipb1_29b = readtable('ipb1_29.txt');
+ipb3_32b = readtable('ipb3_32.txt');
+analyzeSet = ipb3_32b;
+for ai = [2]
+ fi  = analyzeSet(ai,1)
+ rdi = analyzeSet(ai,2);
+ file1 = analyzeSet(ai,3);
+ file2 = analyzeSet(ai,4);
+ startOffset = analyzeSet(ai,5);
+ endOffset = analyzeSet(ai,6);
+ isHe = analyzeSet(ai,7);
+ isDC = analyzeSet(ai,8);
+ 
+reactor =4;
 %list reactors and cores
 switch (reactor)
 case 1   
-    [startOffset,endOffset,hp1,hp2,cqp1,cqp2,Directory,Experiment] = ipb1_29(folder,runDate,startF,endF,startOffset,endOffset,hp1,hp2,cqp1,cqp2);
+    [startOffset,endOffset,hp1,hp2,cqp1,cqp2,Directory,Experiment] = ipb1_29(folder,runDate,file1,file2,startOffset,endOffset,hp1,hp2,cqp1,cqp2);
 case 2
     folder = 2;
     runDate = '01112017'; 

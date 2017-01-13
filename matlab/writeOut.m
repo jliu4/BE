@@ -1,4 +1,4 @@
-function writeOut(data, reactor, reactors, runDate, hpExpFit, tempExpFit )
+function writeOut(data, isDC, isHe,fn, hpExpFit, tempExpFit )
 dataSize = size(data,1);
 ctFit = [];
 itFit = [];
@@ -102,23 +102,11 @@ end
 %plot(uniqCT,hpdrop(1,:,:));
 %disp(hpdrop);
 end
-fn = char(strcat('C:\jinwork\BEC\tmp\', reactors(reactor), '-', runDate, '.csv') );          
-delete(fn);
+  
+%delete(fn);
 T=table(coreT(:),inT(:),outT(:),ql(:),qf(:),hp(:),coreQPow(:),v1(:),v2(:),qPow(:),qSP(:),qSV(:),qCur(:),qSetV(:),h2(:),termP(:),pcbP(:),seq1(:),i12(:),dt2(:),...
 'VariableName',{'coreT','inT','outT','QL','QF','HP','CoreQPower','v1','v2','qPow','qSP','qSV','qCur','qSetV','h2','termP','pcbP','seq','steps','date'});
 writetable(T,fn);
-if hpExpFit 
-  fileID = fopen(char(strcat('C:\jinwork\BEC\tmp\', reactors(reactor), '-', runDate, '-hpfit.csv') ),'w');
-  %fprintf(fileID,'%4s %12s\n','x','exp(x)');
-  fprintf(fileID,'%6.2f %6.2f %6.2f %6.2f\n',hpFit);
-  fclose(fileID);
-end
-if tempExpFit 
-  fileID = fopen(char(strcat('C:\jinwork\BEC\tmp\', reactors(reactor), '-', runDate, '-hpfit.csv') ),'w');
-  %fprintf(fileID,'%4s %12s\n','x','exp(x)');
-  fprintf(fileID,'%6.2f %6.2f %6.2f %6.2f %6.2f %6.2f %6.2f %6.2f\n',ctFit,itFit);
-  fclose(fileID);
-end
 end
 
 
