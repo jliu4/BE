@@ -1,35 +1,28 @@
-function [startOffset,endOffset,hp1,hp2,cqp1,cqp2,Directory,Experiment] = sri_ipb2_27(folder,runDate,startF, endF, startOffset,endOffset,hp1,hp2,cqp1,cqp2)
-rtFolder='C:\Users\Owner\Dropbox (BEC)\SRI-IPB2\';    
-subFolder = {'2016-09-24_SRI_v170-core27b'...
-             '2016-09-30_SRI_v171-core27b',...
-             '2016-11-16_SRI_v174-core27b',...
-             '2016-12-16_SRI_v181-core27b'};
+function [startOffset,endOffset,hp1,hp2,cqp1,cqp2,Directory,Experiment] = ipb1_29(folder,runDate,startOffset,endOffset,hp1,hp2,cqp1,cqp2)
+rtFolder='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\';    
+subFolder = {'2016-09-29-CRIO-v170_CORE_29b'...
+             '2016-09-30-CRIO-v171_CORE_29b',...
+             '2016-10-24-CRIO-v173_CORE_29b_H2',...
+             '2016-10-27-CRIO-v174_CORE_29b_H2'};
 switch folder 
+case 1    
+Directory=char(strcat(rtFolder,subFolder(folder)));
+AllFiles = getall(Directory);
+switch (runDate)
+  case '09302016' %he dc run1
+    Experiment = AllFiles(1:2);
+end     
 case 2    
 Directory=char(strcat(rtFolder,subFolder(folder)));
 AllFiles = getall(Directory);
+runDate = '10012016';
 switch (runDate)
-  case '10152016' 
-    Experiment = AllFiles(20:22);
-end  
-
-case 3    
-Directory=char(strcat(rtFolder,subFolder(folder)));
-AllFiles = getall(Directory);
-runDate = '12162016';
-switch (runDate)
-  case '11192016-11212016'  
-    Experiment = AllFiles(3:5);
-  case '11222016' 
-    startOffset =22;
-    hp1 =5;
-    hp2=10;
-    Experiment = AllFiles(6:6);  
+  case '10012016'  %he dc run2
+    Experiment = AllFiles(1:4);
+  case '10042016' 
+    Experiment = AllFiles(6:7);  %he dc run3
   case '11272016' 
-    endOffset = 55; 
-    hp1 =5;
-    hp2=40;
-    Experiment = AllFiles(8:8);    
+    Experiment = AllFiles(9:10);  % 
   case '11262016-11292016' %qpowonly 8 hours 
     startOffset =70;
     hp1 =5;
@@ -74,7 +67,6 @@ switch (runDate)
     hp2=21;
     Experiment = AllFiles(36:36);      
 end
-
 case 4
 Directory=char(strcat(rtFolder,subFolder(folder)));
 AllFiles = getall(Directory);
@@ -95,9 +87,7 @@ switch (runDate)
  case '01072017' 
     Experiment = AllFiles(30:32);
  case '01092017' 
-    Experiment = AllFiles(33:35);
- case '01112017' 
-    Experiment = AllFiles(37:37);      
+    Experiment = AllFiles(33:35);   
 end %date
 end %folder
 end %reactor

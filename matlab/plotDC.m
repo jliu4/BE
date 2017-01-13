@@ -1,15 +1,15 @@
-function plotDC(dt,hp1,hp2,rawData)
+function plotDC(dt,hp1,hp2,data,plotTitle)
 figure
-hold on
-aa_splot(dt,HeaterPower,'black','linewidth',1.5);
+%hold on
+aa_splot(dt,data.HeaterPower,'black','linewidth',1.5);
 ylim([hp1, hp2]);
-addaxis(dt,CoreTemp,'linewidth',1.5);
-addaxis(dt,InnerBlockTemp1);
-addaxis(dt,QSupplyVolt);
-addaxis(dt,QSupplyPower) ;
-addaxis(dt,QSetV);
+addaxis(dt,data.CoreTemp,'linewidth',1.5);
+addaxis(dt,data.InnerBlockTemp1);
+addaxis(dt,data.QSupplyVolt);
+addaxis(dt,data.QSupplyPower) ;
+addaxis(dt,data.QSetV);
 %addaxis(dt,QCur); 
-title(dataFile,'fontsize',11);
+title(plotTitle,'fontsize',11);
 addaxislabel(1,'HeaterPower');
 addaxislabel(2,'CoreT');
 addaxislabel(3,'InnerT');

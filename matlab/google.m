@@ -1,4 +1,4 @@
-function [startOffset,endOffset,hp1,hp2,cqp1,cqp2,Directory,Experiment,dataFile,whichDate] = google(startOffset,endOffset,hp1,hp2,cqp1,cqp2)
+function [startOffset,endOffset,hp1,hp2,cqp1,cqp2,Directory,Experiment] = google(folder,runDate,startOffset,endOffset,hp1,hp2,cqp1,cqp2)
 rtFolder='C:\Users\Owner\Dropbox (BEC)\BECteam\Jin\google\';
 %list subfolders under google 
 subFolder = {'sri-ipb2-27b\2-heaterpow-only'...
@@ -18,11 +18,10 @@ subFolder = {'sri-ipb2-27b\2-heaterpow-only'...
              'ipb1-29b\ipb1-29b-he-DC'...
              'ipb1-29b\ipb1-29b-h2-DC'...
              };
-Directory=char(strcat(rtFolder,subFolder(15)));
+Directory=char(strcat(rtFolder,subFolder(folder)));
 AllFiles = getall(Directory);  %SORTED BY DATE....
-whichDate = 'dc-29b-he';
-dataFile =Directory;
-switch (whichDate)
+runDate = 'dc-29b-he';
+switch (runDate)
 case 'dc-29b-he'   
     hp1 = 0;
     hp2= 60;

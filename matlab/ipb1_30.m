@@ -1,15 +1,13 @@
-function [startOffset,endOffset,hp1,hp2,cqp1,cqp2,Directory,Experiment,dataFile,whichDate] = ipb1_30(startOffset,endOffset,hp1,hp2,cqp1,cqp2)
+function [startOffset,endOffset,hp1,hp2,cqp1,cqp2,Directory,Experiment] = ipb1_30(folder,runDate,startF, endF, startOffset,endOffset,hp1,hp2,cqp1,cqp2)
 rtFolder='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\';    
 subFolder = {'2016-11-01-CRIO-v174_CORE_30b_He'...
              '2016-11-01-CRIO-v180_CORE_30b_He'};
-folder = 1;
+
 switch folder 
 case 2    
 Directory=char(strcat(rtFolder,subFolder(folder)));
 AllFiles = getall(Directory);
-whichDate = '01072017';
-dataFile =strcat(Directory,whichDate); 
-switch (whichDate)
+switch (runDate)
 case '12092016' 
     startOffset = 5;
     hp1 = 0;
@@ -46,14 +44,17 @@ case '01052017'
 case '01072017' 
     hp1 = 0;
     hp2= 45;
-    Experiment = AllFiles(52:53);           
+    Experiment = AllFiles(52:53); 
+case '01112017' 
+    hp1 = 0;
+    hp2= 45;
+    Experiment = AllFiles(58:58);     
 end    
 case 1
 Directory=char(strcat(rtFolder,subFolder(folder)));
 AllFiles = getall(Directory);
-whichDate = '11112016';
-dataFile =strcat(Directory,whichDate); 
-switch (whichDate)
+
+switch (runDate)
 case '11012016' 
     hp1 = 5;
     hp2= 40;
