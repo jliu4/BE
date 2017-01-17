@@ -16,7 +16,7 @@ end
 seq2 = 0;
 while (i < dataSize-1)  
   i = i+1;
-  if abs(data.SeqStepNum(i+1) - data.SeqStepNum(i)) >= 1  %sequence changed or at least sequence has run more than an half hour
+  if (abs(data.SeqStepNum(i+1) - data.SeqStepNum(i)) >= 1 || i == dataSize-1 ) %sequence changed or last sequence
     i2 = i;
     if i2-i1 > 30 %only pick up the sequence has more then half hours runs
     seq2=seq2+1;

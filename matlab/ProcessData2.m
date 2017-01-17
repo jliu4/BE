@@ -21,18 +21,23 @@ qp1 = 5;
 qp2 = 55;
 cqp1 = 0;
 cqp2 = 12;
-ipb1_29 = readtable('ipb1_29.txt');
-ipb3_32 = readtable('ipb3_32.txt');
-sri_ipb2_27 = readtable('sri_ipb2_27.txt');
+ipb1-29-data = readtable('ipb1-29.csv');
+ipb1-30-data = readtable('ipb1-30.csv');
 
-aSet=[ipb1_29(4,:);ipb3_32(1:3,:)]
-aSet=[sri_ipb2_27(1,:)]
-for ai = [1]
- reactor  = char(aSet.reactor(ai))
- folder  = int8(aSet.folder(ai))
- runDate = num2str(aSet.runDate(ai))
- file1 = int8(aSet.file1(ai))
- file2 = int8(aSet.file2(ai))
+ipb3-32-data = readtable('ipb3-32.csv');
+sri-ipb2-27-data = readtable('sri-ipb2-27.csv');
+
+aSet=[ipb1-29-data(4,:);ipb3-32-data(1:3,:)]
+aSet=[sri-ipb2-27-data(1,:)]
+aSet=[ipb1-30-data(1,:)]
+aSet=ipb3-32-data %[1,2,3,4,5,6,7]
+aSet=ipb1-30-data %[1,2,3,4,5,6]
+for ai = [5,6]
+ reactor  = char(aSet.reactor(ai));
+ folder  = int8(aSet.folder(ai));
+ runDate = num2str(aSet.runDate(ai));
+ file1 = int8(aSet.file1(ai));
+ file2 = int8(aSet.file2(ai));
  startOffset = aSet.startOffset(ai);
  endOffset = aSet.endOffset(ai);
  isHe = aSet.isHe(ai);
@@ -91,7 +96,7 @@ Experiment'
 loadHHT 
 
 QPulseLengthns = QPulseLength0x28ns0x29; clear QPulseLength0x28ns0x29
-plotTitle =strcat(Directory,runDate); 
+plotTitle =strcat(Directory,'-',runDate); 
 %change datetime to number
 dateN=datenum(DateTime,'mm/dd/yyyy HH:MM:SS');
 rawData = horzcat(dateN,...
