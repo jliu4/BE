@@ -3,11 +3,12 @@ clear; close all; clc
 addpath('C:\jinwork\BE\matlab')
 addpath('C:\jinwork\BE\matlab\addaxis5')
 %Control parameters
-qPlot = true;
+qPlot = false;
 dcPlot = false;
 tempExpFit = false;
 hpExpFit = false;
-writeOutput = true;
+postProcess = true;
+writeOutput = false;
 plotOutput = true;
 errorBarPlot = false;
 findDuplicates = false;
@@ -21,20 +22,20 @@ qp1 = 5;
 qp2 = 55;
 cqp1 = 0;
 cqp2 = 12;
-ipb1-29-data = readtable('ipb1-29.csv');
-ipb1-30-data = readtable('ipb1-30.csv');
-
-ipb3-32-data = readtable('ipb3-32.csv');
-sri-ipb2-27-data = readtable('sri-ipb2-27.csv');
-
-aSet=[ipb1-29-data(4,:);ipb3-32-data(1:3,:)]
-aSet=[sri-ipb2-27-data(1,:)]
-aSet=[ipb1-30-data(1,:)]
-aSet=ipb3-32-data %[1,2,3,4,5,6,7]
-aSet=ipb1-30-data %[1,2,3,4,5,6]
-for ai = [5,6]
+%ipb1_29 = readtable('ipb1-29.csv');
+%ipb1_30 = readtable('ipb1-30.csv','ReadRowNames',true,'format','%s%s%s%s%d%d%d%d%d%d%s');
+ipb1_30 = readtable('ipb1-30.xlsx');
+ipb3_32 = readtable('ipb3-32.xlsx');
+sri_ipb2_27 = readtable('sri-ipb2-27.xlsx');
+ipb3_37 = readtable('ipb3-37.xlsx');
+aSet=[ipb1_30(1,:)]
+aSet=ipb3_32 
+aSet=ipb1_30
+aSet=[sri_ipb2_27(3,:);ipb3_37]
+aSet=
+for ai = [1,2]
  reactor  = char(aSet.reactor(ai));
- folder  = int8(aSet.folder(ai));
+ folder  = char(aSet.folder(ai));
  runDate = num2str(aSet.runDate(ai));
  file1 = int8(aSet.file1(ai));
  file2 = int8(aSet.file2(ai));
@@ -45,56 +46,23 @@ for ai = [5,6]
 switch (reactor)
 case 'ipb1-29'  
   rtFolder='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\';    
-  subFolder = {'2016-09-29-CRIO-v170_CORE_29b'...
-               '2016-09-30-CRIO-v171_CORE_29b',...
-               '2016-10-24-CRIO-v173_CORE_29b_H2',...
-               '2016-10-27-CRIO-v174_CORE_29b_H2'};
   SeqStepNum = SeqStep0x23; clear SeqStep0x23         
 case 'ipb1-30'
-  rtFolder='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\';    
-  subFolder = {'2016-11-01-CRIO-v174_CORE_30b_He'...
-               '2016-11-01-CRIO-v180_CORE_30b_He'};
+  rtFolder='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\';      
 case 'sri-ipb2-27'
-  rtFolder='C:\Users\Owner\Dropbox (BEC)\SRI-IPB2\';    
-  subFolder = {'2016-09-24_SRI_v170-core27b'...
-               '2016-09-30_SRI_v171-core27b',...
-               '2016-11-16_SRI_v174-core27b',...
-               '2016-12-16_SRI_v181-core27b'...
-               '2017-01_12_SRI_v182-core27b'};
+  rtFolder='C:\Users\Owner\Dropbox (BEC)\SRI-IPB2\';      
 case 'ipb3-32'
-  rtFolder='C:\Users\Owner\Dropbox (BEC)\IPB3_DATA\';    
-  subFolder = {'2016-11-28-16-crio-V177-CORE_B31_He',...
-              '2016-11-28-16-crio-V179-CORE_B31_He',...
-              '2016-12-05-16-crio-V179-CORE_B31_He',...
-              '2016-12-05-16-crio-V181-CORE_B31_He',...
-              '2016-12-14-16-crio-V181-CORE_B32_He',...
-              '2016-12-19-16-crio-V181-CORE_B32_H2'};
+  rtFolder='C:\Users\Owner\Dropbox (BEC)\IPB3_DATA\';     
+case 'ipb3-37'
+  rtFolder='C:\Users\Owner\Dropbox (BEC)\IPB3_DATA\';       
 case 'google'
   rtFolder='C:\Users\Owner\Dropbox (BEC)\BECteam\Jin\google\';
-  subFolder = {'sri-ipb2-27b\2-heaterpow-only'...
-               'sri-ipb2-27b\3-qpow8hours'...
-               'sri-ipb2-27b\4-qpow-heaterpow-83ns'...
-               'sri-ipb2-27b\7-qpow-heaterpow-100ns'...
-               'sri-ipb2-27b\qpow-heatpower125w'...
-               'sri-ipb2-27b\q-calibration'...
-               'sri-ipb2-27b\DC-cali2'...
-               'ipb3-32b'...
-               'ipb1_30b\6-qpow-only'...
-               'ipb1_30b\DC-calibration'...
-               'ipb1_30b\5-heaterpower-only'...
-               'ipb1_30b\DC-cali2'...
-               'ipb1_30b\DC-temp-control'...
-               'ipb1_30b\DC-temp-control-12212016'...
-               'ipb1-29b\ipb1-29b-he-DC'...
-               'ipb1-29b\ipb1-29b-h2-DC'...
-             };
 end %switch
-Directory=char(strcat(rtFolder,subFolder(folder)));
+Directory=char(strcat(rtFolder,folder));
 AllFiles = getall(Directory); 
 Experiment= AllFiles(file1:file2); 
 Experiment'
 loadHHT 
-
 QPulseLengthns = QPulseLength0x28ns0x29; clear QPulseLength0x28ns0x29
 plotTitle =strcat(Directory,'-',runDate); 
 %change datetime to number
@@ -183,8 +151,8 @@ end
 if qPlot
   plotQ(dt,hp1,hp2,qp1,qp2,cqp1,cqp2,coreRes,rawDataN,plotTitle);  
 end 
-if writeOutput
+if postProcess
  fn = char(strcat('C:\jinwork\BEC\tmp\', reactor, '-', runDate, '.csv') );        
- writeOut(rawDataN,isDC,isHe,fn,hpExpFit,tempExpFit);
+ writeOut(rawDataN,isDC,isHe,fn,hpExpFit,tempExpFit,writeOutput,plotOutput);
 end 
 end

@@ -1,0 +1,8 @@
+reactor,folder,runDate,fileName,file1,file2,startOffset,endOffset,isHe,isDC,desc
+ipb3-32,2016-12-05-16-crio-V181-CORE_B31_He,12072016,"IPB3_150C-400C,50W_Qpow_Run2_day-01.csv",1,3,0,0,1,0, q-he-150-400c
+ipb3-32,2016-12-05-16-crio-V181-CORE_B31_He,12092016,"IPB3_150C-500C,DC_Qpow_Cal_day-01.csv",4,5,0,0,1,1, dc-he-150-500c
+ipb3-32,2016-12-14-16-crio-V181-CORE_B32_He,12152016,IPB3_Core32b_He_150C-400C_50W_day-01.csv,1,3,0,0,1,0,q-he-qp50w-150-400c
+ipb3-32,2016-12-14-16-crio-V181-CORE_B32_He,12182016,IPB3_Core_Q_power_calibration_150-91.csv,4,4,0,0,1,0,q-he-mulitple-qp-150-91ns-150-400c
+ipb3-32,2016-12-19-16-crio-V181-CORE_B32_H2,01112017,IPB3_Seq_ipbx-h2-q-cali-9167_DIFF_Probes_day-01.csv,37,38,0,0,0,0,q-h2-mulitple-qp-150-400c
+ipb3-32,2016-12-19-16-crio-V181-CORE_B32_H2,01132017,IPB3_ipbx-h2-q-cali-250-325c_1-12-17_day-01.csv,42,43,0,0,0,0,q-h2-mulitple-qp-250-325c
+ipb3-33,2016-12-19-16-crio-V181-CORE_B32_H3,01172017,IPB3_ipbx-h2-q-cali-250-325c_1-16-17_day-05.csv,48,50,0,0,0,0,q-h2-mulitple-qp-250-325c

@@ -1,14 +1,15 @@
-function writeOut(data, isDC, isHe,fn, hpExpFit, tempExpFit )
+function writeOut(data, isDC, isHe, fn, hpExpFit, tempExpFit,writeOutput,plotOutput )
 dataSize = size(data,1);
 ctFit = [];
 itFit = [];
 dt1 = [];
 coreT =[];inT=[];outT=[];ql=[];qf=[];hp=[];coreQPow=[];v1=[];v2=[];qPow=[];qSP=[];qSV=[];qCur=[];qSetV=[];h2=[];termP=[];pcbP=[];seq1=[];i12=[];dt2=[];
 i=0;
+%start point of the sequence
 i1 = 1;
 trim = 10; %10% outliers throw away.
 ii = 30; %30*10=300 seconds before to next seq.
-if ii > 5;
+if ii > 5
   trim1 = round(200/ii); %k = ii*(trim/100)/2 through away one highset/lowest point trim = 200/ii
 else
   trim1 = 0;
@@ -17,6 +18,7 @@ seq2 = 0;
 while (i < dataSize-1)  
   i = i+1;
   if (abs(data.SeqStepNum(i+1) - data.SeqStepNum(i)) >= 1 || i == dataSize-1 ) %sequence changed or last sequence
+    %end point of the sequence
     i2 = i;
     if i2-i1 > 30 %only pick up the sequence has more then half hours runs
     seq2=seq2+1;
@@ -52,61 +54,21 @@ while (i < dataSize-1)
     end  
     i12(seq2)=i2-i1;
     i1 = i2+1; 
-     end
+    end
   end
 end  
-dt2 = datetime(dt1, 'ConvertFrom', 'datenum') ;
-if (false)
-pdata = horzcat(coreT', inT', outT', ql', qf', hp', v1', v2', qPow', termP', pcbP', qSP', qSV', h2');
-dataset({pdata,'coreT','inT','outT','ql','qf','hp','v1','v2','qPow','termP','pcbP','qSP','qSV','h2'});
-%get unique ql
-uniqQl = unique(ql);
-uniqCT = unique(int16(coreT));
-%for each ql and temp get hp0
-i = 0;
-j = 0;
-hpdrop = [];
-qp = [];
-tp = [];
-pp = [];
-v12 = [];
-v122 = [];
-figure
-grid
-hold on
-for ti = uniqCT
-  i = i + 1;  
-  tdata = pdata(int16(pdata(:,1)) == ti,:);
-  hp0=tdata(1,6);
-  qp0=tdata(1,9);
-  termP0=tdata(1,10);
-  pcbP0 = tdata(1,11);
-  for qi = uniqQl
-    %q-pusle length only valid when there is q-pulse  
-    j = j + 1;  
-    qtdata = tdata((tdata(:,4)) == qi,:);
-    qtdata = qtdata(2:end-1,:);
-    tq(:,i,j) = [ti,qi];
-    hpdrop(:,i,j) = hp0-qtdata(:,6);
-    qp(:,i,j) = qtdata(:,9) - qp0;
-    tp(:,i,j) = qtdata(:,10) - termP0;
-    pp(:,i,j) = qtdata(:,11) - pcbP0;
-    v12(:,i,j)= qtdata(:,7)-qtdata(:,8) ;
-    v122=v12.*v12;
-    vh = v122./hpdrop;
-    vh0(i,j) = hpdrop(:,i,j)\v122(:,i,j);
-    
-  end
-  %plot(uniqCT,vh0);
-end    
-%plot(uniqCT,hpdrop(1,:,:));
-%disp(hpdrop);
+dt2 = datetime(dt1, 'ConvertFrom', 'datenum');
+if (plotOutput)
+  pdata = horzcat(coreT', inT', outT', ql', qf', hp', v1', v2', qPow', termP', pcbP', qSP', qSV', h2');
+  plotData = dataset({pdata,'coreT','inT','outT','ql','qf','hp','v1','v2','qPow','termP','pcbP','qSP','qSV','h2'});
+  plotSummary(pdata,plotData,isDC,isHe);
 end
-  
 %delete(fn);
+if (writeOutput)
 T=table(coreT(:),inT(:),outT(:),ql(:),qf(:),hp(:),coreQPow(:),v1(:),v2(:),qPow(:),qSP(:),qSV(:),qCur(:),qSetV(:),h2(:),termP(:),pcbP(:),seq1(:),i12(:),dt2(:),...
 'VariableName',{'coreT','inT','outT','QL','QF','HP','CoreQPower','v1','v2','qPow','qSP','qSV','qCur','qSetV','h2','termP','pcbP','seq','steps','date'});
 writetable(T,fn);
+end
 end
 
 

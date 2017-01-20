@@ -1,0 +1,2 @@
+Reactor,folder,runDate,fileName,file1,file2,startOffset,endOffset,isHe,isDC,desc
+ipb1-30,2016-11-01-CRIO-v174_CORE_30b_He,11022016,IPB1_Temp_sequence_150-100-150ns_50W_150C-400C_Helium_day-01.csv,1,2,0,0,1,0,q-he-150-400c

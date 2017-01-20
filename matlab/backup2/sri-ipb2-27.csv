@@ -1,0 +1,7 @@
+reactor,folder,runDate,fileName,file1,file2,startOffset,endOffset,isHe,isDC,desc
+sri-ipb2-27,2017-01_12_SRI_v182-core27b,01132017,q-exi2_day-01.csv,2,3,0,0,0,0,google excitation 120 steps run
+sri-ipb2-27,2017-01_12_SRI_v182-core27b,01152017,q-cal2_day-01.csv,4,7,0,0,1,1,google calibration run
+sri-ipb2-27,5,12182016,,4,4,0,0,1,0,to filled
+sri-ipb2-27,6,1112017,,37,38,0,0,0,0,to filled
+sri-ipb2-27,6,1122017,,39,40,0,0,0,0,to filled
+sri-ipb2-27,6,1132017,,41,42,0,0,0,1, to filled
