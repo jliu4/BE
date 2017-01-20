@@ -32,8 +32,8 @@ aSet=[ipb1_30(1,:)]
 aSet=ipb3_32 
 aSet=ipb1_30
 aSet=[sri_ipb2_27(3,:);ipb3_37]
-aSet=
-for ai = [1,2]
+aSet=[sri_ipb2_27(5,:)]
+for ai = [1]
  reactor  = char(aSet.reactor(ai));
  folder  = char(aSet.folder(ai));
  runDate = num2str(aSet.runDate(ai));
@@ -50,7 +50,8 @@ case 'ipb1-29'
 case 'ipb1-30'
   rtFolder='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\';      
 case 'sri-ipb2-27'
-  rtFolder='C:\Users\Owner\Dropbox (BEC)\SRI-IPB2\';      
+  rtFolder='C:\Users\Owner\Dropbox (BEC)\SRI-IPB2\';
+  %SeqStepNum = SeqStep0x23; clear SeqStep0x23       
 case 'ipb3-32'
   rtFolder='C:\Users\Owner\Dropbox (BEC)\IPB3_DATA\';     
 case 'ipb3-37'
@@ -98,6 +99,20 @@ rawData = horzcat(dateN,...
      QPulseVolt,...
      PressureSensorPSI);
      %HydrogenValves);
+%filter rawData out 
+dataSize = size(rawData,1);
+%find duplicated
+if findDuplicates
+  duplicates(coreTemp);
+end
+%show startOffset and endOffset
+DateTime(1+int16(startOffset*360))
+DateTime(end - int16(endOffset*360))
+rawData = rawData(1+int16(startOffset*360):end-int16(endOffset*360),:);
+%rawData(any(isnan(rawData)),:)=[]; %take out rows with NaN
+%(isnan(j1)) = -2 ;
+rawData = rawData(rawData(:,2) > 0,:); %only process data with seq
+dataSize = size(rawData,1)
 %asignColumn name 
 rawDataN = dataset({rawData,'dateN',...
      'SeqStepNum',...
@@ -130,20 +145,6 @@ rawDataN = dataset({rawData,'dateN',...
      'QPulseVolt',...
      'PressureSensorPSI'});
      %'HydrogenValves'}); 
-%filter rawData out 
-dataSize = size(rawData,1);
-%find duplicated
-if findDuplicates
-  duplicates(coreTemp);
-end
-%show startOffset and endOffset
-DateTime(1+int16(startOffset*360))
-DateTime(end - int16(endOffset*360))
-rawData = rawData(1+int16(startOffset*360):end-int16(endOffset*360),:);
-%rawData(any(isnan(rawData)),:)=[]; %take out rows with NaN
-%(isnan(j1)) = -2 ;
-rawData = rawData(rawData(:,2) > 0,:); %only process data with seq
-dataSize = size(rawData,1)
 dt = datetime(dateN, 'ConvertFrom', 'datenum') ;
 if dcPlot
   plotDC(dt,hp1,hp2,rawDataN,plotTitle);   

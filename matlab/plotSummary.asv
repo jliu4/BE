@@ -21,13 +21,13 @@ for ti = 1:numel(uniqCT)
     qtdata = tdata(2:end-1,:);
     hpdrop(:,i) = hp0-qtdata(:,6);
     dqp(:,i) = qtdata(:,12); %power
-    v12(:,i)= qtdata(:,13);
+    v12(:,i)= qtdata(:,13)
     v122=v12.*v12;
     hv = hpdrop./v122;
     res = v122./dqp;
     hv0(i) = hpdrop(:,i)\v122(:,i); 
-    hqp0(i) = hpdrop(:,i)\dqp(:,i);
-    res0(i) = v122(:,i)\dqp(:,i);
+    hqp0(i) = hpdrop\dqp;
+    res0(i) = v122\dqp;
   else    
     qtdata = tdata((tdata(:,4)) == uniqQl(1),:);
     qtdata = qtdata(2:end-1,:);
@@ -48,13 +48,10 @@ for ti = 1:numel(uniqCT)
   end
 end
 figure
-%grid
-%hold on
-plot(tt',hv0');
-figure
-plot(tt',hqp0');
-figure
-plot(tt',res0');
+grid
+hold on
+plot(tt',hv0',hqp0',res0');
+
 figure
 grid
 hold on
