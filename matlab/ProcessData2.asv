@@ -5,12 +5,12 @@ addpath('C:\jinwork\BE\matlab\addaxis5')
 %Control parameters
 qPlot = false;
 dcPlot = false;
-debugPlot = false;
+debugPlot = true;
 tempExpFit = false;
 hpExpFit = false;
-postProcess = true;
+postProcess = false;
 writeOutput = false;
-plotOutput = true;
+plotOutput = false;
 errorBarPlot = false;
 findDuplicates = false;
 %plot bounds setting
@@ -38,7 +38,7 @@ aSet=[ipb1_30(4,:);ipb1_30(9,:)]
 %aSet=[ipb1_30(11,:)]
 %aSet=[sri_ipb2_27(7:8,:)];
 %ai needs to start with 1 and continues for now.
-for ai = [1,2]
+for ai = [1]
  reactor  = char(aSet.reactor(ai));
  folder  = char(aSet.folder(ai));
  runDate = num2str(aSet.runDate(ai));
@@ -48,7 +48,7 @@ for ai = [1,2]
  endOffset = aSet.endOffset(ai);
  isHe = aSet.isHe(ai);
  isDC = aSet.isDC(ai);
- efficiency = aSet.efficiency(ai);
+ termPcbEff = aSet.efficiency(ai);
 switch (reactor)
 case 'ipb1-29'  
   rtFolder='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\';    
@@ -172,6 +172,6 @@ if postProcess
 end 
 if (plotOutput)
   plotData = dataset({pdata,'coreT','inT','outT','ql','qf','hp','v1','v2','qPow','termP','pcbP','qSP','qSV','h2'});
-  plotSummary(pdata,plotData,isDC,isHe,reactor,efficiency,ai);
+  plotSummary(pdata,plotData,isDC,isHe,efficiency,reactor,efficiency,ai);
 end
 end

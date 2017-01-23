@@ -1,4 +1,4 @@
-function writeOut(data, isDC, isHe, fn, hpExpFit, tempExpFit,writeOutput,plotOutput )
+function [pdata] = writeOut(data, fn, hpExpFit, tempExpFit,writeOutput )
 dataSize = size(data,1);
 ctFit = [];
 itFit = [];
@@ -58,17 +58,15 @@ while (i < dataSize-1)
   end
 end  
 dt2 = datetime(dt1, 'ConvertFrom', 'datenum');
-if (plotOutput)
-  pdata = horzcat(coreT', inT', outT', ql', qf', hp', v1', v2', qPow', termP', pcbP', qSP', qSV', h2');
-  plotData = dataset({pdata,'coreT','inT','outT','ql','qf','hp','v1','v2','qPow','termP','pcbP','qSP','qSV','h2'});
-  plotSummary(pdata,plotData,isDC,isHe);
-end
-%delete(fn);
 if (writeOutput)
 T=table(coreT(:),inT(:),outT(:),ql(:),qf(:),hp(:),coreQPow(:),v1(:),v2(:),qPow(:),qSP(:),qSV(:),qCur(:),qSetV(:),h2(:),termP(:),pcbP(:),seq1(:),i12(:),dt2(:),...
 'VariableName',{'coreT','inT','outT','QL','QF','HP','CoreQPower','v1','v2','qPow','qSP','qSV','qCur','qSetV','h2','termP','pcbP','seq','steps','date'});
 writetable(T,fn);
 end
+pdata = horzcat(coreT', inT', outT', ql', qf', hp', v1', v2', qPow', termP', pcbP', qSP', qSV', h2');
+
+%delete(fn);
+
 end
 
 
