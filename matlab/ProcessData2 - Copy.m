@@ -2,6 +2,15 @@
 clear; close all; clc
 addpath('C:\jinwork\BE\matlab')
 addpath('C:\jinwork\BE\matlab\addaxis5')
+addpath('C:\jinwork\BE\matlab\export_fig\altmany-export_fig-2763b78')
+pltP=[0,0,400,400;400,0,400,400];
+
+%http://undocumentedmatlab.com/blog/export_fig
+%for a = 1:5
+%    plot(rand(5, 2));
+%    export_fig(sprintf('C:/jinwork/BE/matlab/plot%d.pdf', a));
+%    export_fig('C:/jinwork/BE/matlab/plot.pdf', '-append');
+%end
 %Control parameters
 qPlot = false;
 dcPlot = false;
@@ -30,14 +39,19 @@ ipb3_32 = readtable('ipb3-32.xlsx');
 sri_ipb2_27 = readtable('sri-ipb2-27.xlsx');
 ipb3_37 = readtable('ipb3-37.xlsx');
 
-aSet=ipb3_32 
-aSet=ipb1_30
-aSet=[sri_ipb2_27(3,:);ipb3_37]
-aSet=[sri_ipb2_27(5,:);sri_ipb2_27(6,:)]
-aSet=[ipb1_30(4,:);ipb1_30(9,:)]
+aSet = ipb3_32; 
+aSet = ipb1_30;
+aSet = [sri_ipb2_27(3,:);ipb3_37];
+aSetdesc = 'sri-ipb2-27b-h2-dc-q';
+aSet  =[sri_ipb2_27(5,:);sri_ipb2_27(6,:)];
+aSetdesc = 'ipb1-30b-he-dc-q';
+aSet = [ipb1_30(4,:);ipb1_30(9,:)];
+
 %aSet=[ipb1_30(11,:)]
 %aSet=[sri_ipb2_27(7:8,:)];
 %ai needs to start with 1 and continues for now.
+%aSet=[sri_ipb2_27(4,:)]
+figname = strcat('C:\jinwork\BEC\tmp\',aSetdesc,'.pdf');
 for ai = [1,2]
  reactor  = char(aSet.reactor(ai));
  folder  = char(aSet.folder(ai));
@@ -69,12 +83,49 @@ AllFiles = getall(Directory);
 Experiment= AllFiles(file1:file2); 
 Experiment'
 loadHHT 
+
 %clean
 QPulseLengthns = QPulseLength0x28ns0x29; clear QPulseLength0x28ns0x29
 %SeqStepNum = SeqStep0x23; clear SeqStep0x23      
 plotTitle =strcat(Directory,'-',runDate); 
 %change datetime to number
 dateN=datenum(DateTime,'mm/dd/yyyy HH:MM:SS');
+if strcmp(folder,'2016-09-30_SRI_v171-core27b') % we did not have V1 and V2 columns
+    SeqStepNum = SeqStep0x23; clear SeqStep0x23  
+    rawData = horzcat(dateN,...
+     SeqStepNum,...
+     HeaterPower,...
+     CoreTemp,...
+     InnerBlockTemp1,...
+     OuterBlockTemp1,...
+     OuterBlockTemp2,...
+     QPulseLengthns,...
+     CoreQPower,...
+     CoreQPower,...
+     CoreQPower,...
+     QSupplyPower,...
+     QCur,...
+     QSupplyVolt,...
+     QSetV,...
+     QKHz,...
+     QPow,...
+     TerminationHeatsinkPower,...
+     QPulsePCBHeatsinkPower,...
+     CalorimeterJacketFlowrateLPM,...
+     QPCBHeatsinkFlowrateLPM,...
+     TerminationHeatsinkFlowrateLPM,...
+     CalorimeterJacketPower,...
+     CalorimeterJacketH2OInT,...
+     CalorimeterJacketH2OOutT,...
+     QPCBHeatsinkH2OInT,...
+     QPCBHeatsinkH2OOutT,...
+     TerminationHeatsinkH2OInT,...
+     TerminationHeatsinkH2OOutT,...
+     QPulseVolt,...
+     PressureSensorPSI,...
+     RoomTemperature);
+     %HydrogenValves);
+else     
 rawData = horzcat(dateN,...
      SeqStepNum,...
      HeaterPower,...
@@ -107,6 +158,7 @@ rawData = horzcat(dateN,...
      QPulseVolt,...
      PressureSensorPSI,...
      RoomTemperature);
+end
      %HydrogenValves);
 %filter rawData out 
 dataSize = size(rawData,1);
@@ -120,7 +172,7 @@ end
 rawData = rawData(1+int16(startOffset*360):end-int16(endOffset*360),:);
 %rawData(any(isnan(rawData)),:)=[]; %take out rows with NaN
 %(isnan(j1)) = -2 ;
-%rawData = rawData(rawData(:,2) > 0,:); %only process data with seq
+rawData = rawData(rawData(:,2) > 0,:); %only process data with seq
 dataSize = size(rawData,1)
 %asignColumn name 
 rawDataN = dataset({rawData,'dateN',...
@@ -172,55 +224,64 @@ if postProcess
 end 
 if (plotOutput)
   plotData = dataset({pdata,'coreT','inT','outT','ql','qf','hp','v1','v2','qPow','termP','pcbP','qSP','qSV','h2'});
-  [tt,hpdrop,v12,dqp,v122,hv,res,hv0,hqp0,res0,plotSummary(pdata,plotData,isDC,isHe,reactor,efficiency,ai);
-      end
+  [tt,hpdrop,v12,dqp,v122,hv,res,hv0,hqp0,res0] = plotSummary(pdata,plotData,isDC,isHe,efficiency,ai);
+end
+power = 'q';
+if isDC
+  power = 'dc';
+end  
+gas = 'h2';
+if isHe
+  gas = 'he';
+end   
 f1=figure();
 grid on;
 grid minor;
 hold on
-%xlabel('Temperature')
-ax1=subplot(3,1,1);
-
+ax1=subplot(2,2,1);
 plot(tt(:,ai),hv0(:,ai),'-o');
 ax1.XGrid='on';
 ax1.YGrid='on';
-title(reactor);
-ytemp = strcat(power,'-',gas,'-HpDrop / V^2');
+tStr = strcat(reactor,'-',power,'-',gas);
+title(tStr);
+ytemp = strcat('HpDrop / V^2');
 ylabel(ytemp);
-%ftemp=strcat('C:\jinwork\BEC\tmp\',plotTitle,'-',power,'-',gas,'HpD-V2.png');
-%saveas(gcf, ftemp);
 
-%xlabel('Temperature')
-%title(plotTitle);
-ax2=subplot(3,1,2);
-
+ax2=subplot(2,2,2);
 plot(tt(:,ai),hqp0(:,ai),'-x');
 ax2.XGrid='on';
 ax2.YGrid='on';
-ytemp = strcat(power,'-',gas,'-HpDrop / Power');
+ytemp = strcat('HpDrop / Power');
 ylabel(ytemp);
-%ftemp=strcat('C:\jinwork\BEC\tmp\',plotTitle,'-',power,'-',gas,'HpD-P.png');
-%saveas(gcf, ftemp);
 
-%xlabel('Temperature')
-%title(plotTitle);
-ax3=subplot(3,1,3);
-
+ax3=subplot(2,2,3);
 plot(tt(:,ai),res0(:,ai),'-*');
 ax3.XGrid='on';
 ax3.YGrid='on';
-ytemp = strcat(power,'-',gas,'-V^2 / Power');
+ytemp = strcat('V^2 / Power');
 ylabel(ytemp);
-%ftemp=strcat('C:\jinwork\BEC\tmp\',plotTitle,'-',power,'-',gas,'V2-P.png');
-ftemp=strcat('C:\jinwork\BEC\tmp\',reactor,'-',power,'-',gas,'.png');
-saveas(f1, ftemp);
 
-figure;
+ax4=subplot(2,2,4);
+plot(tt(:,ai),hpdrop(end-1,:,ai),'-*');
+ax4.XGrid='on';
+ax4.YGrid='on';
+ytemp = strcat('HpDrop');
+ylabel(ytemp);
+
+%ftemp=strcat('C:\jinwork\BEC\tmp\',reactor,'-',power,'-',gas,'.png');
+%saveas(f1, ftemp);
+
+export_fig(f1,figname,'-append');
+
+f2 = figure;
 grid on;
 grid minor;
 hold on
-for i = 1:size(tt,2)
-  %subplot(3,1,1);
+ax1=subplot(2,2,1);
+ax1.XGrid='on';
+ax1.YGrid='on';
+for i = 1:size(tt,1)
+  
   plot(v122(:,i,ai),hpdrop(:,i,ai),'-o');
   ylabel('HpDrop[w]');
   xlabel('V^2[volt]'); 
@@ -230,11 +291,22 @@ end
 legend(labels,'Location','northwest');
 ftemp=strcat('C:\jinwork\BEC\tmp\',reactor,'-',power,'-',gas,'-HpD-V2-.png');
 saveas(gcf,ftemp);
+
+set(gcf, 'Position', pltP(1,:));
+%set(gcf, 'Position', [100 100 150 150])
+%saveas(gcf, 'test.png')
+
+export_fig(figname,'-append');
+
+
 figure;
 grid on;
 grid minor;
 hold on
-for i = 1:size(tt,2)
+ax2=subplot(2,2,1);
+ax1.XGrid='on';
+ax1.YGrid='on';
+for i = 1:size(tt,1)
     ylabel('HpDrop[w]');
     xlabel('coreQP[w]');
     title(reactor);
@@ -245,11 +317,13 @@ end
 legend(labels,'Location','northwest');
 ftemp=strcat('C:\jinwork\BEC\tmp\',reactor,'-',power,'-',gas,'-HpD-P-.png');
 saveas(gcf,ftemp);
+set(gcf, 'Position', pltP(2,:));
+export_fig(figname,'-append');
 figure;
 grid on;
 grid minor;
 hold on
-for i = 1:size(tt,2)
+for i = 1:size(tt,1)
   ylabel('V^2 / Power');
   xlabel('V^2[volt]'); 
   title(reactor);
@@ -260,4 +334,5 @@ end
 legend(labels,'Location','northwest');
 ftemp=strcat('C:\jinwork\BEC\tmp\',reactor,'-',power,'-',gas,'-V2-P-.png');
 saveas(gcf,ftemp);
+export_fig(figname,'-append');
 end

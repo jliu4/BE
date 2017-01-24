@@ -1,22 +1,17 @@
-function [tt,hpdrop,v12,dqp,v122,hv,res,hv0,hqp0,res0,power,gas] = plotSummary(pdata,pd,isDC,isHe,efficiency,ai )
+function [tt,hpdrop,v12,dqp,v122,hv,res,hv0,hqp0,res0] = plotSummary(pdata,pd,isDC,isHe,efficiency,ai )
 % Create palette
 %palette = hsv(K + 1);
 %colors = palette(idx, :);
 %set dc vs.q and he vs.h2
-power = 'q';
-if isDC
-  power = 'dc';
-end  
-gas = 'h2';
-if isHe
-  gas = 'he';
-end   
+
 %get unique coreT
 uniqCT = unique(int16(pd.coreT));
-tt=[];hpdrop=[];qp=[];tp=[];pp=[];v12=[];v122=[];
+%tt=[];hpdrop=[];qp=[];tp=[];pp=[];v12=[];v122=[];
 i = 0;
 for ti = 1:numel(uniqCT)
   tdata = pdata(int16(pdata(:,1)) == uniqCT(ti),:);
+  %exception 
+  %we have to have at least 4 data points the first row needs to be no powerfor 
   if size(tdata,1) > 4 && tdata(1,9) < 5
   i = i + 1;
   tt(i,ai) = uniqCT(ti);
@@ -50,7 +45,6 @@ for ti = 1:numel(uniqCT)
   v122=v12.*v12;
   hv = hpdrop./v122;
   res = v122./dqp;
- 
   hv0(i,ai) = v122(:,i,ai)\hpdrop(:,i,ai);  
   hqp0(i,ai) = dqp(:,i,ai)\hpdrop(:,i,ai);   
   res0(i,ai) = dqp(:,i,ai)\v122(:,i,ai);

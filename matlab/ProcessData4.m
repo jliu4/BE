@@ -3,7 +3,7 @@ clear; close all; clc
 addpath('C:\jinwork\BE\matlab')
 addpath('C:\jinwork\BE\matlab\addaxis5')
 addpath('C:\jinwork\BE\matlab\export_fig\altmany-export_fig-2763b78')
-pltP=[10,10,400,400;400,0,400,400];
+pltP=[0,0,400,400;400,0,400,400];
 
 %http://undocumentedmatlab.com/blog/export_fig
 %for a = 1:5
@@ -42,19 +42,17 @@ ipb3_37 = readtable('ipb3-37.xlsx');
 aSet = ipb3_32; 
 aSet = ipb1_30;
 aSet = [sri_ipb2_27(3,:);ipb3_37];
-
-aSetdesc = 'ipb1-30b-he-dc-q';
-aSet = [ipb1_30(4,:);ipb1_30(9,:)];
 aSetdesc = 'sri-ipb2-27b-h2-dc-q';
-aSet  =[sri_ipb2_27(4,:);sri_ipb2_27(9,:)];
+aSet  =[sri_ipb2_27(5,:);sri_ipb2_27(6,:)];
 aSetdesc = 'ipb1-30b-he-dc-q';
 aSet = [ipb1_30(4,:);ipb1_30(9,:)];
+power = []; gas=[];
+
 %aSet=[ipb1_30(11,:)]
 %aSet=[sri_ipb2_27(7:8,:)];
 %ai needs to start with 1 and continues for now.
 %aSet=[sri_ipb2_27(4,:)]
 figname = strcat('C:\jinwork\BEC\tmp\',aSetdesc,'.pdf');
-delete(figname);
 for ai = [1,2]
  reactor  = char(aSet.reactor(ai));
  folder  = char(aSet.folder(ai));
@@ -225,20 +223,66 @@ if postProcess
  fn = char(strcat('C:\jinwork\BEC\tmp\', reactor, '-', runDate, '.csv') );        
  pdata = writeOut(rawDataN,fn,hpExpFit,tempExpFit,writeOutput);
 end 
-if (plotOutput)
+if (plotOutput)  
   plotData = dataset({pdata,'coreT','inT','outT','ql','qf','hp','v1','v2','qPow','termP','pcbP','qSP','qSV','h2'});
-  [tt,hpdrop,v12,dqp,v122,hv,res,hv0,hqp0,res0] = plotSummary(pdata,plotData,isDC,isHe,efficiency,ai);
-end
-power = 'q';
+  uniqCT = unique(int16(pdata(:,1)));
+%tt=[];hpdrop=[];qp=[];tp=[];pp=[];v12=[];v122=[];
+  i = 0;
+  for ti = 1:numel(uniqCT)
+    tdata = pdata(int16(pdata(:,1)) == uniqCT(ti),:);
+  %we have to have at least 4 data points the first row needs to be no powerfor 
+  if size(tdata,1) > 4 && tdata(1,9) < 5
+  i = i + 1;
+  tt(i,ai) = uniqCT(ti);
+  %condition is pdata.coreQPow = 0
+ % if tdata(1,9) < 5
+ % assume the first row in the temperature mode is no q and dc power.
+    hp0 = tdata(1,6);
+    qp0 = tdata(1,9);
+    termP0 = tdata(1,10);
+    pcbP0 = tdata(1,11);
+ % else   
+    %hp0=tdata(end,6));
+    %qp0=tdata(end,9);
+    %termP0=tdata(end,10);
+    %pcbP0 = tdata(end,11);
+%  end  
+  if isDC 
+    qtdata = tdata(2:end-1,:);
+    hpdrop(:,i,ai) = hp0-qtdata(:,6);
+    v12(:,i,ai)= qtdata(:,13);%qsupplyPower
+    dqp(:,i,ai) = qtdata(:,12); %power    
+  else    
+    qtdata = tdata(2:end-1,:);
+    hpdrop(:,i,ai) = hp0-qtdata(:,6);
+    v12(:,i,ai)= qtdata(:,7)-qtdata(:,8) ;
+    qp(:,i) = qtdata(:,9) - qp0;
+    tp(:,i) = qtdata(:,10) - termP0;
+    pp(:,i) = qtdata(:,11) - pcbP0;
+    dqp(:,i,ai) = qp(:,i)-(tp(:,i)+pp(:,i))/efficiency;
+  end  
+  v122=v12.*v12;
+  hv = hpdrop./v122;
+  res = v122./dqp;
+  hv0(i,ai) = v122(:,i,ai)\hpdrop(:,i,ai);  
+  hqp0(i,ai) = dqp(:,i,ai)\hpdrop(:,i,ai);   
+  res0(i,ai) = dqp(:,i,ai)\v122(:,i,ai);
+  end  
+  end
+power(ai) = string('q');
 if isDC
-  power = 'dc';
+  power(ai) = string('dc');
 end  
-gas = 'h2';
+gas(ai) = string('h2');
 if isHe
-  gas = 'he';
-end   
-f1=figure('Position',[10 10 1000 800]);
+  gas(ai) = string('he');
+end
 
+
+end 
+end
+for ai = 1 : size(aSet,1)
+f1=figure();
 grid on;
 grid minor;
 hold on
@@ -274,65 +318,90 @@ ylabel(ytemp);
 
 %ftemp=strcat('C:\jinwork\BEC\tmp\',reactor,'-',power,'-',gas,'.png');
 %saveas(f1, ftemp);
+
 export_fig(f1,figname,'-append');
 
-f2=figure('Position',[10 10 1000 800]);
-grid on;
-grid minor;
-hold on
+f2 = figure();
+
 for i = 1:size(tt,1)
-  
+  ax1=subplot(2,1,1);
+ax1.XGrid='on';
+ax1.YGrid='on';
+hold on
   plot(v122(:,i,ai),hpdrop(:,i,ai),'-o');
   ylabel('HpDrop[w]');
   xlabel('V^2[volt]'); 
   title(reactor);
-  labels{i}=strcat(power,'-',gas,'-CoreTemp=',num2str(tt(i,ai))); 
+  labels{i}=strcat(power(ai),'-',gas(ai),'-CoreTemp=',num2str(tt(i,ai))); 
 end  
 legend(labels,'Location','northwest');
-ftemp=strcat('C:\jinwork\BEC\tmp\',reactor,'-',power,'-',gas,'-HpD-V2-.png');
-saveas(gcf,ftemp);
+%ftemp=strcat('C:\jinwork\BEC\tmp\',reactor,'-',power,'-',gas,'-HpD-V2-.png');
+%saveas(gcf,ftemp);
 
 %set(gcf, 'Position', pltP(1,:));
 %set(gcf, 'Position', [100 100 150 150])
 %saveas(gcf, 'test.png')
 
-export_fig(f2,figname,'-append');
+%export_fig(figname,'-append');
 
 
-f3=figure('Position',[10 10 1000 800]);
-grid on;
-grid minor;
-hold on
+%figure;
+%grid on;
+%grid minor;
+%hold on
 
 for i = 1:size(tt,1)
     ylabel('HpDrop[w]');
     xlabel('coreQP[w]');
-    title(reactor);
-   
+    %title(reactor);
+    %subplot(3,1,2)
+    ax2=subplot(2,1,2);
+ax2.XGrid='on';
+ax2.YGrid='on';
+hold on;
     plot(dqp(:,i,ai),hpdrop(:,i,ai),'-*');
-    labels{i}=strcat(power,'-',gas,'-CoreTemp=',num2str(tt(i,ai))); 
+    labels{i}=strcat(power(ai),'-',gas(ai),'-CoreTemp=',num2str(tt(i,ai))); 
 end  
 legend(labels,'Location','northwest');
-ftemp=strcat('C:\jinwork\BEC\tmp\',reactor,'-',power,'-',gas,'-HpD-P-.png');
-saveas(gcf,ftemp);
+export_fig(f2,figname,'-append');
+%ftemp=strcat('C:\jinwork\BEC\tmp\',reactor,'-',power,'-',gas,'-HpD-P-.png');
+%saveas(gcf,ftemp);
 %set(gcf, 'Position', pltP(2,:));
-export_fig(f3,figname,'-append');
+%export_fig(figname,'-append');
+f3=figure();
+%grid on;
+%grid minor;
+%hold on
 
-f4=figure('Position',[10 10 1000 800]);
-
-grid on;
-grid minor;
-hold on
 for i = 1:size(tt,1)
   ylabel('V^2 / Power');
   xlabel('V^2[volt]'); 
   title(reactor);
- 
+  %subplot(3,1,3);
+  ax1=subplot(2,1,1);
+ax1.XGrid='on';
+ax1.YGrid='on';
+hold on;
   plot(v122(:,i,ai),res(:,i,ai),'-x');
-  labels{i}=strcat(power,'-',gas,'-CoreTemp=',num2str(tt(i,ai))); 
+  labels{i}=strcat(power(ai),'-',gas(ai),'-CoreTemp=',num2str(tt(i,ai))); 
 end  
 legend(labels,'Location','northwest');
-ftemp=strcat('C:\jinwork\BEC\tmp\',reactor,'-',power,'-',gas,'-V2-P-.png');
-saveas(gcf,ftemp);
-export_fig(f4,figname,'-append');
+
+for i = 1:size(tt,1)
+  ylabel('Power');
+  xlabel('V^2[volt]'); 
+  %title(reactor);
+  ax4=subplot(2,1,2);
+ax4.XGrid='on';
+ax4.YGrid='on';
+hold on
+  %subplot(3,1,3);
+  plot(v122(:,i,ai),dqp(:,i,ai),'-x');
+  labels{i}=strcat(power(ai),'-',gas(ai),'-CoreTemp=',num2str(tt(i,ai))); 
+end  
+legend(labels,'Location','northwest');
+%ftemp=strcat('C:\jinwork\BEC\tmp\',reactor,'-',power,'-',gas,'-V2-P-.png');
+%saveas(gcf,ftemp);
+export_fig(f3,figname,'-append');
 end
+
