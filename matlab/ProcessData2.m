@@ -172,6 +172,93 @@ if postProcess
 end 
 if (plotOutput)
   plotData = dataset({pdata,'coreT','inT','outT','ql','qf','hp','v1','v2','qPow','termP','pcbP','qSP','qSV','h2'});
-  plotSummary(pdata,plotData,isDC,isHe,reactor,efficiency,ai);
+  [tt,hpdrop,v12,dqp,v122,hv,res,hv0,hqp0,res0,power,gas] = plotSummary(pdata,plotData,isDC,isHe,efficiency,ai);
 end
+f1=figure();
+grid on;
+grid minor;
+hold on
+%xlabel('Temperature')
+
+ax1=subplot(3,1,1);
+
+plot(tt(:,ai),hv0(:,ai),'-o');
+ax1.XGrid='on';
+ax1.YGrid='on';
+title(reactor);
+ytemp = strcat(power,'-',gas,'-HpDrop / V^2');
+ylabel(ytemp);
+%ftemp=strcat('C:\jinwork\BEC\tmp\',plotTitle,'-',power,'-',gas,'HpD-V2.png');
+%saveas(gcf, ftemp);
+
+%xlabel('Temperature')
+%title(plotTitle);
+ax2=subplot(3,1,2);
+
+plot(tt(:,ai),hqp0(:,ai),'-x');
+ax2.XGrid='on';
+ax2.YGrid='on';
+ytemp = strcat(power,'-',gas,'-HpDrop / Power');
+ylabel(ytemp);
+%ftemp=strcat('C:\jinwork\BEC\tmp\',plotTitle,'-',power,'-',gas,'HpD-P.png');
+%saveas(gcf, ftemp);
+
+%xlabel('Temperature')
+%title(plotTitle);
+ax3=subplot(3,1,3);
+
+plot(tt(:,ai),res0(:,ai),'-*');
+ax3.XGrid='on';
+ax3.YGrid='on';
+ytemp = strcat(power,'-',gas,'-V^2 / Power');
+ylabel(ytemp);
+%ftemp=strcat('C:\jinwork\BEC\tmp\',plotTitle,'-',power,'-',gas,'V2-P.png');
+ftemp=strcat('C:\jinwork\BEC\tmp\',reactor,'-',power,'-',gas,'.png');
+saveas(f1, ftemp);
+
+figure;
+grid on;
+grid minor;
+hold on
+for i = 1:size(tt,1)
+  %subplot(3,1,1);
+  plot(v122(:,i,ai),hpdrop(:,i,ai),'-o');
+  ylabel('HpDrop[w]');
+  xlabel('V^2[volt]'); 
+  title(reactor);
+  labels{i}=strcat(power,'-',gas,'-CoreTemp=',num2str(tt(i,ai))); 
+end  
+legend(labels,'Location','northwest');
+ftemp=strcat('C:\jinwork\BEC\tmp\',reactor,'-',power,'-',gas,'-HpD-V2-.png');
+saveas(gcf,ftemp);
+figure;
+grid on;
+grid minor;
+hold on
+for i = 1:size(tt,1)
+    ylabel('HpDrop[w]');
+    xlabel('coreQP[w]');
+    title(reactor);
+    %subplot(3,1,2)
+    plot(dqp(:,i,ai),hpdrop(:,i,ai),'-*');
+    labels{i}=strcat(power,'-',gas,'-CoreTemp=',num2str(tt(i,ai))); 
+end  
+legend(labels,'Location','northwest');
+ftemp=strcat('C:\jinwork\BEC\tmp\',reactor,'-',power,'-',gas,'-HpD-P-.png');
+saveas(gcf,ftemp);
+figure;
+grid on;
+grid minor;
+hold on
+for i = 1:size(tt,1)
+  ylabel('V^2 / Power');
+  xlabel('V^2[volt]'); 
+  title(reactor);
+  %subplot(3,1,3);
+  plot(v122(:,i,ai),res(:,i,ai),'-x');
+  labels{i}=strcat(power,'-',gas,'-CoreTemp=',num2str(tt(i,ai))); 
+end  
+legend(labels,'Location','northwest');
+ftemp=strcat('C:\jinwork\BEC\tmp\',reactor,'-',power,'-',gas,'-V2-P-.png');
+saveas(gcf,ftemp);
 end

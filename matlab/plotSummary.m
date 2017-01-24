@@ -1,4 +1,4 @@
-function plotSummary(pdata,pd,isDC,isHe,reactor,efficiency,ai )
+function [tt,hpdrop,v12,dqp,v122,hv,res,hv0,hqp0,res0,power,gas] = plotSummary(pdata,pd,isDC,isHe,efficiency,ai )
 % Create palette
 %palette = hsv(K + 1);
 %colors = palette(idx, :);
@@ -19,7 +19,7 @@ for ti = 1:numel(uniqCT)
   tdata = pdata(int16(pdata(:,1)) == uniqCT(ti),:);
   if size(tdata,1) > 4 && tdata(1,9) < 5
   i = i + 1;
-  tt(i) = uniqCT(ti);
+  tt(i,ai) = uniqCT(ti);
   %condition is pdata.coreQPow = 0
  % if tdata(1,9) < 5
  % assume the first row in the temperature mode is no q and dc power.
@@ -37,8 +37,7 @@ for ti = 1:numel(uniqCT)
     qtdata = tdata(2:end-1,:);
     hpdrop(:,i,ai) = hp0-qtdata(:,6);
     v12(:,i,ai)= qtdata(:,13);%qsupplyPower
-    dqp(:,i,ai) = qtdata(:,12); %power   
- 
+    dqp(:,i,ai) = qtdata(:,12); %power    
   else    
     qtdata = tdata(2:end-1,:);
     hpdrop(:,i,ai) = hp0-qtdata(:,6);
@@ -57,83 +56,7 @@ for ti = 1:numel(uniqCT)
   res0(i,ai) = dqp(:,i,ai)\v122(:,i,ai);
   end
 end
-f1=figure();
-grid on;
-grid minor;
-hold on
-%xlabel('Temperature')
-subplot(311);
-plot(tt,hv0(:,ai),'-o');
-title(reactor);
-ytemp = strcat(power,'-',gas,'-HpDrop / V^2');
-ylabel(ytemp);
-%ftemp=strcat('C:\jinwork\BEC\tmp\',plotTitle,'-',power,'-',gas,'HpD-V2.png');
-%saveas(gcf, ftemp);
 
-%xlabel('Temperature')
-%title(plotTitle);
-subplot(312);
-plot(tt',hqp0(:,ai),'-x');
-ytemp = strcat(power,'-',gas,'-HpDrop / Power');
-ylabel(ytemp);
-%ftemp=strcat('C:\jinwork\BEC\tmp\',plotTitle,'-',power,'-',gas,'HpD-P.png');
-%saveas(gcf, ftemp);
-
-%xlabel('Temperature')
-%title(plotTitle);
-subplot(313);
-plot(tt',res0(:,ai),'-*');
-ytemp = strcat(power,'-',gas,'-V^2 / Power');
-ylabel(ytemp);
-%ftemp=strcat('C:\jinwork\BEC\tmp\',plotTitle,'-',power,'-',gas,'V2-P.png');
-ftemp=strcat('C:\jinwork\BEC\tmp\',reactor,'-',power,'-',gas,'.png');
-saveas(f1, ftemp);
-
-figure;
-grid on;
-grid minor;
-hold on
-for i = 1:size(tt,2)
-  %subplot(3,1,1);
-  plot(v122(:,i,ai),hpdrop(:,i,ai),'-o');
-  ylabel('HpDrop[w]');
-  xlabel('V^2[volt]'); 
-  title(reactor);
-  labels{i}=strcat(power,'-',gas,'-CoreTemp=',num2str(tt(i))); 
-end  
-legend(labels,'Location','northwest');
-ftemp=strcat('C:\jinwork\BEC\tmp\',reactor,'-',power,'-',gas,'-HpD-V2-.png');
-saveas(gcf,ftemp);
-figure;
-grid on;
-grid minor;
-hold on
-for i = 1:size(tt,2)
-    ylabel('HpDrop[w]');
-    xlabel('coreQP[w]');
-    title(reactor);
-    %subplot(3,1,2)
-    plot(dqp(:,i,ai),hpdrop(:,i,ai),'-*');
-    labels{i}=strcat(power,'-',gas,'-CoreTemp=',num2str(tt(i))); 
-end  
-legend(labels,'Location','northwest');
-ftemp=strcat('C:\jinwork\BEC\tmp\',reactor,'-',power,'-',gas,'-HpD-P-.png');
-saveas(gcf,ftemp);
-figure;
-grid on;
-grid minor;
-hold on
-for i = 1:size(tt,2)
-  ylabel('V^2 / Power');
-  xlabel('V^2[volt]'); 
-  title(reactor);
-  %subplot(3,1,3);
-  plot(v122(:,i,ai),res(:,i,ai),'-x');
-  labels{i}=strcat(power,'-',gas,'-CoreTemp=',num2str(tt(i))); 
-end  
-legend(labels,'Location','northwest');
-ftemp=strcat('C:\jinwork\BEC\tmp\',reactor,'-',power,'-',gas,'-V2-P-.png');
-saveas(gcf,ftemp);
 end
   
 

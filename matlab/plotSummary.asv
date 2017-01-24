@@ -1,4 +1,4 @@
-function plotSummary(pdata,pd,isDC,isHe,reactor,efficiency,ai )
+function [hpdrop,v12,v122,hv,res,hv0,hqp0,res0] = plotSummary(pdata,pd,isDC,isHe,reactor,efficiency,ai )
 % Create palette
 %palette = hsv(K + 1);
 %colors = palette(idx, :);
@@ -23,7 +23,7 @@ for ti = 1:numel(uniqCT)
   %condition is pdata.coreQPow = 0
  % if tdata(1,9) < 5
  % assume the first row in the temperature mode is no q and dc power.
-    hp0 = tdata(1,6)
+    hp0 = tdata(1,6);
     qp0 = tdata(1,9);
     termP0 = tdata(1,10);
     pcbP0 = tdata(1,11);
@@ -37,12 +37,7 @@ for ti = 1:numel(uniqCT)
     qtdata = tdata(2:end-1,:);
     hpdrop(:,i,ai) = hp0-qtdata(:,6);
     v12(:,i,ai)= qtdata(:,13);%qsupplyPower
-    dqp(:,i,ai) = qtdata(:,12); %power   
-    hv = hpdrop./v122;
-    res = v122./dqp;
-    hv0(i,ai) = v122(:,i,ai)\hpdrop(:,i,ai); 
-    hqp0(i,ai) = dqp(:,i,ai)\hpdrop(:,i,ai);
-    res0(i,ai) = dqp(:,i,ai)\v122(:,i,ai);
+    dqp(:,i,ai) = qtdata(:,12); %power    
   else    
     qtdata = tdata(2:end-1,:);
     hpdrop(:,i,ai) = hp0-qtdata(:,6);
@@ -56,10 +51,9 @@ for ti = 1:numel(uniqCT)
   hv = hpdrop./v122;
   res = v122./dqp;
  
-  hv0(i,ai) = v122(i,ai)\hpdrop(i,ai);  
-  hqp0(i,ai) = dqp(i,ai)\hpdrop(i,ai);   
-  res0(i,ai) = dqp(i,ai)\v122(i,ai);
-  end
+  hv0(i,ai) = v122(:,i,ai)\hpdrop(:,i,ai);  
+  hqp0(i,ai) = dqp(:,i,ai)\hpdrop(:,i,ai);   
+  res0(i,ai) = dqp(:,i,ai)\v122(:,i,ai);
   end
 end
 f1=figure();
@@ -67,8 +61,11 @@ grid on;
 grid minor;
 hold on
 %xlabel('Temperature')
-subplot(311);
-plot(tt,hv0(ai),'-o');
+ax1=subplot(3,1,1);
+
+plot(tt,hv0(:,ai),'-o');
+ax1.XGrid='on';
+ax1.YGrid='on';
 title(reactor);
 ytemp = strcat(power,'-',gas,'-HpDrop / V^2');
 ylabel(ytemp);
@@ -77,8 +74,11 @@ ylabel(ytemp);
 
 %xlabel('Temperature')
 %title(plotTitle);
-subplot(312);
-plot(tt',hqp0(ai),'-x');
+ax2=subplot(3,1,2);
+
+plot(tt',hqp0(:,ai),'-x');
+ax2.XGrid='on';
+ax2.YGrid='on';
 ytemp = strcat(power,'-',gas,'-HpDrop / Power');
 ylabel(ytemp);
 %ftemp=strcat('C:\jinwork\BEC\tmp\',plotTitle,'-',power,'-',gas,'HpD-P.png');
@@ -86,8 +86,11 @@ ylabel(ytemp);
 
 %xlabel('Temperature')
 %title(plotTitle);
-subplot(313);
-plot(tt',res0(ai),'-*');
+ax3=subplot(3,1,3);
+
+plot(tt',res0(:,ai),'-*');
+ax3.XGrid='on';
+ax3.YGrid='on';
 ytemp = strcat(power,'-',gas,'-V^2 / Power');
 ylabel(ytemp);
 %ftemp=strcat('C:\jinwork\BEC\tmp\',plotTitle,'-',power,'-',gas,'V2-P.png');
