@@ -3,46 +3,65 @@ clear; close all; clc
 addpath('C:\jinwork\BE\matlab')
 addpath('C:\jinwork\BE\matlab\addaxis5')
 addpath('C:\jinwork\BE\matlab\export_fig\altmany-export_fig-2763b78')
-%Control parameters
-qPlot = false; dcPlot = false; debugPlot = false; tempExpFit = false; hpExpFit = false;
-postProcess = true; writeOutput = false; plotOutput = true; detailPlot = false;
-errorBarPlot = false;findDuplicates = false;
-%plot bounds setting
-coreRes = 0.5;startOffset = 0;endOffset = 0;hp1 = 0;hp2 = 40; qp1 = 5;qp2 = 55;cqp1 = 0;cqp2 = 12;
+pltP=[10,10,400,400;400,0,400,400];
 
+%http://undocumentedmatlab.com/blog/export_fig
+%for a = 1:5
+%    plot(rand(5, 2));
+%    export_fig(sprintf('C:/jinwork/BE/matlab/plot%d.pdf', a));
+%    export_fig('C:/jinwork/BE/matlab/plot.pdf', '-append');
+%end
+%Control parameters
+qPlot = false;
+dcPlot = false;
+debugPlot = false;
+tempExpFit = false;
+hpExpFit = false;
+postProcess = true;
+writeOutput = false;
+plotOutput = true;
+errorBarPlot = false;
+findDuplicates = false;
+%plot bounds setting
+coreRes = 0.5;
+startOffset = 0;
+endOffset = 0;
+hp1 = 0;
+hp2 = 40; 
+qp1 = 5;
+qp2 = 55;
+cqp1 = 0;
+cqp2 = 12;
+
+%ipb1_29 = readtable('ipb1-29.csv');
+%ipb1_30 = readtable('ipb1-30.csv','ReadRowNames',true,'format','%s%s%s%s%d%d%d%d%d%d%s');
 ipb1_30 = readtable('ipb1-30.xlsx');
 ipb3_32 = readtable('ipb3-32.xlsx');
 sri_ipb2_27 = readtable('sri-ipb2-27.xlsx');
 ipb3_37 = readtable('ipb3-37.xlsx');
 
+aSet = ipb3_32; 
+aSet = ipb1_30;
 aSet = [sri_ipb2_27(3,:);ipb3_37];
 
 aSetdesc = 'ipb1-30b-he-dc-q';
 aSet = [ipb1_30(4,:);ipb1_30(9,:)];
-
 aSetdesc = 'sri-ipb2-27b-h2-dc-q';
 aSet  =[sri_ipb2_27(4,:);sri_ipb2_27(9,:)];
-
 aSetdesc = 'ipb1-30b-he-dc-q';
 aSet = [ipb1_30(4,:);ipb1_30(9,:)];
-
 aSetdesc = 'ipb1-30b-q-excitation';
 aSet = [ipb1_30(12,:)];
-
 aSetdesc = 'sri-ipb2-27b-h2-dc-q';
 aSet  =[sri_ipb2_27(4,:);sri_ipb2_27(9,:)];
-aSetdesc = 'ipb1-30b-he-dc-q';
-aSet = [ipb1_30(4,:);ipb1_30(10,:)];
-aSetdesc = 'ipb1-30b-he-dc-q-sri-ipb2-h2-dc-q';
-aSet = [ipb1_30(4,:);ipb1_30(9,:);sri_ipb2_27(4,:);sri_ipb2_27(9,:)];
-aSetdesc = 'ipb1-30b-sri-ipb2-27-DC-runs';
-aSet = [ipb1_30(4,:);ipb1_30(5,:);sri_ipb2_27(4,:);sri_ipb2_27(5,:)];
+%aSet=[ipb1_30(11,:)]
+%aSet=[sri_ipb2_27(7:8,:)];
 %ai needs to start with 1 and continues for now.
+%aSet=[sri_ipb2_27(4,:)]
 figname = strcat('C:\jinwork\BEC\tmp\',aSetdesc,'.pdf');
 delete(figname);
 f1=figure('Position',[10 10 1000 800]);
-
-for ai = [1,2,3,4]
+for ai = [1,2]
  reactor  = char(aSet.reactor(ai));
  folder  = char(aSet.folder(ai));
  runDate = num2str(aSet.runDate(ai));
@@ -73,6 +92,7 @@ AllFiles = getall(Directory);
 Experiment= AllFiles(file1:file2); 
 Experiment'
 loadHHT 
+
 %clean
 QPulseLengthns = QPulseLength0x28ns0x29; clear QPulseLength0x28ns0x29
 %SeqStepNum = SeqStep0x23; clear SeqStep0x23      
@@ -223,85 +243,122 @@ gas = 'h2';
 if isHe
   gas = 'he';
 end 
-if detailPlot
-tStr = strcat(reactor,'-',power,'-',gas);    
+
+figure(f1);
+
+ax1=subplot(2,2,1);
+
+ax1.XGrid='on';
+ax1.YGrid='on';
+
+grid on;
+grid minor;
+hold on;
+plot(tt(:,ai),hv0(:,ai),'-o');
+
+%title(aSetdesc);
+ytemp = strcat('HpDrop / V^2');
+ylabel(ytemp);
+
+ax2=subplot(2,2,2);
+
+ax2.XGrid='on';
+ax2.YGrid='on';
+grid on;
+grid minor;
+hold on;
+plot(tt(:,ai),hqp0(:,ai),'-o');
+ytemp = strcat('HpDrop / Power');
+ylabel(ytemp);
+
+ax3=subplot(2,2,3);
+
+ax3.XGrid='on';
+ax3.YGrid='on';
+grid on;
+grid minor;
+hold on;
+plot(tt(:,ai),res0(:,ai),'-o');
+ytemp = strcat('V^2 / Power');
+ylabel(ytemp);
+
+ax4=subplot(2,2,4);
+
+ax4.XGrid='on';
+ax4.YGrid='on';
+grid on;
+grid minor;
+hold on;
+plot(tt(:,ai),hpdrop(end-1,:,ai),'-o');
+ytemp = strcat('HpDrop');
+ylabel(ytemp);
+ll{ai}=strcat(reactor,'-',power,'-',gas);
+%ftemp=strcat('C:\jinwork\BEC\tmp\',reactor,'-',power,'-',gas,'.png');
+%saveas(f1, ftemp);
+legend(ll,'Location','SouthOutside');
+
+export_fig(f1,figname,'-append');
+
+
+if false
 f2=figure('Position',[10 10 1000 800]);
 grid on;
 grid minor;
 hold on
-for i = 1:size(tt,1) 
+for i = 1:size(tt,1)
+  
   plot(v122(:,i,ai),hpdrop(:,i,ai),'-o');
   ylabel('HpDrop[w]');
   xlabel('V^2[volt]'); 
-  title(tStr);
+  title(reactor);
   labels{i}=strcat(power,'-',gas,'-CoreTemp=',num2str(tt(i,ai))); 
 end  
 legend(labels,'Location','northwest');
+ftemp=strcat('C:\jinwork\BEC\tmp\',reactor,'-',power,'-',gas,'-HpD-V2-.png');
+saveas(gcf,ftemp);
+
+%set(gcf, 'Position', pltP(1,:));
+%set(gcf, 'Position', [100 100 150 150])
+%saveas(gcf, 'test.png')
+
 export_fig(f2,figname,'-append');
+
+
 f3=figure('Position',[10 10 1000 800]);
 grid on;
 grid minor;
 hold on
+
 for i = 1:size(tt,1)
     ylabel('HpDrop[w]');
     xlabel('coreQP[w]');
-    title(tStr);
+    title(reactor);
+   
     plot(dqp(:,i,ai),hpdrop(:,i,ai),'-*');
     labels{i}=strcat(power,'-',gas,'-CoreTemp=',num2str(tt(i,ai))); 
 end  
 legend(labels,'Location','northwest');
-
+ftemp=strcat('C:\jinwork\BEC\tmp\',reactor,'-',power,'-',gas,'-HpD-P-.png');
+saveas(gcf,ftemp);
+%set(gcf, 'Position', pltP(2,:));
 export_fig(f3,figname,'-append');
+
 f4=figure('Position',[10 10 1000 800]);
+
 grid on;
 grid minor;
 hold on
 for i = 1:size(tt,1)
   ylabel('V^2 / Power');
   xlabel('V^2[volt]'); 
-  title(tStr);
+  title(reactor);
+ 
   plot(v122(:,i,ai),res(:,i,ai),'-x');
   labels{i}=strcat(power,'-',gas,'-CoreTemp=',num2str(tt(i,ai))); 
 end  
 legend(labels,'Location','northwest');
-
+ftemp=strcat('C:\jinwork\BEC\tmp\',reactor,'-',power,'-',gas,'-V2-P-.png');
+saveas(gcf,ftemp);
 export_fig(f4,figname,'-append');
 end
-figure(f1);
-subplot(2,2,1);
-grid on;
-grid minor;
-hold on;
-plot(tt(:,ai),hv0(:,ai),'-o');
-xlim([150 400]);
-ytemp = strcat('HpDrop / V^2');
-ylabel(ytemp);
-subplot(2,2,2);
-grid on;
-grid minor;
-hold on;
-plot(tt(:,ai),hqp0(:,ai),'-o');
-xlim([150 400]);
-ytemp = strcat('HpDrop / Power');
-ylabel(ytemp);
-subplot(2,2,3);
-grid on;
-grid minor;
-hold on;
-plot(tt(:,ai),res0(:,ai),'-o');
-xlim([150 400]);
-ytemp = strcat('V^2 / Power');
-ylabel(ytemp);
-subplot(2,2,4);
-grid on;
-grid minor;
-hold on;
-plot(tt(:,ai),hpdrop(end-1,:,ai),'-o');
-xlim([150 400]);
-ytemp = strcat('HpDrop');
-ylabel(ytemp);
-ll{ai}=strcat(reactor,'-',power,'-',gas);
-legend(ll,'Location','SouthOutside');
-export_fig(f1,figname,'-append');
 end
-

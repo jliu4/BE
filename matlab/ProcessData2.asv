@@ -5,7 +5,7 @@ addpath('C:\jinwork\BE\matlab\addaxis5')
 addpath('C:\jinwork\BE\matlab\export_fig\altmany-export_fig-2763b78')
 %Control parameters
 qPlot = false; dcPlot = false; debugPlot = false; tempExpFit = false; hpExpFit = false;
-postProcess = true; writeOutput = false; plotOutput = true; detailPlot = false;
+postProcess = true; writeOutput = false; plotOutput = true; detailPlot = true;
 errorBarPlot = false;findDuplicates = false;
 %plot bounds setting
 coreRes = 0.5;startOffset = 0;endOffset = 0;hp1 = 0;hp2 = 40; qp1 = 5;qp2 = 55;cqp1 = 0;cqp2 = 12;
@@ -41,7 +41,6 @@ aSet = [ipb1_30(4,:);ipb1_30(5,:);sri_ipb2_27(4,:);sri_ipb2_27(5,:)];
 figname = strcat('C:\jinwork\BEC\tmp\',aSetdesc,'.pdf');
 delete(figname);
 f1=figure('Position',[10 10 1000 800]);
-
 for ai = [1,2,3,4]
  reactor  = char(aSet.reactor(ai));
  folder  = char(aSet.folder(ai));

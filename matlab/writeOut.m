@@ -64,9 +64,7 @@ T=table(coreT(:),inT(:),outT(:),ql(:),qf(:),hp(:),coreQPow(:),v1(:),v2(:),qPow(:
 writetable(T,fn);
 end
 pdata = horzcat(coreT', inT', outT', ql', qf', hp', v1', v2', qPow', termP', pcbP', qSP', qSV', h2');
-
 %delete(fn);
-
 end
 
 
