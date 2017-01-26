@@ -14,6 +14,7 @@ ipb1_30 = readtable('ipb1-30.xlsx');
 ipb3_32 = readtable('ipb3-32.xlsx');
 sri_ipb2_27 = readtable('sri-ipb2-27.xlsx');
 ipb3_37 = readtable('ipb3-37.xlsx');
+%aySet = struct('1',{[sri_ipb2_27(3,:);ipb3_37]; 'ipb1-30b-he-dc-g'});
 
 aSet = [sri_ipb2_27(3,:);ipb3_37];
 
@@ -31,19 +32,17 @@ aSet = [ipb1_30(12,:)];
 
 aSetdesc = 'sri-ipb2-27b-h2-dc-q';
 aSet  =[sri_ipb2_27(4,:);sri_ipb2_27(9,:)];
+
 aSetdesc = 'ipb1-30b-he-dc-q';
 aSet = [ipb1_30(4,:);ipb1_30(10,:)];
-aSetdesc = 'ipb1-30b-he-dc-q-sri-ipb2-h2-dc-q';
-aSet = [ipb1_30(4,:);ipb1_30(10,:);sri_ipb2_27(4,:);sri_ipb2_27(9,:)];
+
 aSetdesc = 'ipb1-30b-sri-ipb2-27-DC-runs';
 aSet = [ipb1_30(4,:);ipb1_30(5,:);sri_ipb2_27(4,:);sri_ipb2_27(5,:)];
-%ai needs to start with 1 and continues for now.
 aSetdesc = 'ipb1-30b-he-dc-q-sri-ipb2-h2-dc-q';
-aSet = [ipb1_30(4,:);ipb1_30(10,:);sri_ipb2_27(4,:);sri_ipb2_27(9,:)];
+aSet = [ipb1_30(4,:);ipb1_30(9,:);sri_ipb2_27(4,:);sri_ipb2_27(9,:)];
+%ai needs to start with 1 and continues for now.
 figname = strcat('C:\jinwork\BEC\tmp\',aSetdesc,'.pdf');
-fileOut = strcat('C:\jinwork\BEC\tmp\',aSetdesc);
 delete(figname);
-%delete(filename);
 f1=figure('Position',[10 10 1000 800]);
 
 for ai = [1,2,3,4]
@@ -217,7 +216,7 @@ if postProcess
 end 
 if (plotOutput)
   plotData = dataset({pdata,'coreT','inT','outT','ql','qf','hp','v1','v2','qPow','termP','pcbP','qSP','qSV','h2'});
-  [tt,hpdrop,v12,dqp,v122,hv,res,hv0,hqp0,res0] = plotSummary(pdata,plotData,isDC,isHe,efficiency,ai);
+  [tt,hpdrop,v12,dqp,v122,hv,res,termp,pcbp,hv0,hqp0,res0] = plotSummary(pdata,plotData,isDC,isHe,efficiency,ai);
 end
 power = 'q';
 if isDC
@@ -227,26 +226,9 @@ gas = 'h2';
 if isHe
   gas = 'he';
 end 
-tStr = strcat(reactor,'-',runDate,'-',gas,'-',power);    
 if detailPlot
-if isDC
+tStr = strcat(reactor,'-',power,'-',gas);    
 f2=figure('Position',[10 10 1000 800]);
-grid on;
-grid minor;
-hold on
-for i = 1:size(tt,1)
-  ylabel('V^2 / Power');
-  xlabel('V^2[volt]'); 
-  title(tStr);
-  plot(v122(:,i,ai),res(:,i,ai),'-x');
-  labels{i}=strcat(power,'-',gas,'-CoreTemp=',num2str(tt(i,ai))); 
-end  
-end
-legend(labels,'Location','northwest');
-ftemp=strcat('C:\jinwork\BEC\tmp\',tStr,'-V2-P.png');
-saveas(gcf,ftemp);
-export_fig(f2,figname,'-append');
-f3=figure('Position',[10 10 1000 800]);
 grid on;
 grid minor;
 hold on
@@ -258,24 +240,64 @@ for i = 1:size(tt,1)
   labels{i}=strcat(power,'-',gas,'-CoreTemp=',num2str(tt(i,ai))); 
 end  
 legend(labels,'Location','northwest');
-export_fig(f3,figname,'-append');
-ftemp=strcat('C:\jinwork\BEC\tmp\',tStr,'-HpD-V2.png');
-saveas(gcf,ftemp);
-end
-
-figure(f1);
-subplot(2,1,1);
-
-%if isDC
+export_fig(f2,figname,'-append');
+f3=figure('Position',[10 10 1000 800]);
 grid on;
 grid minor;
-hold on;
-plot(tt(:,ai),res0(:,ai),'-o');
-xlim([150 400]);
-ytemp = strcat('V^2 / Power');
-ylabel(ytemp);
-%end
-subplot(2,1,2);
+hold on
+for i = 1:size(tt,1)
+    ylabel('HpDrop[w]');
+    xlabel('coreQP[w]');
+    title(tStr);
+    plot(dqp(:,i,ai),hpdrop(:,i,ai),'-*');
+    labels{i}=strcat(power,'-',gas,'-CoreTemp=',num2str(tt(i,ai))); 
+end  
+legend(labels,'Location','northwest');
+export_fig(f3,figname,'-append');
+f4=figure('Position',[10 10 1000 800]);
+grid on;
+grid minor;
+hold on
+for i = 1:size(tt,1)
+  ylabel('V^2 / Power');
+  xlabel('V^2[volt]'); 
+  title(tStr);
+  plot(v122(:,i,ai),res(:,i,ai),'-x');
+  labels{i}=strcat(power,'-',gas,'-CoreTemp=',num2str(tt(i,ai))); 
+end  
+legend(labels,'Location','northwest');
+export_fig(f4,figname,'-append');
+if ~isHe
+f5=figure('Position',[10 10 1000 800]);
+grid on;
+grid minor;
+hold on
+for i = 1:size(tt,1)
+  ylabel('TermP');
+  xlabel('V^2[volt]'); 
+  title(tStr);
+  plot(v122(:,i,ai),termp(:,i,ai),'-x');
+  labels{i}=strcat(power,'-',gas,'-CoreTemp=',num2str(tt(i,ai))); 
+end  
+legend(labels,'Location','northwest');
+export_fig(f5,figname,'-append');
+f6=figure('Position',[10 10 1000 800]);
+grid on;
+grid minor;
+hold on
+for i = 1:size(tt,1)
+  ylabel('pcbP');
+  xlabel('V^2[volt]'); 
+  title(tStr);
+  plot(v122(:,i,ai),pcbp(:,i,ai),'-x');
+  labels{i}=strcat(power,'-',gas,'-CoreTemp=',num2str(tt(i,ai))); 
+end  
+legend(labels,'Location','northwest');
+export_fig(f6,figname,'-append');
+end
+end
+figure(f1);
+subplot(2,2,1);
 grid on;
 grid minor;
 hold on;
@@ -283,13 +305,32 @@ plot(tt(:,ai),hv0(:,ai),'-o');
 xlim([150 400]);
 ytemp = strcat('HpDrop / V^2');
 ylabel(ytemp);
-ll{ai}=tStr;
-T=table(tt(:,ai),res0(:,ai),hv0(:,ai));
-fileOut = strcat(fileOut,tStr,'.csv');
-%writetable(T,fileOut);
-end
-%legend(ll,'Location','SouthOutside');
-legend(ll,'Location','west');
+subplot(2,2,2);
+grid on;
+grid minor;
+hold on;
+plot(tt(:,ai),hqp0(:,ai),'-o');
+xlim([150 400]);
+ytemp = strcat('HpDrop / Power');
+ylabel(ytemp);
+subplot(2,2,3);
+grid on;
+grid minor;
+hold on;
+plot(tt(:,ai),res0(:,ai),'-o');
+xlim([150 400]);
+ytemp = strcat('V^2 / Power');
+ylabel(ytemp);
+subplot(2,2,4);
+grid on;
+grid minor;
+hold on;
+plot(tt(:,ai),hpdrop(end-1,:,ai),'-o');
+xlim([150 400]);
+ytemp = strcat('HpDrop');
+ylabel(ytemp);
+ll{ai}=strcat(reactor,'-',power,'-',gas);
+legend(ll,'Location','SouthOutside');
 export_fig(f1,figname,'-append');
-ftemp=strcat('C:\jinwork\BEC\tmp\',tStr,'.png');
-saveas(gcf,ftemp);
+end
+

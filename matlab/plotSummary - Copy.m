@@ -1,4 +1,4 @@
-function [tt,hpdrop,v12,dqp,v122,hv,res,hv0,hqp0,res0] = plotSummary(pdata,pd,isDC,isHe,efficiency,ai )
+function [tt,hpdrop,v12,dqp,v122,hv,res,termp,pcbp,hv0,hqp0,res0] = plotSummary(pdata,pd,isDC,isHe,efficiency,ai )
 % Create palette
 %palette = hsv(K + 1);
 %colors = palette(idx, :);
@@ -6,7 +6,7 @@ function [tt,hpdrop,v12,dqp,v122,hv,res,hv0,hqp0,res0] = plotSummary(pdata,pd,is
 
 %get unique coreT
 uniqCT = unique(int16(pd.coreT));
-%tt=[];hpdrop=[];qp=[];tp=[];pp=[];v12=[];dqp=[];v122=[];hv=[];res=[];termp=[];pcbp=[];hv0=[];hqp0=[];res0=[];
+tt=[];hpdrop=[];qp=[];tp=[];pp=[];v12=[];dqp=[];v122=[];hv=[];res=[];termp=[];pcbp=[];hv0=[];hqp0=[];res0=[];
 i = 0;
 for ti = 1:numel(uniqCT)
   tdata = pdata(int16(pdata(:,1)) == uniqCT(ti),:);
