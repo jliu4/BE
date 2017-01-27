@@ -14,39 +14,32 @@ ipb1_30 = readtable('ipb1-30.xlsx');
 ipb3_32 = readtable('ipb3-32.xlsx');
 sri_ipb2_27 = readtable('sri-ipb2-27.xlsx');
 ipb3_37 = readtable('ipb3-37.xlsx');
-
-aSet = [sri_ipb2_27(3,:);ipb3_37];
-
-aSetdesc = 'ipb1-30b-he-dc-q';
-aSet = [ipb1_30(4,:);ipb1_30(9,:)];
-
-aSetdesc = 'sri-ipb2-27b-h2-dc-q';
-aSet  =[sri_ipb2_27(4,:);sri_ipb2_27(9,:)];
-
-aSetdesc = 'ipb1-30b-he-dc-q';
-aSet = [ipb1_30(4,:);ipb1_30(9,:)];
-
-aSetdesc = 'ipb1-30b-q-excitation';
-aSet = [ipb1_30(12,:)];
-
-aSetdesc = 'sri-ipb2-27b-h2-dc-q';
-aSet  =[sri_ipb2_27(4,:);sri_ipb2_27(9,:)];
-aSetdesc = 'ipb1-30b-he-dc-q';
-aSet = [ipb1_30(4,:);ipb1_30(10,:)];
-aSetdesc = 'ipb1-30b-he-dc-q-sri-ipb2-h2-dc-q';
-aSet = [ipb1_30(4,:);ipb1_30(10,:);sri_ipb2_27(4,:);sri_ipb2_27(9,:)];
-aSetdesc = 'ipb1-30b-sri-ipb2-27-DC-runs';
-aSet = [ipb1_30(4,:);ipb1_30(5,:);sri_ipb2_27(4,:);sri_ipb2_27(5,:)];
-%ai needs to start with 1 and continues for now.
-aSetdesc = 'ipb1-30b-he-dc-q-sri-ipb2-h2-dc-q';
-aSet = [ipb1_30(4,:);ipb1_30(10,:);sri_ipb2_27(4,:);sri_ipb2_27(9,:)];
+aSetMap = containers.Map(...
+{'ipb1-30b-he-dc-q',...
+ 'ipb1-30b-he-sri-ipb2-h2-dc-q',...
+ 'ipb1-30b-sri-ipb2-27-dc',...
+ 'ipb3-32b-he-h2-dc-q',...
+ 'ipb3-32b-he-h2-q',...
+ 'sri-ipb2-27b-h2-dc-q'},...
+ {[ipb1_30(4,:);ipb1_30(9,:)],...
+  [ipb1_30(4,:);sri_ipb2_27(4,:);ipb1_30(10,:);sri_ipb2_27(9,:)],...
+  [ipb1_30(4,:);ipb1_30(5,:);sri_ipb2_27(4,:);sri_ipb2_27(5,:)],...
+  [ipb3_32(2,:);ipb3_32(5:7,:);ipb3_32(9:10,:)],...
+  ipb3_32(9:10,:),...
+  [sri_ipb2_27(4,:);sri_ipb2_27(9,:)]});
+%need to put DC in front
+descSet = keys(aSetMap);
+aSetdesc = char(descSet(4));
+aSet = aSetMap(aSetdesc);
 figname = strcat('C:\jinwork\BEC\tmp\',aSetdesc,'.pdf');
 fileOut = strcat('C:\jinwork\BEC\tmp\',aSetdesc);
+%T = cell2table(cell(0,3),'VariableName',{'coreT','R','C'});
+T = cell2table(cell(0,3));
 delete(figname);
 %delete(filename);
 f1=figure('Position',[10 10 1000 800]);
-
-for ai = [1,2,3,4]
+%ai needs to start with 1 and continues for now.
+for ai = 1:size(aSet,1)
  reactor  = char(aSet.reactor(ai));
  folder  = char(aSet.folder(ai));
  runDate = num2str(aSet.runDate(ai));
@@ -166,7 +159,7 @@ rawData = rawData(1+int16(startOffset*360):end-int16(endOffset*360),:);
 %rawData(any(isnan(rawData)),:)=[]; %take out rows with NaN
 %(isnan(j1)) = -2 ;
 rawData = rawData(rawData(:,2) > 0,:); %only process data with seq
-dataSize = size(rawData,1)
+dataSize = size(rawData,1);
 %asignColumn name 
 rawDataN = dataset({rawData,'dateN',...
      'SeqStepNum',...
@@ -209,11 +202,11 @@ if qPlot
   plotQ(dt,hp1,hp2,qp1,qp2,cqp1,cqp2,coreRes,rawDataN,plotTitle);  
 end 
 if debugPlot
-   plotQdebug(dt,hp1,hp2,qp1,qp2,cqp1,cqp2,coreRes,rawDataN,plotTitle);  
+  plotQdebug(dt,hp1,hp2,qp1,qp2,cqp1,cqp2,coreRes,rawDataN,plotTitle);  
 end   
 if postProcess
- fn = char(strcat('C:\jinwork\BEC\tmp\', reactor, '-', runDate, '.csv') );        
- pdata = writeOut(rawDataN,fn,hpExpFit,tempExpFit,writeOutput);
+  fn = char(strcat('C:\jinwork\BEC\tmp\', reactor, '-', runDate, '.csv') );        
+  pdata = writeOut(rawDataN,fn,hpExpFit,tempExpFit,writeOutput);
 end 
 if (plotOutput)
   plotData = dataset({pdata,'coreT','inT','outT','ql','qf','hp','v1','v2','qPow','termP','pcbP','qSP','qSV','h2'});
@@ -241,11 +234,12 @@ for i = 1:size(tt,1)
   plot(v122(:,i,ai),res(:,i,ai),'-x');
   labels{i}=strcat(power,'-',gas,'-CoreTemp=',num2str(tt(i,ai))); 
 end  
-end
+
 legend(labels,'Location','northwest');
 ftemp=strcat('C:\jinwork\BEC\tmp\',tStr,'-V2-P.png');
 saveas(gcf,ftemp);
 export_fig(f2,figname,'-append');
+end
 f3=figure('Position',[10 10 1000 800]);
 grid on;
 grid minor;
@@ -266,7 +260,7 @@ end
 figure(f1);
 subplot(2,1,1);
 
-%if isDC
+if isDC
 grid on;
 grid minor;
 hold on;
@@ -274,7 +268,7 @@ plot(tt(:,ai),res0(:,ai),'-o');
 xlim([150 400]);
 ytemp = strcat('V^2 / Power');
 ylabel(ytemp);
-%end
+end
 subplot(2,1,2);
 grid on;
 grid minor;
@@ -284,12 +278,13 @@ xlim([150 400]);
 ytemp = strcat('HpDrop / V^2');
 ylabel(ytemp);
 ll{ai}=tStr;
-T=table(tt(:,ai),res0(:,ai),hv0(:,ai));
-fileOut = strcat(fileOut,tStr,'.csv');
-%writetable(T,fileOut);
+T =[T;table(tt(:,ai),res0(:,ai),hv0(:,ai))];
+
 end
 %legend(ll,'Location','SouthOutside');
 legend(ll,'Location','west');
 export_fig(f1,figname,'-append');
 ftemp=strcat('C:\jinwork\BEC\tmp\',tStr,'.png');
 saveas(gcf,ftemp);
+fileOut = strcat(fileOut,'.csv');
+writetable(T,fileOut);
