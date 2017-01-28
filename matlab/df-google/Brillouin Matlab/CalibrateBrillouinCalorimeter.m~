@@ -17,8 +17,7 @@ if exist('parameter_argin', 'var');
     if isstruct(parameter_argin)
       pfields = fieldnames(parameter_argin);
       for kpf = 1:length(pfields)
-        pfield = pfields{kpf};
-        parameters(iParam).(pfield) = parameter_argin.(pfield)(iParam);
+        parameters(iParam).(pfield) = parameter_argin
       end
     else
     parameters(iParam).Value = parameter_argin(iParam);

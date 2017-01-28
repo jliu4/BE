@@ -1,4 +1,4 @@
-function [tt,hpdrop,v12,dqp,v122,hv,res,hv0,hqp0,res0] = plotSummary(pdata,isDC,efficiency,ai)
+
 % Create palette
 %palette = hsv(K + 1);
 %colors = palette(idx, :);
@@ -10,9 +10,11 @@ uniqCT = unique(int16(pdata(:,1)));
 i = 0;
 for ti = 1:numel(uniqCT) 
   tdata = pdata(int16(pdata(:,1)) == uniqCT(ti),:);
+  size(tdata)
   %exception 
   %we have to have at least 4 data points the first row needs to be no powerfor 
-  if size(tdata,1) > 4 && tdata(1,9) < 5 
+  if size(tdata,1) > 4
+     if tdata(1,9) < 5 
   i = i + 1;
   tt(i,ai) = uniqCT(ti);
   %condition is pdata.coreQPow = 0
@@ -49,9 +51,9 @@ for ti = 1:numel(uniqCT)
   hv0(i,ai) = v122(:,i,ai)\hpdrop(:,i,ai);  
   hqp0(i,ai) = dqp(:,i,ai)\hpdrop(:,i,ai);   
   res0(i,ai) = dqp(:,i,ai)\v122(:,i,ai);
+     end
   end
 end
 
-end
   
 
