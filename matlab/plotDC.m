@@ -1,5 +1,5 @@
-function plotDC(dt,hp1,hp2,data,plotTitle)
-figure
+function plotDC(dt,hp1,hp2,data,plotTitle,pos,figname)
+fdc=figure('Position',pos);
 %hold on
 aa_splot(dt,data.HeaterPower,'black','linewidth',1.5);
 ylim([hp1, hp2]);
@@ -17,4 +17,5 @@ addaxislabel(4,'QSupply');
 addaxislabel(5,'QSupplyVolt'); 
 addaxislabel(6,'QSetV'); 
 %addaxislabel(7,'QCur');
+export_fig(fdc,figname,'-append');
 end

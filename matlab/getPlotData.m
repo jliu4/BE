@@ -6,6 +6,10 @@
  %tt=[];hpdrop=[];v12=[];dqp=[];v122=[];hv=[];res=[];hv0=[];hqp0=[];res0=[];
 %get unique coreT
 uniqCT = unique(int16(pdata(:,1)));
+%only take temperature as 200-400
+uniqCT(uniqCT>402)=[];
+uniqCT(uniqCT<198)=[];
+
 %tt=[];hpdrop=[];qp=[];tp=[];pp=[];v12=[];dqp=[];v122=[];hv=[];res=[];termp=[];pcbp=[];hv0=[];hqp0=[];res0=[];
 i = 0;
 for ti = 1:numel(uniqCT) 
@@ -36,7 +40,7 @@ for ti = 1:numel(uniqCT)
     hpdrop(:,i,ai) = hp0-qtdata(:,6);
     v12(:,i,ai)= qtdata(:,13);%qsupplyPower
     dqp(:,i,ai) = qtdata(:,12); %power  
- 
+
   else    
     qtdata = tdata(2:end-1,:);
     hpdrop(:,i,ai) = hp0-qtdata(:,6);
@@ -49,6 +53,7 @@ for ti = 1:numel(uniqCT)
   v122=v12.*v12;
   hv = hpdrop./v122;
   res = v122./dqp;
+  %TODO JLIU need to get errorbar
   hv0(i,ai) = v122(:,i,ai)\hpdrop(:,i,ai);  
   hqp0(i,ai) = dqp(:,i,ai)\hpdrop(:,i,ai);   
   res0(i,ai) = dqp(:,i,ai)\v122(:,i,ai);

@@ -1,7 +1,7 @@
-function plotQdebug(dt,hp1,hp2,qp1,qp2,cqp1,cqp2,coreRes,data,plotTitle)
+function plotQdebug(dt,data,plotTitle,pos,figname)
 
+fdebug=figure('Position',pos);
 
-figure
 %hold on
 aa_splot(dt,data.HeaterPower,'black','linewidth',1.5);
 addaxis(dt,data.CoreTemp,'linewidth',1.5);
@@ -29,4 +29,5 @@ addaxislabel(5,'InnerT');
 %addaxislabel(8,'QpulseVolt');
 %addaxislabel(8,'JacketLPM');
 addaxislabel(6,'RoomT');
+export_fig(fdebug,figname,'-append');
 end

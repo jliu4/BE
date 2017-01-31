@@ -21,22 +21,26 @@ aSetMap = containers.Map(...
  '3-ipb1-30b-sri-ipb2-27-dc',...
  '4-ipb3-32b-he-h2-dc-q',...
  '5-ipb3-32b-he-h2-q',...
- '6-ipb3-37b-he-dc',...
+ '6-ipb3-37b-he-dc-q',...
  '7-sri-ipb2-27b-h2-dc-q',...
  '8-sri-ipb2-27b-h2-q',...
- '9-all-DCs'},...
+ '9-all-DCs',...
+ '91-ipb3-32b-he-h2-dc-q',...
+ '92-test'},...
  {[ipb1_30(4,:);ipb1_30(9,:)],...
-  [ipb1_30(4,:);sri_ipb2_27(4,:);ipb1_30(10,:);sri_ipb2_27(9,:);sri_ipb2_27(10,:)],...
+  [ipb1_30(4,:);sri_ipb2_27(4,:);ipb1_30(10,:);ipb1_30(14,:);sri_ipb2_27(9,:);sri_ipb2_27(10,:)],...
   [ipb1_30(4,:);ipb1_30(5,:);sri_ipb2_27(4,:);sri_ipb2_27(5,:)],...
   [ipb3_32(2,:);ipb3_32(5:6,:);ipb3_32(9:10,:)],...
   ipb3_32(9:10,:),...
-  ipb3_37(3,:),...
+  [ipb3_37(3:4,:);ipb3_37(1,:)],...
   [sri_ipb2_27(4,:);sri_ipb2_27(9,:)],...
   sri_ipb2_27(10,:),...
-  [ipb1_30(4,:);sri_ipb2_27(4,:);ipb3_32(2,:);ipb3_32(5:6,:);ipb3_37(3,:)]});
+  [ipb1_30(4:5,:);ipb3_32(2,:);ipb3_37(3,:);sri_ipb2_27(4,:)],...
+  [ipb1_30(4,:);sri_ipb2_27(4,:);ipb1_30(14,:);sri_ipb2_27(10,:)],...
+  ipb3_37(4,:)});
 %need to put DC in front
 descSet = keys(aSetMap);
-aSetdesc = char(descSet(9));
+aSetdesc = char(descSet(11));
 aSet = aSetMap(aSetdesc);
 figname = strcat('C:\jinwork\BEC\tmp\',aSetdesc,'.pdf');
 fileOut = strcat('C:\jinwork\BEC\tmp\',aSetdesc);
@@ -44,8 +48,9 @@ fileOut = strcat('C:\jinwork\BEC\tmp\',aSetdesc);
 T = cell2table(cell(0,3));
 delete(figname);
 %delete(filename);
-f1=figure('Position',[10 10 1000 800]);
-tt=[];hpdrop=[];v12=[];dqp=[];v122=[];hv=[];res=[];hv0=[];hqp0=[];res0=[];
+pos = [10 10 1000 800];
+f1=figure('Position',pos);
+%tt=[];hpdrop=[];v12=[];dqp=[];v122=[];hv=[];res=[];hv0=[];hqp0=[];res0=[];
 %ai needs to start with 1 and continues for now.
 for ai = 1:size(aSet,1)
  reactor  = char(aSet.reactor(ai));
@@ -72,6 +77,8 @@ case 'ipb3-37'
   rtFolder='C:\Users\Owner\Dropbox (BEC)\IPB3_DATA\';       
 case 'google'
   rtFolder='C:\Users\Owner\Dropbox (BEC)\BECteam\Jin\google\';
+case 'test'
+  rtFolder='C:\Users\Owner\Dropbox (BEC)\BECteam\Jin\google\';  
 end %switch
 Directory=char(strcat(rtFolder,folder));
 AllFiles = getall(Directory); 
@@ -164,10 +171,18 @@ end
 %DateTime(1+int16(startOffset*360))
 %DateTime(end - int16(endOffset*360))
 rawData = rawData(1+int16(startOffset*360):end-int16(endOffset*360),:);
-%rawData(any(isnan(rawData)),:)=[]; %take out rows with NaN
+
 %(isnan(j1)) = -2 ;
 rawData = rawData(rawData(:,2) > 0,:); %only process data with seq
-dataSize = size(rawData,1);
+dataSize = size(rawData,1)
+rawData(any(isnan(rawData)),:)=[]; %take out rows with NaN
+dataSize = size(rawData,1)
+rawData(any(isnan(rawData),2),:)=[];
+dataSize = size(rawData,1)
+%rawData(any(isnan(rawData),11),:)=[];
+%dataSize = size(rawData,1)
+
+dataSize = size(rawData,1)
 %asignColumn name 
 rawDataN = dataset({rawData,'dateN',...
      'SeqStepNum',...
@@ -203,23 +218,26 @@ rawDataN = dataset({rawData,'dateN',...
      'RoomTemperature'});
      %'HydrogenValves'}); 
 dt = datetime(rawDataN.dateN, 'ConvertFrom', 'datenum') ;
-if dcPlot
-  plotDC(dt,hp1,hp2,rawDataN,plotTitle);   
-end 
-if qPlot
-  plotQ(dt,hp1,hp2,qp1,qp2,cqp1,cqp2,coreRes,rawDataN,plotTitle);  
-end 
-if debugPlot
-  plotQdebug(dt,hp1,hp2,qp1,qp2,cqp1,cqp2,coreRes,rawDataN,plotTitle);  
-end   
+if isDC
+  if dcPlot
+    plotDC(dt,hp1,hp2,rawDataN,plotTitle,pos,figname);   
+  end
+else  
+  if qPlot
+    plotQ(dt,hp1,hp2,qp1,qp2,cqp1,cqp2,rawDataN,plotTitle,pos,figname);  
+  end
+  if debugPlot
+    plotQdebug(dt,hp1,hp2,qp1,qp2,cqp1,cqp2,coreRes,rawDataN,plotTitle,pos,figname);  
+  end    
+end    
 if postProcess
   fn = char(strcat('C:\jinwork\BEC\tmp\', reactor, '-', runDate, '.csv') );        
   pdata = writeOut(rawDataN,fn,hpExpFit,tempExpFit,writeOutput);
 end 
 if (plotOutput)
   %plotData = dataset({pdata,'coreT','inT','outT','ql','qf','hp','v1','v2','qPow','termP','pcbP','qSP','qSV','h2'});
-  getPlotData;
-  %[tt,hpdrop,v12,dqp,v122,hv,res,hv0,hqp0,res0] = plotSummary(pdata,isDC,efficiency,ai);
+  %getPlotData;
+  [tt,hpdrop,v12,dqp,v122,hv,res,hv0,hqp0,res0] = plotSummary(pdata,isDC,efficiency,ai);
 end
 power = 'q';
 if isDC
@@ -229,7 +247,7 @@ end
 tStr = strcat(reactor,'-',runDate,'-',gas,'-',power);    
 if detailPlot
 if isDC
-f2=figure('Position',[10 10 1000 800]);
+f2=figure('Position',pos);
 grid on;
 grid minor;
 hold on
@@ -246,13 +264,14 @@ legend(l2,'Location','northwest');
 %saveas(gcf,ftemp);
 export_fig(f2,figname,'-append');
 end
-f3=figure('Position',[10 10 1000 800]);
+f3=figure('Position',pos);
 grid on;
 grid minor;
 hold on
 for i = 1:size(tt,1) 
   plot(v122(:,i,ai),hpdrop(:,i,ai),'-o');
   ylabel('HpDrop[w]');
+  ylim([0 7]);
   xlabel('V^2[volt]'); 
   title(tStr);
   l3{i}=strcat(power,'-',gas,'-CoreTemp=',num2str(tt(i,ai))); 
@@ -271,7 +290,7 @@ grid on;
 grid minor;
 hold on;
 plot(tt(:,ai),res0(:,ai),'-o');
-xlim([150 400]);
+xlim([200 400]);
 ytemp = strcat('V^2 / Power');
 ylabel(ytemp);
 l1{ai}=tStr;
@@ -281,10 +300,11 @@ grid on;
 grid minor;
 hold on;
 plot(tt(:,ai),hv0(:,ai),'-o');
-xlim([150 400]);
+xlim([200 400]);
 ytemp = strcat('HpDrop / V^2');
 ylabel(ytemp);
 l1{ai}=tStr;
+%T=[T;table(reactor,tStr,' ')];
 T =[T;table(tt(:,ai),res0(:,ai),hv0(:,ai))];
 
 end

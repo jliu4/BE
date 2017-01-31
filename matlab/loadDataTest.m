@@ -3,17 +3,24 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Initialize variables.
-
+  clear; close all; clc
+  addpath('C:\jinwork\BE\matlab')
+  Directory ='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\2017-01-13-v182_30b_He' 
+  AllFiles = getall(Directory); 
+Experiment= AllFiles(21:21); 
+Experiment'
   alldata=[];
 for ff=1:length(Experiment);
     filename = [Directory,'\',Experiment{ff}];
     
     delimiter = ',';
     startRow = 2;
-    
+    fileID = fopen(filename);
   
-    foo=importdata(filename);
-    labels=foo.textdata(1,1:end-1);
+    %foo=importdata(filename);
+    foo = textscan(fileID);
+    
+    labels=foo.textdata(1,:);
     
     
     if ff==1
@@ -66,6 +73,8 @@ for ff=1:length(Experiment);
   
     alldata=[alldata;coo];
     clear coo
+    close(fileID)
 end
+
 
 %%try using deal??
