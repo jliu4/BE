@@ -1,4 +1,4 @@
-function [tt,hpdrop,v12,dqp,v122,hv,res,hv0,hqp0,res0] = plotSummary(pdata,isDC,efficiency,ai)
+function [tt,hpdrop,v12,dqp,v122,hv,res,hv0,hqp0,res0] = plotSummary013017(pdata,isDC,efficiency,ai)
 % Create palette
 %palette = hsv(K + 1);
 %colors = palette(idx, :);
@@ -16,7 +16,7 @@ for ti = 1:numel(uniqCT)
   %we have to have at least 4 data points the first row needs to be no powerfor 
   if size(tdata,1) > 4 %&& tdata(1,9) < 5 
   i = i + 1;
-  tt(i,ai) = uniqCT(ti);
+  tt(i) = uniqCT(ti);
   %condition is pdata.coreQPow = 0
  % if tdata(1,9) < 5
  % assume the first row in the temperature mode is no q and dc power.
@@ -32,15 +32,13 @@ for ti = 1:numel(uniqCT)
 %  end  
   if isDC 
     qtdata = tdata(2:end-1,:);
-    hpdrop(:,i,ai) = hp0-qtdata(:,6);
-    v12(:,i,ai)= qtdata(:,13);%qsupplyPower
-    dqp(:,i,ai) = qtdata(:,12); %power  
+    for j=1 : size(qtdata,2)
+      hpdrop(j,i) = hp0-qtdata(j,6);
+      v12(j,i)= qtdata(j,13);%qsupplyPower
+      dqp(j,i,ai) = qtdata(j,12); %power  
  
   else    
-    qtdata = tdata(2:end-1,:); 
-    if size(qtdata,1) < 5 %hike here
-       qtdata(5,:)=qtdata(end-1,:);
-    end   
+    qtdata = tdata(2:end-1,:);    
     hpdrop(:,i,ai) = hp0-qtdata(:,6);
     v12(:,i,ai)= qtdata(:,7)-qtdata(:,8) ;
     qp(:,i,ai) = qtdata(:,9) - qp0;

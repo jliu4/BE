@@ -40,7 +40,7 @@ aSetMap = containers.Map(...
   ipb3_37(4,:)});
 %need to put DC in front
 descSet = keys(aSetMap);
-aSetdesc = char(descSet(6));
+aSetdesc = char(descSet(11));
 aSet = aSetMap(aSetdesc);
 figname = strcat('C:\jinwork\BEC\tmp\',aSetdesc,'.pdf');
 fileOut = strcat('C:\jinwork\BEC\tmp\',aSetdesc);
@@ -237,7 +237,7 @@ end
 if (plotOutput)
   %plotData = dataset({pdata,'coreT','inT','outT','ql','qf','hp','v1','v2','qPow','termP','pcbP','qSP','qSV','h2'});
   %getPlotData;
-  [tt,hpdrop,v12,dqp,v122,hv,res,hv0,hqp0,res0] = plotSummary(pdata,isDC,efficiency,ai);
+  [tt,hpdrop,v12,dqp,v122,hv,res,hv0,hqp0,res0] = plotSummary013017(pdata,isDC,efficiency,ai);
 end
 power = 'q';
 if isDC
@@ -246,17 +246,23 @@ end
 
 tStr = strcat(reactor,'-',runDate,'-',gas,'-',power);    
 if detailPlot
+for i = 1:size(tt,1)
+  v122t = v122(v122(:,2)==tt(i),1);
+  rest=res(res(:,2)==tt(i),1);
+  hpdorpt = hpdrop(hpdrop(:,2)==tt(i),1);
+end  
 if isDC
 f2=figure('Position',pos);
 grid on;
 grid minor;
 hold on
 for i = 1:size(tt,1)
+  
   ylabel('V^2 / Power');
   xlabel('V^2[volt]'); 
   title(tStr);
-  plot(v122(:,i,ai),res(:,i,ai),'-x');
-  l2{i}=strcat(power,'-',gas,'-CoreTemp=',num2str(tt(i,ai))); 
+  plot(v122t,rest,'-x');
+  l2{i}=strcat(power,'-',gas,'-CoreTemp=',num2str(tt(i))); 
 end  
 
 legend(l2,'Location','northwest');
@@ -268,8 +274,8 @@ f3=figure('Position',pos);
 grid on;
 grid minor;
 hold on
-for i = 1:size(tt,1) 
-  plot(v122(:,i,ai),hpdrop(:,i,ai),'-o');
+for i = 1:size(tt,1)   
+  plot(v122t,hpdropt,'-o');
   ylabel('HpDrop[w]');
   ylim([0 7]);
   xlabel('V^2[volt]'); 
@@ -289,7 +295,7 @@ if isDC
 grid on;
 grid minor;
 hold on;
-plot(tt(:,ai),res0(:,ai),'-o');
+plot(tt(:),res0(:),'-o');
 xlim([200 400]);
 ytemp = strcat('V^2 / Power');
 ylabel(ytemp);
@@ -299,13 +305,13 @@ subplot(2,1,2);
 grid on;
 grid minor;
 hold on;
-plot(tt(:,ai),hv0(:,ai),'-o');
+plot(tt(:),hv0(:),'-o');
 xlim([200 400]);
 ytemp = strcat('HpDrop / V^2');
 ylabel(ytemp);
 l1{ai}=tStr;
 %T=[T;table(reactor,tStr,' ')];
-T =[T;table(tt(:,ai),res0(:,ai),hv0(:,ai))];
+T =[T;table(tt(:),res0(:),hv0(:))];
 
 end
 %legend(ll,'Location','SouthOutside');
