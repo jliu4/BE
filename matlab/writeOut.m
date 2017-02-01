@@ -1,4 +1,4 @@
-function [pdata] = writeOut(data, fn, hpExpFit, tempExpFit,writeOutput )
+function [pdata] = writeOut(data, T1,filen1, hpExpFit, tempExpFit,writeOutput )
 dataSize = size(data,1);
 ctFit = [];
 itFit = [];
@@ -59,12 +59,12 @@ while (i < dataSize-1)
 end  
 dt2 = datetime(dt1, 'ConvertFrom', 'datenum');
 if (writeOutput)
-T=table(coreT(:),inT(:),outT(:),ql(:),qf(:),hp(:),coreQPow(:),v1(:),v2(:),qPow(:),qSP(:),qSV(:),qCur(:),qSetV(:),h2(:),termP(:),pcbP(:),seq1(:),i12(:),dt2(:),...
-'VariableName',{'coreT','inT','outT','QL','QF','HP','CoreQPower','v1','v2','qPow','qSP','qSV','qCur','qSetV','h2','termP','pcbP','seq','steps','date'});
-writetable(T,fn);
+T1=[T1;table(coreT(:),inT(:),outT(:),ql(:),qf(:),hp(:),coreQPow(:),v1(:),v2(:),qPow(:),qSP(:),qSV(:),h2(:),termP(:),pcbP(:),seq1(:),i12(:),dt2(:),...
+'VariableName',{'coreT','inT','outT','QL','QF','HP','CoreQPower','v1','v2','qPow','qSP','qSV','h2','termP','pcbP','seq','steps','date'})];
+writetable(T1,filen1);
 end
 pdata = horzcat(coreT', inT', outT', ql', qf', hp', v1', v2', qPow', termP', pcbP', qSP', qSV', h2');
-%delete(fn);
+
 end
 
 

@@ -1,4 +1,4 @@
-function [tt,hpdrop,v12,dqp,v122,hv,res,hv0,hqp0,res0] = plotSummary(pdata,isDC,efficiency,ai)
+function [tt,innert,hpdrop,v12,dqp,v122,hv,res,hv0,hqp0,res0] = plotSummary(pdata,isDC,efficiency,ai)
 % Create palette
 %palette = hsv(K + 1);
 %colors = palette(idx, :);
@@ -46,9 +46,10 @@ for ti = 1:numel(uniqCT)
     qp(:,i,ai) = qtdata(:,9) - qp0;
     termp(:,i,ai) = qtdata(:,10) - termP0;
     pcbp(:,i,ai) = qtdata(:,11) - pcbP0;
-    dqp(:,i,ai) = qp(:,i,ai)-(termp(:,i,ai)+pcbp(:,i,ai))/efficiency;
-    
+    %dqp(:,i,ai) = qp(:,i,ai)-(termp(:,i,ai)+pcbp(:,i,ai))/efficiency;
+    dqp(:,i,ai) = qp(:,i,ai)-(termp(:,i,ai))/efficiency;
   end  
+  innert(i,ai)=mean(tdata(1:end,2));
   v122=v12.*v12;
   hv = hpdrop./v122;
   res = v122./dqp;

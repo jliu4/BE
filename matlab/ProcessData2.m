@@ -8,7 +8,7 @@ qPlot = false; dcPlot = false; debugPlot = false; tempExpFit = false; hpExpFit =
 postProcess = true; writeOutput = true; plotOutput = true; detailPlot = true;
 errorBarPlot = false;findDuplicates = false;
 %plot bounds setting
-coreRes = 0.5;startOffset = 0;endOffset = 0;hp1 = 0;hp2 = 40; qp1 = 5;qp2 = 55;cqp1 = 0;cqp2 = 12;
+startOffset = 0;endOffset = 0;hp1 = 0;hp2 = 60; qp1 = 5;qp2 = 55;cqp1 = 0;cqp2 = 12;
 %read data in
 ipb1_30 = readtable('ipb1-30.xlsx');
 ipb3_32 = readtable('ipb3-32.xlsx');
@@ -17,41 +17,35 @@ ipb3_37 = readtable('ipb3-37.xlsx');
 %analysis set
 aSetMap = containers.Map(...
 {'1-ipb1-30b-he-dc-q',...
- '2-ipb1-30b-he-sri-ipb2-h2-dc-q',...
- '3-ipb1-30b-sri-ipb2-27-dc',...
- '4-ipb3-32b-he-h2-dc-q',...
- '5-ipb3-32b-he-h2-q',...
- '6-ipb3-37b-he-dc-q',...
- '7-sri-ipb2-27b-h2-dc-q',...
- '8-sri-ipb2-27b-h2-q',...
- '9-all-DCs',...
- '91-ipb3-32b-he-h2-dc-q',...
- '92-test'},...
- {[ipb1_30(4,:);ipb1_30(9,:)],...
-  [ipb1_30(4,:);sri_ipb2_27(4,:);ipb1_30(10,:);ipb1_30(14,:);sri_ipb2_27(9,:);sri_ipb2_27(10,:)],...
-  [ipb1_30(4,:);ipb1_30(5,:);sri_ipb2_27(4,:);sri_ipb2_27(5,:)],...
+ '2-sri-ipb2-27b-h2-dc-q',...
+ '3-ipb3-32b-he-h2-dc-q',...
+ '4-ipb3-37b-he-dc-q',...
+ '5-all-dcs',...
+ '6-ipb1-30b-sri-ipb2-he-h2-dc-q',...
+ '7-test',...
+  },...
+ {[ipb1_30(4:5,:);ipb1_30(17,:);ipb1_30(10,:);ipb1_30(14,:)],...
+  [sri_ipb2_27(4:6,:);sri_ipb2_27(9:10,:)],...
   [ipb3_32(2,:);ipb3_32(5:6,:);ipb3_32(9:10,:)],...
-  ipb3_32(9:10,:),...
   [ipb3_37(3:4,:);ipb3_37(1,:)],...
-  [sri_ipb2_27(4,:);sri_ipb2_27(9,:)],...
-  sri_ipb2_27(10,:),...
-  [ipb1_30(4:5,:);ipb3_32(2,:);ipb3_37(3,:);sri_ipb2_27(4,:)],...
-  [ipb1_30(4,:);sri_ipb2_27(4,:);ipb1_30(14,:);sri_ipb2_27(10,:)],...
-  ipb3_37(4,:)});
+  [ipb1_30(4:5,:);ipb1_30(17,:);ipb3_32(2,:);ipb3_32(5:6,:);ipb3_37(3,:);sri_ipb2_27(4:5,:)],...
+  [ipb1_30(4,:);sri_ipb2_27(4,:);ipb1_30(10,:);ipb1_30(14,:);sri_ipb2_27(9,:);sri_ipb2_27(10,:)],...
+  ipb3_37(4,:),...
+  });
 %need to put DC in front
 descSet = keys(aSetMap);
 aSetdesc = char(descSet(6));
 aSet = aSetMap(aSetdesc);
 figname = strcat('C:\jinwork\BEC\tmp\',aSetdesc,'.pdf');
-fileOut = strcat('C:\jinwork\BEC\tmp\',aSetdesc);
-%T = cell2table(cell(0,3),'VariableName',{'coreT','R','C'});
-T = cell2table(cell(0,3));
 delete(figname);
-%delete(filename);
+filen1 = strcat('C:\jinwork\BEC\tmp\',aSetdesc,'detail.csv');
+filen2 = strcat('C:\jinwork\BEC\tmp\',aSetdesc,'.csv');
+T1=cell2table(cell(0,18),...
+'VariableName',{'coreT','inT','outT','QL','QF','HP','CoreQPower','v1','v2','qPow','qSP','qSV','h2','termP','pcbP','seq','steps','date'});
+T2 = cell2table(cell(0,5),'VariableNames',{'coreT','innerT','R','C','M'});
 pos = [10 10 1000 800];
 f1=figure('Position',pos);
-%tt=[];hpdrop=[];v12=[];dqp=[];v122=[];hv=[];res=[];hv0=[];hqp0=[];res0=[];
-%ai needs to start with 1 and continues for now.
+
 for ai = 1:size(aSet,1)
  reactor  = char(aSet.reactor(ai));
  folder  = char(aSet.folder(ai));
@@ -231,28 +225,27 @@ else
   end    
 end    
 if postProcess
-  fn = char(strcat('C:\jinwork\BEC\tmp\', reactor, '-', runDate, '.csv') );        
-  pdata = writeOut(rawDataN,fn,hpExpFit,tempExpFit,writeOutput);
+  %fn = char(strcat('C:\jinwork\BEC\tmp\', reactor, '-', runDate, '.csv') );        
+  pdata = writeOut(rawDataN,T1,filen1,hpExpFit,tempExpFit,writeOutput);
 end 
 if (plotOutput)
   %plotData = dataset({pdata,'coreT','inT','outT','ql','qf','hp','v1','v2','qPow','termP','pcbP','qSP','qSV','h2'});
   %getPlotData;
-  [tt,hpdrop,v12,dqp,v122,hv,res,hv0,hqp0,res0] = plotSummary(pdata,isDC,efficiency,ai);
+  [tt,innert,hpdrop,v12,dqp,v122,hv,res,hv0,hqp0,res0] = plotSummary(pdata,isDC,efficiency,ai);
 end
 power = 'q';
 if isDC
   power = 'dc';
 end  
-
 tStr = strcat(reactor,'-',runDate,'-',gas,'-',power);    
 if detailPlot
-if isDC
+%if isDC
 f2=figure('Position',pos);
 grid on;
 grid minor;
 hold on
 for i = 1:size(tt,1)
-  ylabel('V^2 / Power');
+  ylabel('V^2 / P');
   xlabel('V^2[volt]'); 
   title(tStr);
   plot(v122(:,i,ai),res(:,i,ai),'-x');
@@ -263,7 +256,7 @@ legend(l2,'Location','northwest');
 %ftemp=strcat('C:\jinwork\BEC\tmp\',tStr,'-V2-P.png');
 %saveas(gcf,ftemp);
 export_fig(f2,figname,'-append');
-end
+%end
 f3=figure('Position',pos);
 grid on;
 grid minor;
@@ -278,41 +271,89 @@ for i = 1:size(tt,1)
 end  
 legend(l3,'Location','northwest');
 export_fig(f3,figname,'-append');
+
+f4=figure('Position',pos);
+grid on;
+grid minor;
+hold on
+for i = 1:size(tt,1) 
+  plot(dqp(:,i,ai),hpdrop(:,i,ai),'-o');
+  ylabel('HpDrop[w]');
+  ylim([0 7]);
+  xlabel('P[w]'); 
+  title(tStr);
+  l4{i}=strcat(power,'-',gas,'-CoreTemp=',num2str(tt(i,ai))); 
+end  
+legend(l4,'Location','northwest');
+export_fig(f4,figname,'-append');
 %ftemp=strcat('C:\jinwork\BEC\tmp\',tStr,'-HpD-V2.png');
 %saveas(gcf,ftemp);
 end
+tailx=0.2;
+taily=0.4;
+marg=0.05;
+y1=0.55;
+y2=0.1;
+x0=0.02;
+v=zeros(4,4);
+v(1,:) = [x0  y1 tailx  taily] ; 
+for k=2:4
+  v(k,1)=v(k-1,1)+tailx+marg;
+end
+v(:,2)=y1;
+v(:,3)=tailx;
+v(:,4)=taily;
 
 figure(f1);
-subplot(2,1,1);
+h=subplot(2,2,1);
 
-if isDC
+%if isDC
 grid on;
 grid minor;
 hold on;
 plot(tt(:,ai),res0(:,ai),'-o');
+set(gca,'XTick',[]);
+set(gca,'position',v(1,:))
 xlim([200 400]);
-ytemp = strcat('V^2 / Power');
+ytemp = strcat('V^2 / P');
 ylabel(ytemp);
 l1{ai}=tStr;
-end
-subplot(2,1,2);
+%end
+
+subplot(2,2,2);
 grid on;
 grid minor;
 hold on;
 plot(tt(:,ai),hv0(:,ai),'-o');
+set(gca,'XTick',[]);
+set(gca,'position',v(2,:))
 xlim([200 400]);
 ytemp = strcat('HpDrop / V^2');
 ylabel(ytemp);
 l1{ai}=tStr;
-%T=[T;table(reactor,tStr,' ')];
-T =[T;table(tt(:,ai),res0(:,ai),hv0(:,ai))];
-
+subplot(2,2,3);
+grid on;
+grid minor;
+hold on;
+plot(tt(:,ai),hqp0(:,ai),'-o');
+set(gca,'position',v(3,:))
+xlim([200 400]);
+ytemp = strcat('HpDrop / P');
+ylabel(ytemp);
+subplot(2,2,4);
+grid on;
+grid minor;
+hold on;
+plot(tt(:,ai),innert(:,ai),'-o');
+set(gca,'position',v(4,:))
+xlim([200 400]);
+ytemp = strcat('Inner Temp');
+ylabel(ytemp);
+l1{ai}=tStr;
+T2 =[T2;table(tt(:,ai),innert(:,ai),res0(:,ai),hv0(:,ai),hqp0(:,ai),'VariableNames',{'coreT','innerT','R','C','M'})];
 end
 %legend(ll,'Location','SouthOutside');
-legend(l1,'Location','west');
+legend(l1,'Location','NorthOutside','Orientation','horizontal');
 export_fig(f1,figname,'-append');
-%ftemp=strcat('C:\jinwork\BEC\tmp\',tStr,'.png');
-%saveas(gcf,ftemp);
-fileOut = strcat(fileOut,'.csv');
-writetable(T,fileOut);
+writetable(T2,filen2);
 
