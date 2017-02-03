@@ -4,7 +4,7 @@ addpath('C:\jinwork\BE\matlab')
 addpath('C:\jinwork\BE\matlab\addaxis5')
 addpath('C:\jinwork\BE\matlab\export_fig\altmany-export_fig-2763b78')
 %Control parameters
-qPlot = false; dcPlot = false; debugPlot = false; tempExpFit = false; hpExpFit = false;
+qPlot = false; dcPlot = true; debugPlot = false; tempExpFit = false; hpExpFit = false;
 postProcess = true; writeOutput = true; plotOutput = true; detailPlot = true;
 errorBarPlot = false;findDuplicates = false;
 %plot bounds setting
@@ -23,18 +23,19 @@ aSetMap = containers.Map(...
  '5-all-dcs',...
  '6-ipb1-30b-sri-ipb2-he-h2-dc-q',...
  '7-test',...
+ '8-test',...
   },...
- {[ipb1_30(4:5,:);ipb1_30(17,:);ipb1_30(10,:);ipb1_30(14,:)],...
+ {[ipb1_30(4:5,:);ipb1_30(17:18,:);ipb1_30(10,:);ipb1_30(14,:)],...
   [sri_ipb2_27(4:6,:);sri_ipb2_27(9:10,:)],...
   [ipb3_32(2,:);ipb3_32(5:6,:);ipb3_32(9:10,:)],...
-  [ipb3_37(3:4,:);ipb3_37(1,:)],...
+  [ipb3_37(3:4,:);ipb3_37(5:6,:)],...
   [ipb1_30(4:5,:);ipb1_30(17,:);ipb3_32(2,:);ipb3_32(5:6,:);ipb3_37(3,:);sri_ipb2_27(4:5,:)],...
   [ipb1_30(4,:);sri_ipb2_27(4,:);ipb1_30(10,:);ipb1_30(14,:);sri_ipb2_27(9,:);sri_ipb2_27(10,:)],...
-  ipb3_37(4,:),...
+  ipb3_37(3,:),...
   });
-%need to put DC in front
+%perferred order dc-he,dc-h2,q-he,q-h2
 descSet = keys(aSetMap);
-aSetdesc = char(descSet(6));
+aSetdesc = char(descSet(7));
 aSet = aSetMap(aSetdesc);
 figname = strcat('C:\jinwork\BEC\tmp\',aSetdesc,'.pdf');
 delete(figname);
@@ -42,7 +43,7 @@ filen1 = strcat('C:\jinwork\BEC\tmp\',aSetdesc,'detail.csv');
 filen2 = strcat('C:\jinwork\BEC\tmp\',aSetdesc,'.csv');
 T1=cell2table(cell(0,18),...
 'VariableName',{'coreT','inT','outT','QL','QF','HP','CoreQPower','v1','v2','qPow','qSP','qSV','h2','termP','pcbP','seq','steps','date'});
-T2 = cell2table(cell(0,5),'VariableNames',{'coreT','innerT','R','C','M'});
+T2 = cell2table(cell(0,11),'VariableNames',{'coreT','icT','R','C','M','Ra','Rb','Ca','Cb','Ma','Mb'});
 pos = [10 10 1000 800];
 f1=figure('Position',pos);
 
@@ -156,27 +157,19 @@ rawData = horzcat(dateN,...
 end
      %HydrogenValves);
 %filter rawData out 
-dataSize = size(rawData,1);
+%dataSize = size(rawData,1);
 %find duplicated
 if findDuplicates
   duplicates(coreTemp);
 end
 %show startOffset and endOffset
-%DateTime(1+int16(startOffset*360))
-%DateTime(end - int16(endOffset*360))
+DateTime(1+int16(startOffset*360))
+DateTime(end - int16(endOffset*360))
 rawData = rawData(1+int16(startOffset*360):end-int16(endOffset*360),:);
-
 %(isnan(j1)) = -2 ;
 rawData = rawData(rawData(:,2) > 0,:); %only process data with seq
-dataSize = size(rawData,1)
-rawData(any(isnan(rawData)),:)=[]; %take out rows with NaN
-dataSize = size(rawData,1)
+rawData(any(isnan(rawData)),:)=[]; %take out rows with NaN but not a good code
 rawData(any(isnan(rawData),2),:)=[];
-dataSize = size(rawData,1)
-%rawData(any(isnan(rawData),11),:)=[];
-%dataSize = size(rawData,1)
-
-dataSize = size(rawData,1)
 %asignColumn name 
 rawDataN = dataset({rawData,'dateN',...
      'SeqStepNum',...
@@ -221,130 +214,127 @@ else
     plotQ(dt,hp1,hp2,qp1,qp2,cqp1,cqp2,rawDataN,plotTitle,pos,figname);  
   end
   if debugPlot
-    plotQdebug(dt,hp1,hp2,qp1,qp2,cqp1,cqp2,coreRes,rawDataN,plotTitle,pos,figname);  
+    plotQdebug(dt,rawDataN,plotTitle,pos,figname);  
   end    
 end    
-if postProcess
-  %fn = char(strcat('C:\jinwork\BEC\tmp\', reactor, '-', runDate, '.csv') );        
-  pdata = writeOut(rawDataN,T1,filen1,hpExpFit,tempExpFit,writeOutput);
-end 
-if (plotOutput)
-  %plotData = dataset({pdata,'coreT','inT','outT','ql','qf','hp','v1','v2','qPow','termP','pcbP','qSP','qSV','h2'});
-  %getPlotData;
-  [tt,innert,hpdrop,v12,dqp,v122,hv,res,hv0,hqp0,res0] = plotSummary(pdata,isDC,efficiency,ai);
-end
-power = 'q';
-if isDC
-  power = 'dc';
-end  
-tStr = strcat(reactor,'-',runDate,'-',gas,'-',power);    
-if detailPlot
-%if isDC
-f2=figure('Position',pos);
-grid on;
-grid minor;
-hold on
-for i = 1:size(tt,1)
-  ylabel('V^2 / P');
-  xlabel('V^2[volt]'); 
-  title(tStr);
-  plot(v122(:,i,ai),res(:,i,ai),'-x');
-  l2{i}=strcat(power,'-',gas,'-CoreTemp=',num2str(tt(i,ai))); 
-end  
+if ~postProcess
+    continue;
+else       
+  [T1,pdata] = writeOut(rawDataN,T1,hpExpFit,tempExpFit,writeOutput);
+  [tt,icT,hpdrop,v12,dqp,v122,hv,res,hva,hvb,hqpa,hqpb,resa,resb,hv0,hqp0,res0] = plotSummary(pdata,isDC,efficiency,ai);
+  power = 'q';
+  if isDC
+    power = 'dc';
+  end  
+  tStr = strcat(reactor,'-',runDate,'-',gas,'-',power);    
+  if detailPlot
+    f2=figure('Position',pos);
+    grid on;
+    grid minor;
+    hold on
+    for i = 1:size(tt,1)
+      ylabel('V^2 / P');
+      xlabel('V^2[volt]'); 
+      title(tStr);
+      plot(v122(:,i,ai),res(:,i,ai),'-x');
+      l2{i}=strcat(power,'-',gas,'-CoreTemp=',num2str(tt(i,ai))); 
+    end  
+    legend(l2,'Location','northwest');
 
-legend(l2,'Location','northwest');
-%ftemp=strcat('C:\jinwork\BEC\tmp\',tStr,'-V2-P.png');
-%saveas(gcf,ftemp);
-export_fig(f2,figname,'-append');
-%end
-f3=figure('Position',pos);
-grid on;
-grid minor;
-hold on
-for i = 1:size(tt,1) 
-  plot(v122(:,i,ai),hpdrop(:,i,ai),'-o');
-  ylabel('HpDrop[w]');
-  ylim([0 7]);
-  xlabel('V^2[volt]'); 
-  title(tStr);
-  l3{i}=strcat(power,'-',gas,'-CoreTemp=',num2str(tt(i,ai))); 
-end  
-legend(l3,'Location','northwest');
-export_fig(f3,figname,'-append');
+    export_fig(f2,figname,'-append');
+    f3=figure('Position',pos);
+    grid on;
+    grid minor;
+    hold on
+    for i = 1:size(tt,1) 
+      plot(v122(:,i,ai),hpdrop(:,i,ai),'-o');
+      ylabel('HpDrop[w]');
+      ylim([0 7]);
+      xlabel('V^2[volt]'); 
+      title(tStr);
+      l3{i}=strcat(power,'-',gas,'-CoreTemp=',num2str(tt(i,ai))); 
+    end  
+    legend(l3,'Location','northwest');
+    export_fig(f3,figname,'-append');
 
-f4=figure('Position',pos);
-grid on;
-grid minor;
-hold on
-for i = 1:size(tt,1) 
-  plot(dqp(:,i,ai),hpdrop(:,i,ai),'-o');
-  ylabel('HpDrop[w]');
-  ylim([0 7]);
-  xlabel('P[w]'); 
-  title(tStr);
-  l4{i}=strcat(power,'-',gas,'-CoreTemp=',num2str(tt(i,ai))); 
-end  
-legend(l4,'Location','northwest');
-export_fig(f4,figname,'-append');
-%ftemp=strcat('C:\jinwork\BEC\tmp\',tStr,'-HpD-V2.png');
-%saveas(gcf,ftemp);
+    f4=figure('Position',pos);
+    grid on;
+    grid minor;
+    hold on
+    for i = 1:size(tt,1) 
+      plot(dqp(:,i,ai),hpdrop(:,i,ai),'-o');
+      ylabel('HpDrop[w]');
+      ylim([0 7]);
+      xlabel('P[w]'); 
+      title(tStr);
+      l4{i}=strcat(power,'-',gas,'-CoreTemp=',num2str(tt(i,ai))); 
+    end  
+    legend(l4,'Location','northwest');
+    export_fig(f4,figname,'-append');
 end
-tailx=0.2;
-taily=0.4;
-marg=0.05;
-y1=0.55;
-y2=0.1;
-x0=0.02;
-v=zeros(4,4);
-v(1,:)=[x0  y1 tailx  taily]  
+
 figure(f1);
-h=subplot(2,2,1);
-
+subplot(2,2,1);
 %if isDC
 grid on;
 grid minor;
 hold on;
-plot(tt(:,ai),res0(:,ai),'-o');
+h1=plot(tt(:,ai),res0(:,ai),'-o');
 set(gca,'XTick',[]);
+%set(gca, 'Units', 'normalized', 'Position', [0.05,0.05,0.45,0.45] ) ;
+%set(gca,'position',v(1,:))
 xlim([200 400]);
 ytemp = strcat('V^2 / P');
 ylabel(ytemp);
 l1{ai}=tStr;
 %end
-p=get(h,'pos');
-p(
 subplot(2,2,2);
 grid on;
 grid minor;
 hold on;
-plot(tt(:,ai),hv0(:,ai),'-o');
+h2=plot(tt(:,ai),hv0(:,ai),'-o');
 set(gca,'XTick',[]);
+%set( gca, 'Units', 'normalized', 'Position', [0.5,0.05,0.45,0.45] ) ;
+%set(gca,'position',v(2,:))
 xlim([200 400]);
 ytemp = strcat('HpDrop / V^2');
 ylabel(ytemp);
 l1{ai}=tStr;
 subplot(2,2,3);
+
 grid on;
 grid minor;
 hold on;
-plot(tt(:,ai),hqp0(:,ai),'-o');
-
+h3=plot(tt(:,ai),hqp0(:,ai),'-o');
+%set( gca, 'Units', 'normalized', 'Position', [0.05,0.5,0.45,0.45] ) ;
+%set(gca,'position',v(3,:))
 xlim([200 400]);
 ytemp = strcat('HpDrop / P');
 ylabel(ytemp);
 subplot(2,2,4);
+
 grid on;
 grid minor;
 hold on;
-plot(tt(:,ai),innert(:,ai),'-o');
+h4=plot(tt(:,ai),icT(:,ai),'-o');
+%set( gca, 'Units', 'normalized', 'Position', [0.5,0.5,0.45,0.45] ) ;
+%set(gca,'position',v(4,:))
 xlim([200 400]);
-ytemp = strcat('Inner Temp');
+ytemp = strcat('Inner / core Temp');
 ylabel(ytemp);
 l1{ai}=tStr;
-T2 =[T2;table(tt(:,ai),innert(:,ai),res0(:,ai),hv0(:,ai),hqp0(:,ai),'VariableNames',{'coreT','innerT','R','C','M'})];
+T2 =[T2;table(tt(:,ai),icT(:,ai),res0(:,ai),hv0(:,ai),hqp0(:,ai),...
+    resa(:,ai),resb(:,ai),...   
+    hva(:,ai),hvb(:,ai),...
+    hqpa(:,ai),hqpb(:,ai),...
+    'VariableNames',{'coreT','icT','R','C','M','Ra','Rb','Ca','Cb','Ma','Mb'})];
 end
-%legend(ll,'Location','SouthOutside');
-legend(l1,'Location','NorthOutside','Orientation','horizontal');
+end
+if postProcess
+legend(l1,'Location','SouthOutside');
+%legend(l1,'Location','NorthOutside','Orientation','horizontal');
 export_fig(f1,figname,'-append');
+writetable(T1,filen1);
 writetable(T2,filen2);
+end
 

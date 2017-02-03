@@ -1,4 +1,4 @@
-function [tt,icT,hpdrop,v12,dqp,v122,hv,res,hva,hvb,hqpa,hqpb,resa,resb,hv0,hqp0,res0] = plotSummary(pdata,isDC,efficiency,ai)
+function [tt,icT,hpdrop,v12,dqp,v122,hv,res,hv10,hqp10,res10,hv0,hqp0,res0] = plotSummary(pdata,isDC,efficiency,ai)
 % Create palette
 %palette = hsv(K + 1);
 %colors = palette(idx, :);
@@ -62,10 +62,13 @@ for ti = 1:numel(uniqCT)
   hqp10(:,i,ai)=polyfit(dqp(:,i,ai),hpdrop(:,i,ai),1);
   hqpa(i,ai)=hqp10(1,i,ai);
   hqpb(i,ai)=hqp10(2,i,ai);
+
   hqp0(i,ai) = dqp(:,i,ai)\hpdrop(:,i,ai);
   res10(:,i,ai)=polyfit(dqp(:,i,ai),v122(:,i,ai),1);
   resa(i,ai)=res10(1,i,ai);
-  resb(i,ai)=res10(2,i,ai);
+  resb(i,ai)=hqp10(2,i,ai);
+
+
   res0(i,ai) = dqp(:,i,ai)\v122(:,i,ai);
   %icT1=polyfit(cT(:,i,ai),inT(:,i,ai),1);
   icT(i,ai) = cT(:,i,ai)\ inT(:,i,ai);
