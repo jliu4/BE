@@ -1,4 +1,5 @@
 function [tt,icT,hpdrop,v12,dqp,v122,hv,res,hva,hvb,hqpa,hqpb,resa,resb,hv0,hqp0,res0] = plotSummary(pdata,isDC,efficiency,ai)
+%pdata = horzcat(coreT', inT', outT', ql', qf', hp', v1', v2', qPow', termP', pcbP', qSP', qSV', h2',coreQPow');
 % Create palette
 %palette = hsv(K + 1);
 %colors = palette(idx, :);
@@ -48,6 +49,7 @@ for ti = 1:numel(uniqCT)
     pcbp(:,i,ai) = qtdata(:,11) - pcbP0;
     %dqp(:,i,ai) = qp(:,i,ai)-(termp(:,i,ai)+pcbp(:,i,ai))/efficiency;
     dqp(:,i,ai) = qp(:,i,ai)-(termp(:,i,ai))/efficiency;
+    dqp(:,i,ai)=qtdata(:,15); %use coreQpow instead
   end  
   cT(:,i,ai) = qtdata(:,1);
   inT(:,i,ai) = qtdata(:,2);
@@ -55,6 +57,7 @@ for ti = 1:numel(uniqCT)
   v122=v12.*v12;
   hv = hpdrop./v122;
   res = v122./dqp;
+  %hv10(:,i,ai) = fitlm(v122(:,i,ai),hpdrop(:,i,ai),'RobustOpts','on');
   hv10(:,i,ai)=polyfit(v122(:,i,ai),hpdrop(:,i,ai),1);
   hva(i,ai)=hv10(1,i,ai);
   hvb(i,ai)=hv10(2,i,ai);

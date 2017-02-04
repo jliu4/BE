@@ -7,7 +7,7 @@ coreT =[];inT=[];outT=[];ql=[];qf=[];hp=[];coreQPow=[];v1=[];v2=[];qPow=[];qSP=[
 i=0;
 %start point of the sequence
 i1 = 1;
-trim = 10; %10% outliers throw away.
+trim = 25; %10% outliers throw away.
 ii = 30; %30*10=300 seconds before to next seq.
 if ii > 5
   trim1 = round(200/ii); %k = ii*(trim/100)/2 through away one highset/lowest point trim = 200/ii
@@ -62,7 +62,7 @@ if (writeOutput)
 T1=[T1;table(coreT(:),inT(:),outT(:),ql(:),qf(:),hp(:),coreQPow(:),v1(:),v2(:),qPow(:),qSP(:),qSV(:),h2(:),termP(:),pcbP(:),seq1(:),i12(:),dt2(:),...
 'VariableName',{'coreT','inT','outT','QL','QF','HP','CoreQPower','v1','v2','qPow','qSP','qSV','h2','termP','pcbP','seq','steps','date'})];
 end
-pdata = horzcat(coreT', inT', outT', ql', qf', hp', v1', v2', qPow', termP', pcbP', qSP', qSV', h2');
+pdata = horzcat(coreT', inT', outT', ql', qf', hp', v1', v2', qPow', termP', pcbP', qSP', qSV', h2',coreQPow');
 
 end
 

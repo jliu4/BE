@@ -3,9 +3,10 @@ clear; close all; clc
 addpath('C:\jinwork\BE\matlab')
 addpath('C:\jinwork\BE\matlab\addaxis5')
 addpath('C:\jinwork\BE\matlab\export_fig\altmany-export_fig-2763b78')
+colors=['b';'m';'c';'k';'g';'r';'y';'b';'r';];
 %Control parameters
-qPlot = false; dcPlot = true; debugPlot = false; tempExpFit = false; hpExpFit = false;
-postProcess = false; writeOutput = true; plotOutput = true; detailPlot = true;
+qPlot = true; dcPlot = true; debugPlot = false; tempExpFit = false; hpExpFit = false;
+postProcess = true; writeOutput = true; plotOutput = true; detailPlot = true;
 errorBarPlot = false;findDuplicates = false;
 %plot bounds setting
 startOffset = 0;endOffset = 0;hp1 = 0;hp2 = 60; qp1 = 5;qp2 = 55;cqp1 = 0;cqp2 = 12;
@@ -31,12 +32,12 @@ aSetMap = containers.Map(...
   [ipb3_37(3:4,:);ipb3_37(5:6,:)],...
   [ipb1_30(4:5,:);ipb1_30(17,:);ipb3_32(2,:);ipb3_32(5:6,:);ipb3_37(3,:);sri_ipb2_27(4:5,:)],...
   [ipb1_30(4,:);sri_ipb2_27(4,:);ipb1_30(10,:);ipb1_30(14,:);sri_ipb2_27(9,:);sri_ipb2_27(10,:)],...
-  ipb3_37(3,:),...
+  ipb3_37(6,:),...
   ipb1_30(19,:),...
   });
 %perferred order dc-he,dc-h2,q-he,q-h2
 descSet = keys(aSetMap);
-aSetdesc = char(descSet(8));
+aSetdesc = char(descSet(3));
 aSet = aSetMap(aSetdesc);
 figname = strcat('C:\jinwork\BEC\tmp\',aSetdesc,'.pdf');
 delete(figname);
@@ -234,15 +235,49 @@ else
     grid minor;
     hold on
     for i = 1:size(tt,1)
-      ylabel('V^2 / P');
-      xlabel('V^2[volt]'); 
-      title(tStr);
-      plot(v122(:,i,ai),res(:,i,ai),'-x');
+      %ii = int8((i-1)/2) + mod(i,2);
+      ylabel('V^2');
+      xlabel('P[w]'); %xlabel('V^2[volt]'); change from v^2 to v
+      title(tStr);  
+      x=[0,max(dqp(:,i,ai))];
+      y=[0,res0(i,ai)*x(2)];
+      ctmp1=strcat(colors(i),'-x');
+      ctmp2=strcat(colors(i),'--');
+      plot(dqp(:,i,ai),v122(:,i,ai),ctmp1);
+      %plot(dqp(:,i,ai),v122(:,i,ai),colors(ii),'-x',x,y,colors(ii),'--'); %plot(v122(:,i,ai),res(:,i,ai),'-x');
+      %plot(dqp(:,i,ai),v122(:,i,ai),ctmp1,x,y,ctmp2);
+      %p(2*(i-1)+1) = plot(dqp(:,i,ai),v122(:,i,ai),ctmp1);
+      %p(2*i) = plot(x,y,ctmp2);
+      %xlim([0 6]);
+      %ylim([0 6]);
+      %if mod(i,2) == 1
       l2{i}=strcat(power,'-',gas,'-CoreTemp=',num2str(tt(i,ai))); 
+     % end
     end  
     legend(l2,'Location','northwest');
-
     export_fig(f2,figname,'-append');
+    f3=figure('Position',pos);
+    grid on;
+    grid minor;
+    hold on
+    for i = 1:size(tt,1)
+      %ii = int8((i-1)/2) + mod(i,2);
+      ylabel('V^2');
+      xlabel('P[w]'); %xlabel('V^2[volt]'); change from v^2 to v
+      title(tStr);  
+      x=[0,max(dqp(:,i,ai))];
+      y=[0,res0(i,ai)*x(2)];
+      ctmp1=strcat(colors(i),'-x');
+      ctmp2=strcat(colors(i),'--');
+     
+      plot(dqp(:,i,ai),v122(:,i,ai),ctmp1,x,y,ctmp2);
+     
+      l2{i}=strcat(power,'-',gas,'-CoreTemp=',num2str(tt(i,ai))); 
+   
+    end  
+    legend(l2,'Location','northwest');
+    export_fig(f3,figname,'-append');
+    if false %comment out
     f3=figure('Position',pos);
     grid on;
     grid minor;
@@ -250,14 +285,14 @@ else
     for i = 1:size(tt,1) 
       plot(v122(:,i,ai),hpdrop(:,i,ai),'-o');
       ylabel('HpDrop[w]');
-      ylim([0 7]);
+      %ylim([0 7]);
       xlabel('V^2[volt]'); 
       title(tStr);
       l3{i}=strcat(power,'-',gas,'-CoreTemp=',num2str(tt(i,ai))); 
     end  
     legend(l3,'Location','northwest');
     export_fig(f3,figname,'-append');
-
+    end
     f4=figure('Position',pos);
     grid on;
     grid minor;
@@ -265,7 +300,7 @@ else
     for i = 1:size(tt,1) 
       plot(dqp(:,i,ai),hpdrop(:,i,ai),'-o');
       ylabel('HpDrop[w]');
-      ylim([0 7]);
+      %ylim([0 7]);
       xlabel('P[w]'); 
       title(tStr);
       l4{i}=strcat(power,'-',gas,'-CoreTemp=',num2str(tt(i,ai))); 
@@ -275,13 +310,13 @@ else
 end
 
 figure(f1);
-subplot(2,2,1);
+subplot(1,2,1);
 %if isDC
 grid on;
 grid minor;
 hold on;
 h1=plot(tt(:,ai),res0(:,ai),'-o');
-set(gca,'XTick',[]);
+%set(gca,'XTick',[]);
 %set(gca, 'Units', 'normalized', 'Position', [0.05,0.05,0.45,0.45] ) ;
 %set(gca,'position',v(1,:))
 xlim([200 400]);
@@ -289,7 +324,8 @@ ytemp = strcat('V^2 / P');
 ylabel(ytemp);
 l1{ai}=tStr;
 %end
-subplot(2,2,2);
+if false
+subplot(1,2,2);
 grid on;
 grid minor;
 hold on;
@@ -301,7 +337,8 @@ xlim([200 400]);
 ytemp = strcat('HpDrop / V^2');
 ylabel(ytemp);
 l1{ai}=tStr;
-subplot(2,2,3);
+
+subplot(1,3,2);
 
 grid on;
 grid minor;
@@ -312,7 +349,8 @@ h3=plot(tt(:,ai),hqp0(:,ai),'-o');
 xlim([200 400]);
 ytemp = strcat('HpDrop / P');
 ylabel(ytemp);
-subplot(2,2,4);
+end
+subplot(1,2,2);
 
 grid on;
 grid minor;
