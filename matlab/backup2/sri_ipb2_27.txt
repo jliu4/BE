@@ -1,7 +1,0 @@
-reactor,folder,runDate,file1,file2,startOffset,endOffset,isHe,isDC,desc
-sri-ipb2-27,5,01132017,2,3,0,0,0,0,google excitation run
-sri-ipb2-27,4,12092016,4,5,0,0,1,1,to filled
-sri-ipb2-27,5,12182016,4,4,0,0,1,0,to filled
-sri-ipb2-27,6,01112017,37,38,0,0,0,0,to filled
-sri-ipb2-27,6,01122017,39,40,0,0,0,0,to filled
-sri-ipb2-27,6,01132017,41,42,0,0,0,1, to filled

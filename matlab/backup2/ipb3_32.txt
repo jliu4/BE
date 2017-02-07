@@ -1,7 +1,0 @@
-reactor,folder,runDate,file1,file2,startOffset,endOffset,isHe,isDC,desc
-ipb3-32,4,12072016,1,3,0,0,1,0, q-he-150-400c
-ipb3-32,4,12092016,4,5,0,0,1,1, dc-he-150-500c
-ipb3-32,5,12152016,1,3,0,0,1,0,q-he-qp50w-150-400c
-ipb3-32,5,12182016,4,4,0,0,1,0,q-he-mulitple-qp-150-91ns-150-400c
-ipb3-32,6,01112017,37,38,0,0,0,0,q-h2-mulitple-qp-150-400c
-ipb3-32,6,01132017,42,43,0,0,0,1,q-h2-mulitple-qp-250-325c

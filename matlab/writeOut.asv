@@ -1,4 +1,4 @@
-function [T1,pdata] = writeOut(data, T1, hpExpFit, tempExpFit,writeOutput,figname,tStr)
+function [T1,pdata] = writeOut(data, T1, hpExpFit, tempExpFit,writeOutput,figname)
 dataSize = size(data,1);
 ctFit = [];
 itFit = [];
@@ -52,8 +52,11 @@ while (i < dataSize-1)
     if hpExpFit
         %JLIU TODO hard code here
       %take out 15% data set from beginning. 
+      hpseq2=hp(seq2);
+      coreTseq2=coreT(seq2);
+      
       i11 = double(int8(0.05*(i2-i1)));
-      hpFit(seq2,1:4) = expFit(data.HeaterPower(i1+i11:i2),figname,hp(seq2),coreT(seq2),tStr); 
+      hpFit(seq2,1:4) = expFit(data.HeaterPower(i1+i11:i2),figname,hp(seq2),coreT(seq2)); 
       
       p1(seq2)=hpFit(seq2,1);
       p2(seq2)=hpFit(seq2,2);

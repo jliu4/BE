@@ -3,9 +3,11 @@ clear; close all; clc
 addpath('C:\jinwork\BE\matlab')
 addpath('C:\jinwork\BE\matlab\addaxis5')
 addpath('C:\jinwork\BE\matlab\export_fig\altmany-export_fig-2763b78')
-colors=['b';'m';'c';'k';'g';'r';'y';'b';'r';];
+%colors={'blue','magenta','cyan','black','green','red','Wheat','SeaGreen','Aqua','Lavender',...
+%    'LimeGreen','AlizarinCrimson'};
+colors=['b';'m';'c';'k';'g';'r';'b';'m';'c';'k';'g';'r'];
 %Control parameters
-qPlot = true; dcPlot = true; debugPlot = false; tempExpFit = false; hpExpFit = false;
+qPlot = true; dcPlot = true; debugPlot = false; tempExpFit = false; hpExpFit = true;
 postProcess = true; writeOutput = true; plotOutput = true; detailPlot = true;
 errorBarPlot = false;findDuplicates = false;
 %plot bounds setting
@@ -23,29 +25,32 @@ aSetMap = containers.Map(...
  '4-ipb3-37b-he-dc-q',...
  '5-all-dcs',...
  '6-ipb1-30b-sri-ipb2-he-h2-dc-q',...
- '7-test',...
+ '7-dc-ipb1-2',...
  '8-test',...
   },...
  {[ipb1_30(4:5,:);ipb1_30(17:18,:);ipb1_30(10,:);ipb1_30(14,:)],...
-  [sri_ipb2_27(4:6,:);sri_ipb2_27(9:10,:)],...
+  [sri_ipb2_27(4:6,:);sri_ipb2_27(9:11,:)],...
   [ipb3_32(2,:);ipb3_32(5:6,:);ipb3_32(9:10,:)],...
   [ipb3_37(3:4,:);ipb3_37(5:6,:)],...
   [ipb1_30(4:5,:);ipb1_30(17,:);ipb3_32(2,:);ipb3_32(5:6,:);ipb3_37(3,:);sri_ipb2_27(4:5,:)],...
   [ipb1_30(4,:);sri_ipb2_27(4,:);ipb1_30(10,:);ipb1_30(14,:);sri_ipb2_27(9,:);sri_ipb2_27(10,:)],...
+  [ipb1_30(4:5,:);sri_ipb2_27(4:5,:)],...
   ipb3_37(6,:),...
-  ipb1_30(19,:),...
   });
 %perferred order dc-he,dc-h2,q-he,q-h2
 descSet = keys(aSetMap);
-aSetdesc = char(descSet(3));
+aSetdesc = char(descSet(4));
 aSet = aSetMap(aSetdesc);
 figname = strcat('C:\jinwork\BEC\tmp\',aSetdesc,'.pdf');
 delete(figname);
 filen1 = strcat('C:\jinwork\BEC\tmp\',aSetdesc,'detail.csv');
 filen2 = strcat('C:\jinwork\BEC\tmp\',aSetdesc,'.csv');
-T1=cell2table(cell(0,18),...
-'VariableName',{'coreT','inT','outT','QL','QF','HP','CoreQPower','v1','v2','qPow','qSP','qSV','h2','termP','pcbP','seq','steps','date'});
+filen3 = strcat('C:\jinwork\BEC\tmp\',aSetdesc,'tempexpfit.csv');
+T1=cell2table(cell(0,22),...
+'VariableName',{'coreT','inT','outT','QL','QF','HP','CoreQPower','v1','v2','qPow','qSP','qSV','h2','termP','pcbP',...
+'p1','p2','p3','p4','seq','steps','date'});
 T2 = cell2table(cell(0,11),'VariableNames',{'coreT','icT','R','C','M','Ra','Rb','Ca','Cb','Ma','Mb'});
+
 pos = [10 10 1000 800];
 f1=figure('Position',pos);
 
@@ -60,6 +65,7 @@ for ai = 1:size(aSet,1)
  gas = char(aSet.gas(ai));
  isDC = aSet.isDC(ai);
  efficiency = aSet.efficiency(ai);
+ termRes = aSet.termRes(ai);
 switch (reactor)
 case 'ipb1-29'  
   rtFolder='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\';    
@@ -221,96 +227,58 @@ else
 end    
 if ~postProcess
     continue;
-else       
-  [T1,pdata] = writeOut(rawDataN,T1,hpExpFit,tempExpFit,writeOutput);
-  [tt,icT,hpdrop,v12,dqp,v122,hv,res,hva,hvb,hqpa,hqpb,resa,resb,hv0,hqp0,res0] = plotSummary(pdata,isDC,efficiency,ai);
+else   
   power = 'q';
   if isDC
     power = 'dc';
   end  
   tStr = strcat(reactor,'-',runDate,'-',gas,'-',power);    
+
+  [T1,pdata] = writeOut(rawDataN,T1,hpExpFit,tempExpFit,writeOutput,figname,tStr);
+  [tt,icT,hpdrop,v12,dqp,v122,hv,res,hva,hvb,hqpa,hqpb,resa,resb,hv0,hqp0,res0] = plotSummary(pdata,isDC,efficiency,ai);
   if detailPlot
     f2=figure('Position',pos);
     grid on;
     grid minor;
     hold on
-    for i = 1:size(tt,1)
-      %ii = int8((i-1)/2) + mod(i,2);
+    for i = 1:size(tt,1)  
       ylabel('V^2');
-      xlabel('P[w]'); %xlabel('V^2[volt]'); change from v^2 to v
+      xlabel('P[w]'); 
       title(tStr);  
       x=[0,max(dqp(:,i,ai))];
       y=[0,res0(i,ai)*x(2)];
-      ctmp1=strcat(colors(i),'-x');
-      ctmp2=strcat(colors(i),'--');
-      plot(dqp(:,i,ai),v122(:,i,ai),ctmp1);
-      %plot(dqp(:,i,ai),v122(:,i,ai),colors(ii),'-x',x,y,colors(ii),'--'); %plot(v122(:,i,ai),res(:,i,ai),'-x');
-      %plot(dqp(:,i,ai),v122(:,i,ai),ctmp1,x,y,ctmp2);
-      %p(2*(i-1)+1) = plot(dqp(:,i,ai),v122(:,i,ai),ctmp1);
-      %p(2*i) = plot(x,y,ctmp2);
-      %xlim([0 6]);
-      %ylim([0 6]);
-      %if mod(i,2) == 1
-      l2{i}=strcat(power,'-',gas,'-CoreTemp=',num2str(tt(i,ai))); 
-     % end
+      ctmp1=char(strcat(colors(i),'-x'));
+      ctmp2=char(strcat(colors(i),'--'));
+      h(2*(i-1)+1)=plot(dqp(:,i,ai),v122(:,i,ai),ctmp1);
+      h(2*i)=plot(x,y,ctmp2); 
+     
+      l2{2*(i-1)+1}=strcat(power,'-',gas,'-CoreTemp=',num2str(tt(i,ai))); 
+      l2{2*i}=strcat(power,'-',gas,'-CoreTemp=',num2str(tt(i,ai))); 
     end  
     legend(l2,'Location','northwest');
     export_fig(f2,figname,'-append');
-    f3=figure('Position',pos);
+    f6=figure('Position',pos);
     grid on;
     grid minor;
     hold on
-    for i = 1:size(tt,1)
-      %ii = int8((i-1)/2) + mod(i,2);
-      ylabel('V^2');
-      xlabel('P[w]'); %xlabel('V^2[volt]'); change from v^2 to v
-      title(tStr);  
+    for i = 1:size(tt,1) 
       x=[0,max(dqp(:,i,ai))];
-      y=[0,res0(i,ai)*x(2)];
-      ctmp1=strcat(colors(i),'-x');
-      ctmp2=strcat(colors(i),'--');
-     
-      plot(dqp(:,i,ai),v122(:,i,ai),ctmp1,x,y,ctmp2);
-     
-      l2{i}=strcat(power,'-',gas,'-CoreTemp=',num2str(tt(i,ai))); 
-   
-    end  
-    legend(l2,'Location','northwest');
-    export_fig(f3,figname,'-append');
-    if false %comment out
-    f3=figure('Position',pos);
-    grid on;
-    grid minor;
-    hold on
-    for i = 1:size(tt,1) 
-      plot(v122(:,i,ai),hpdrop(:,i,ai),'-o');
+      y=[0,hqp0(i,ai)*x(2)];
+      ctmp1=char(strcat(colors(i),'-o'));
+      ctmp2=char(strcat(colors(i),'--'));
+      plot(dqp(:,i,ai),hpdrop(:,i,ai),ctmp1);  
+      plot(x,y,ctmp2);
       ylabel('HpDrop[w]');
-      %ylim([0 7]);
-      xlabel('V^2[volt]'); 
-      title(tStr);
-      l3{i}=strcat(power,'-',gas,'-CoreTemp=',num2str(tt(i,ai))); 
-    end  
-    legend(l3,'Location','northwest');
-    export_fig(f3,figname,'-append');
-    end
-    f4=figure('Position',pos);
-    grid on;
-    grid minor;
-    hold on
-    for i = 1:size(tt,1) 
-      plot(dqp(:,i,ai),hpdrop(:,i,ai),'-o');
-      ylabel('HpDrop[w]');
-      %ylim([0 7]);
       xlabel('P[w]'); 
       title(tStr);
-      l4{i}=strcat(power,'-',gas,'-CoreTemp=',num2str(tt(i,ai))); 
+      l2{2*(i-1)+1}=strcat(power,'-',gas,'-CoreTemp=',num2str(tt(i,ai))); 
+      l2{2*i}=strcat(power,'-',gas,'-CoreTemp=',num2str(tt(i,ai))); 
     end  
-    legend(l4,'Location','northwest');
-    export_fig(f4,figname,'-append');
-end
-
+    legend(l2,'Location','northwest');
+    export_fig(f6,figname,'-append');
+  end
 figure(f1);
-subplot(1,2,1);
+subplot(1,3,1);
 %if isDC
 grid on;
 grid minor;
@@ -337,7 +305,7 @@ xlim([200 400]);
 ytemp = strcat('HpDrop / V^2');
 ylabel(ytemp);
 l1{ai}=tStr;
-
+end
 subplot(1,3,2);
 
 grid on;
@@ -350,7 +318,7 @@ xlim([200 400]);
 ytemp = strcat('HpDrop / P');
 ylabel(ytemp);
 end
-subplot(1,2,2);
+subplot(1,3,3);
 
 grid on;
 grid minor;
@@ -368,12 +336,13 @@ T2 =[T2;table(tt(:,ai),icT(:,ai),res0(:,ai),hv0(:,ai),hqp0(:,ai),...
     hqpa(:,ai),hqpb(:,ai),...
     'VariableNames',{'coreT','icT','R','C','M','Ra','Rb','Ca','Cb','Ma','Mb'})];
 end
-end
+
 if postProcess
 legend(l1,'Location','SouthOutside');
 %legend(l1,'Location','NorthOutside','Orientation','horizontal');
 export_fig(f1,figname,'-append');
 writetable(T1,filen1);
 writetable(T2,filen2);
+%writetable(T3,filen3);
 end
 

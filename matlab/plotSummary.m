@@ -15,13 +15,18 @@ for ti = 1:numel(uniqCT)
   tdata = pdata(int16(pdata(:,1)) == uniqCT(ti),:);
   %exception 
   %we have to have at least 4 data points the first row needs to be no powerfor 
-  if size(tdata,1) > 4 %&& tdata(1,9) < 5 
+  %TODO JLIU where DC and Q both power zero.
+  if size(tdata,1) > 4 && tdata(1,15) < 1 
   i = i + 1;
   tt(i,ai) = uniqCT(ti);
   %condition is pdata.coreQPow = 0
  % if tdata(1,9) < 5
  % assume the first row in the temperature mode is no q and dc power.
     hp0 = min(tdata(1,6),tdata(end,6)); %sometimes the first row is not converged yet
+    if tt(i,ai) == 400
+      %TODO JLIU hacked here  
+    hp0 = tdata(1,6);
+    end
     qp0 = tdata(1,9);
     termP0 = tdata(1,10);
     pcbP0 = tdata(1,11);
