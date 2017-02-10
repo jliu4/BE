@@ -42,38 +42,39 @@ while (i < dataSize-1)
     qSP(seq2) = trimmean(data.QSupplyPower(i1:i2),trim); 
     qSV(seq2) = trimmean(data.QSupplyVolt(i1:i2),trim);
     qCur(seq2) = trimmean(data.QCur(ii:i2),trim);
-    qSetV(seq2) = trimmean(data.QSetV(i1:i2),trim);
+    v3(seq2) = trimmean(data.CoreQV3Rms(i1:i2),trim);
     termP(seq2)= trimmean(data.TerminationHeatsinkPower(i1:i2),trim);
     pcbP(seq2)= trimmean(data.QPulsePCBHeatsinkPower(i1:i2),trim);
     if tempExpFit
       ctFit(seq2,1:4) = expFit(data.CoreTemp(i1:i2));
       itFit(seq2,1:4) = expFit(data.InnerBlockTemp1(i1:i2));
     end
+    i12(seq2)=i2-i1;
     if hpExpFit
         %JLIU TODO hard code here
       %take out 15% data set from beginning. 
-      i11 = double(int8(0.05*(i2-i1)));
-      hpFit(seq2,1:4) = expFit(data.HeaterPower(i1+i11:i2),figname,hp(seq2),coreT(seq2),tStr); 
-      
+      i11 = double(int16(0.1*(i2-i1)));
+      hpFit(seq2,1:4) = expFit(data.HeaterPower(i1+i11:i2),figname,hp(seq2),coreT(seq2),tStr);      
       p1(seq2)=hpFit(seq2,1);
       p2(seq2)=hpFit(seq2,2);
       p3(seq2)=hpFit(seq2,3);
       p4(seq2)=hpFit(seq2,4);
-    end  
-    i12(seq2)=i2-i1;
+      %extended double size
+      p5(seq2)=p1(seq2)*exp(p2(seq2)*2*i12(seq2))+p3(seq2)*exp(p4(seq2)*2*i12(seq2));
+    end     
     i1 = i2+1; 
     end
   end
 end  
 dt2 = datetime(dt1, 'ConvertFrom', 'datenum');
 if (writeOutput)
-T1=[T1;table(coreT(:),inT(:),outT(:),ql(:),qf(:),hp(:),coreQPow(:),v1(:),v2(:),qPow(:),qSP(:),qSV(:),h2(:),termP(:),pcbP(:),...
-    p1(:),p2(:),p3(:),p4(:),seq1(:),i12(:),dt2(:),...
-'VariableName',{'coreT','inT','outT','QL','QF','HP','CoreQPower','v1','v2','qPow','qSP','qSV','h2','termP','pcbP',...
-'p1','p2','p3','p4','seq','steps','date'})];
+T1=[T1;table(coreT(:),inT(:),outT(:),ql(:),qf(:),hp(:),coreQPow(:),v1(:),v2(:),v3(:),qPow(:),qSP(:),qSV(:),h2(:),termP(:),pcbP(:),...
+    p1(:),p2(:),p3(:),p4(:),p5(:),seq1(:),i12(:),dt2(:),...
+'VariableName',{'coreT','inT','outT','QL','QF','HP','CoreQPower','v1','v2','v3','qPow','qSP','qSV','h2','termP','pcbP',...
+'p1','p2','p3','p4','hp_','seq','steps','date'})];
 end
    
-pdata = horzcat(coreT', inT', outT', ql', qf', hp', v1', v2', qPow', termP', pcbP', qSP', qSV', h2',coreQPow');
+pdata = horzcat(coreT', inT', outT', ql', qf', hp', v1', v2',v3', qPow', termP', pcbP', qSP', qSV', h2',coreQPow');
 
 end
 

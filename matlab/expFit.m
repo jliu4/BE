@@ -13,9 +13,9 @@ hold on;
 title(titleS);  
 plot(f,x1,data);
 %legend(l2,'Location','northwest');
-fn = ['C:\jinwork\BEC\tmp\',titleS, '.csv'];
-T = table(data,'VariableName',{'hp'});
-writetable(T,fn);                
+%fn = ['C:\jinwork\BEC\tmp\',titleS, '.csv'];
+%T = table(data,'VariableName',{'hp'});
+%writetable(T,fn);                
 export_fig(ff,figname,'-append');
 end
 end
