@@ -1,11 +1,16 @@
 % Initial housekeeping
 clear; close all; clc
 addpath('C:\jinwork\BE\matlab\PolyfitnTools')
-color
-for i = 1:10
-    i
-    ii=int8((i-1)/2)+mod(i,2)
-end    
+%d1 runs, tempratures, qlen, datapoint
+c=cell(5,7,3,5);
+c(1,1,1,1) = 1000;
+c(1,1,1,2)= 5000;
+c(1,1,1,3)= 6000;
+c(1,1,2,1)= 100;
+c(1,1,2,1)=500;
+c(1,1,3,1)=600;
+c(1,1,1,:)
+
 t=[1,2,3,4,5];
 y=[2,3,4,5,6];
 t1=[0,max(t)];

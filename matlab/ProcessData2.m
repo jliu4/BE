@@ -3,21 +3,59 @@ clear; close all; clc
 addpath('C:\jinwork\BE\matlab')
 addpath('C:\jinwork\BE\matlab\addaxis5')
 addpath('C:\jinwork\BE\matlab\export_fig\altmany-export_fig-2763b78')
-
+%[1 1 0]	Yellow
+%[0 0 0]	Black
+%[0 0 1]	Blue
+%[0 1 0]	Bright green
+%[0 1 1]	Cyan
+%[1 0 0]	Bright red
+%[1 0 1]	Pink
+%[1 1 1]	White
+%[0.9412 0.4706 0]	Orange
+%[0.251 0 0.502]	Purple
+%[0.502 0.251 0]	Brown
+%[0 0.251 0]	Dark green
+%[0.502 0.502 0.502]	Gray
+%[0.502 0.502 1]	Light purple
+%[0 0.502 0.502]	Turquoise
+%[0.502 0 0]	Burgundy 
+%[1 0.502 0.502]	Peach
+colors=[0 0 0
+    0 0 1
+    0 1 0
+    0 1 1
+    1 0 0
+    1 0 1
+    240/255 120/255 0
+    64/255 0 128/255
+    128/255 64/255 0
+    0 64/255 0
+    128/255 128/255 128/255
+    128/255 128/255 1
+    0 128/255 128/255
+    128/255 0 0
+    1 128/255 128/255
+    128/255 1 128/255
+    0 240/255 120/255
+    128/255 64/255 128/255
+    rand rand rand
+    rand rand rand
+    rand rand rand];
 ColOrd = get(gca,'ColorOrder');
 [m,n] = size(ColOrd);
 %Control parameters
 qPlot = true; dcPlot = true; debugPlot = false; tempExpFit = false; hpExpFit = true; %has to set true TODO JLIU
-postProcess = true; writeOutput = true; plotOutput = true; detailPlot = true;
-errorBarPlot = false;findDuplicates = false;
+postProcess = true; writeOutput = true; plotOutput = true; detailPlot = true;findDuplicates = false;
 %plot bounds setting
 startOffset = 0;endOffset = 0;hp1 = 0;hp2 = 60; qp1 = 5;qp2 = 55;cqp1 = 0;cqp2 = 12;
 %read data in
 ipb1_30 = readtable('ipb1-30.xlsx');
 ipb3_32 = readtable('ipb3-32.xlsx');
 sri_ipb2_27 = readtable('sri-ipb2-27.xlsx');
+sri_ipb2_33 = readtable('sri-ipb2-33.xlsx');
 ipb3_37 = readtable('ipb3-37.xlsx');
 %analysis set
+%[ipb1_30(4:5,:);ipb1_30(17,:);ipb1_30(22,:);ipb3_32(2,:);ipb3_32(5:6,:);ipb3_37(3,:);ipb3_37(8:9,:);sri_ipb2_27(4:5,:);sri_ipb2_33(1,:)],...
 aSetMap = containers.Map(...
 {'1-ipb1-30b-he-h2-dc-q',...
  '2-sri-ipb2-27b-h2-dc-q',...
@@ -27,19 +65,21 @@ aSetMap = containers.Map(...
  '6-ipb1-30b-sri-ipb2-he-h2-dc-q',...
  '7-dc-ipb1-2',...
  '8-ipb1',...
+  '9-sri-ipb2-33',...
   },...
  {[ipb1_30(4:5,:);ipb1_30(17:18,:);ipb1_30(22,:);ipb1_30(10,:);ipb1_30(14,:)],...
   [sri_ipb2_27(4:6,:);sri_ipb2_27(9:11,:)],...
   [ipb3_32(2,:);ipb3_32(5:6,:);ipb3_32(9:10,:)],...
-  [ipb3_37(3:4,:);ipb3_37(5:7,:)],...
-  [ipb1_30(4:5,:);ipb1_30(17,:);ipb3_32(2,:);ipb3_32(5:6,:);ipb3_37(3,:);sri_ipb2_27(4:5,:)],...
+  [ipb3_37(3,:);ipb3_37(8:9,:);ipb3_37(4:7,:)],...
+  [ipb1_30(4,:);ipb1_30(22,:);ipb3_37(8:9,:);sri_ipb2_27(4,:);sri_ipb2_33(1,:)],...
   [ipb1_30(4,:);ipb1_30(22,:);sri_ipb2_27(4,:);ipb1_30(10,:);ipb1_30(14,:);sri_ipb2_27(9,:);sri_ipb2_27(10,:)],...
   [ipb1_30(4:5,:);sri_ipb2_27(4:5,:)],...
   [ipb1_30(5,:);ipb1_30(22,:);ipb1_30(10,:);ipb1_30(14,:)],...
+  sri_ipb2_33(1,:)
   });
 %perferred order dc-he,dc-h2,q-he,q-h2
 descSet = keys(aSetMap);
-aSetdesc = char(descSet(6));
+aSetdesc = char(descSet(1));
 aSet = aSetMap(aSetdesc);
 figname = strcat('C:\jinwork\BEC\tmp\',aSetdesc,'.pdf');
 delete(figname);
@@ -72,7 +112,9 @@ case 'ipb1-29'
   SeqStepNum = SeqStep0x23; clear SeqStep0x23         
 case 'ipb1-30'
   rtFolder='C:\Users\Owner\Dropbox (BEC)\ISOPERIBOLIC_DATA\';      
-case 'sri-ipb2-27'
+case {'sri-ipb2-27'}
+  rtFolder='C:\Users\Owner\Dropbox (BEC)\SRI-IPB2\';  
+case {'sri-ipb2-33'}
   rtFolder='C:\Users\Owner\Dropbox (BEC)\SRI-IPB2\';  
 case 'ipb3-32'
   rtFolder='C:\Users\Owner\Dropbox (BEC)\IPB3_DATA\';     
@@ -206,8 +248,8 @@ DateTime(end - int16(endOffset*360))
 rawData = rawData(1+int16(startOffset*360):end-int16(endOffset*360),:);
 %(isnan(j1)) = -2 ;
 rawData = rawData(rawData(:,2) > 0,:); %only process data with seq
-rawData(any(isnan(rawData)),:)=[]; %take out rows with NaN but not a good code
-rawData(any(isnan(rawData),2),:)=[];
+%rawData(any(isnan(rawData)),:)=[]; %take out rows with NaN but not a good code
+%rawData(any(isnan(rawData),2),:)=[];
 %asignColumn name 
 rawDataN = dataset({rawData,'dateN',...
      'SeqStepNum',...
@@ -263,7 +305,9 @@ else
     power = 'dc';
   end  
   tStr = strcat(reactor,'-',runDate,'-',gas,'-',power);    
-  [T1,pdata] = writeOut(rawDataN,T1,hpExpFit,tempExpFit,writeOutput,figname,tStr);
+  ff(ai) = figure;
+  [T1,pdata] = writeOut(rawDataN,T1,hpExpFit,tempExpFit,writeOutput,figname,tStr,ff(ai));
+  export_fig(ff(ai),figname,'-append');
   if true
   [tt,icT,hpdrop,v12,dqp,v122,hv,res,hva,hvb,hqpa,hqpb,resa,resb,hv0,hqp0,res0,ql,...
      hqp0sse,res0sse,icTsse] = plotSummary(pdata,isDC,efficiency);
@@ -281,13 +325,8 @@ else
         title(tqStr);  
         x=[0,max(dqp(:,qi,i))];
         y=[0,res0(qi,i)*x(2)]; 
-        ColRow=rem(i,m);
-        if ColRow == 0
-           ColRow = m;
-        end
-        Col = ColOrd(ColRow,:);
-        plot(dqp(:,qi,i),v122(:,qi,i),'-x','Color',Col);
-        plot(x,y,'--','Color',Col);       
+        plot(dqp(:,qi,i),v122(:,qi,i),'-x','Color',colors(i,:));
+        plot(x,y,'--','Color',colors(i,:));       
         l2{2*(i-1)+1}=strcat(power,'-',gas,'-CoreTemp=',num2str(tt(i))); 
         l2{2*i}=strcat(power,'-',gas,'-CoreTemp=',num2str(tt(i))); 
       end
@@ -306,13 +345,8 @@ else
         title(tqStr);  
         x=[0,max(dqp(:,qi,i))];
         y=[0,hqp0(qi,i)*x(2)];
-        ColRow=rem(i,m);
-        if ColRow == 0
-           ColRow = m;
-        end
-        Col = ColOrd(ColRow,:);
-        plot(dqp(:,qi,i),hpdrop(:,qi,i),'-x','Color',Col);
-        plot(x,y,'--','Color',Col);     
+        plot(dqp(:,qi,i),hpdrop(:,qi,i),'-x','Color',colors(i,:));
+        plot(x,y,'--','Color',colors(i,:));     
         l2{2*(i-1)+1}=strcat(power,'-',gas,'-CoreTemp=',num2str(tt(i))); 
         l2{2*i}=strcat(power,'-',gas,'-CoreTemp=',num2str(tt(i))); 
       end
@@ -328,13 +362,9 @@ else
     grid on;
     grid minor;
     hold on;
-    ColRow=rem(ai,m);
-    if ColRow == 0
-      ColRow = m;
-    end
-    Col = ColOrd(ColRow,:);
+    
     %errorbar(dt1,OutT1,OutT1Error,'green','linewidth',1.5);
-    errorbar(tt(:),res0(qi,:),res0sse(qi,:),'-o','Color',Col);
+    errorbar(tt(:),res0(qi,:),res0sse(qi,:),'Color',colors(ai,:));
     %h1=plot(tt(:),res0(qi,:),'-o','Color',Col);
     xlim([200 400]);
     ytemp = strcat('V^2 / P');
@@ -343,7 +373,7 @@ else
     grid on;
     grid minor;
     hold on;
-    errorbar(tt(:),hqp0(qi,:),hqp0sse(qi,:),'-o','Color',Col);
+    errorbar(tt(:),hqp0(qi,:),hqp0sse(qi,:),'Color',colors(ai,:));
     %h3=plot(tt(:),hqp0(qi,:),'-o','Color',Col);
     xlim([200 400]);
     ytemp = strcat('HpDrop / P');
@@ -353,7 +383,7 @@ else
     grid minor;
     hold on;
     %h4=plot(tt(:),icT(qi,:),'-o','Color',Col);
-    errorbar(tt(:),icT(qi,:),icTsse(qi,:),'-o','Color',Col);
+    errorbar(tt(:),icT(qi,:),icTsse(qi,:),'Color',colors(ai,:));
     xlim([200 400]);
     ytemp = strcat('Inner / core Temp');
     ylabel(ytemp);

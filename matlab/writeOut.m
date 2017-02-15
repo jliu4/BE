@@ -1,4 +1,4 @@
-function [T1,pdata] = writeOut(data, T1, hpExpFit, tempExpFit,writeOutput,figname,tStr)
+function [T1,pdata] = writeOut(data,T1,hpExpFit,tempExpFit,writeOutput,figname,tStr,ff)
 dataSize = size(data,1);
 ctFit = [];
 itFit = [];
@@ -15,6 +15,7 @@ else
   trim1 = 0;
 end    
 seq2 = 0;
+
 while (i < dataSize-1)  
   i = i+1;
   if (abs(data.SeqStepNum(i+1) - data.SeqStepNum(i)) >= 1 || i == dataSize-1 ) %sequence changed or last sequence
@@ -54,7 +55,8 @@ while (i < dataSize-1)
         %JLIU TODO hard code here
       %take out 15% data set from beginning. 
       i11 = double(int16(0.1*(i2-i1)));
-      hpFit(seq2,1:4) = expFit(data.HeaterPower(i1+i11:i2),figname,hp(seq2),coreT(seq2),tStr);      
+      
+      hpFit(seq2,1:4) = expFit(data.HeaterPower(i1+i11:i2),figname,hp(seq2),coreT(seq2),tStr,seq2,ff);      
       p1(seq2)=hpFit(seq2,1);
       p2(seq2)=hpFit(seq2,2);
       p3(seq2)=hpFit(seq2,3);
