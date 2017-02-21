@@ -40,9 +40,9 @@ for ti = 1:numel(uniqCT)
             ql(qi)=uniqQL(qi);
           end  
           qtdata = qtdata(int16(qtdata(:,4)) == uniqQL(qi),:); 
-          if size(qtdata,1) < 5 %hike here
-            qtdata(5,:)=qtdata(end-1,:);
-          end   
+          %if size(qtdata,1) < 5 %hike here
+          %  qtdata(5,:)=qtdata(end-1,:);
+          %end   
           %only take the data with q-pulse, assume two ends of each
           %temperature has no q-pulse
           %qtdata = tdata(2:end-1,:); 

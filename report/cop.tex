@@ -4,65 +4,47 @@
 \setcounter{MaxMatrixCols}{30}%
 \usepackage{amsfonts}%
 \usepackage{amssymb}%
-\title{IPB Reactor Calorimetry Coefficient of Performance (COP) Note}
+\title{IPB Reactor Observation Note}
 \author{Jin Liu}
 \date{January 25, 2017}
+\date{February 17, 2017}
 \setlength\parindent{0pt}
 \begin{document}
 \maketitle
 
 Definition\\
-\\
-$P:$ power deposit to the core either by $DC$ or $Q$-pulse in watts, since there is no precise measurement of power be deposited to the core in $Q$-pulse, we assume $P$ is Q Pi Filter power ($Pi$) minus termination thermal power ($term$) deposited by the heatsink water stream divided by a efficiency, and efficiency is measured by passing core.\\
-\begin{equation}
-P = Pi - term/efficiency \label{1}%
-\end{equation}
 
 $Hpdrop:$ \ heater power drop after power deposit to the core in watts\\
 
-$V_{1}:$ voltage measured at the core entrance when $Q$-pulse\\
+$V_{1}:$ voltage RMS measured at the core entrance when $Q$-pulse\\
 
-$V_{2:}$ voltage measured at the core exit when $Q$-pulse\\
+$V_{2}:$ voltage RMS measured at the core exit when $Q$-pulse\\
+
+$V_{3}:$ voltage RMS measured across the RF termination resistor at the end of the transmission line. The termination resistors are mounted in a copper block that is water cooled . It has constant RF impedance in the freq range we are operating in. With this method we can measure the pulse current directly by measuring $V_{3}$ and knowing the $R_{term}$ resistance, $I = V_{3} / R_{term}$ \\
+
+$P:$ power deposit to the core either by $DC$ or $Q$-pulse in watts\\
+in $Q$-pulse 
+
+\begin{equation}
+P=\frac{(V_{1}-V_{2})*V_{3}}{R_{term}} \label{1}%
+\end{equation}
+%
 
 $V^{2}=(V_{1}-V_{2})^{2}$ when $Q$-pulse or voltage drop when $DC$ \\
 
-COP Estimation\\
-\begin{equation}
-C=\frac{Hpdrop}{V^{2}}[watts/volts^{2}], [watts/volts^{2}] = 1/[ohms] \label{2}%
-\end{equation}
-%
-Where C is constant at any given core temperature of power DC or $Q$-pulse, gas hydrogen or helium.\\ 
- 
+
+Observation\\
+
 \begin{equation}
 R=\frac{V^{2}}{P}\ [volts^{2}/watts], [volts^{2}/watts]=[ohms]\label{3}%
 \end{equation}
 %
-Where R is constant at any given core temperature for power DC.\\
+Where R is constant at any given core temperature for power DC or $Q$-pulse, gas helium or hydrogen.\\
 \begin{equation}
 M=\frac{Hpdrop}{P}\ \label{4}%
 \end{equation}
 %
-Where M is constant of power DC, and estimated constant of $Q$-pulse at any given core temperature\\
+Where M is constant at any given core temperature for power DC or $Q$-pulse, gas helium or hydrogen.\\
 
-\begin{equation}
-cop=\frac{Hpdrop_{^{Q}}(P)-Hpdrop_{^{DC}}(P)}{P}\label{4}%
-\end{equation}
 
-For any given $V_{DC}^{2}$,
-\begin{align}
-cop & =\frac{Hpdrop_{^{Q}}-Hpdrop_{^{DC}}}{P}=\frac{C_{Q}V_{DC}^{2}%
--C_{DC}V_{DC}^{2}}{P_{DC}}\nonumber\\
-& =\frac{C_{Q}V_{DC}^{2}-C_{DC}V_{DC}^{2}}{V_{DC}^{2}/R_{DC}}=\left(
-C_{Q}-C_{DC}\right)  R_{DC}\label{5}
-\end{align}
-
-For any given $P$,
-\begin{align}
-cop & =\frac{Hpdrop_{^{Q}}-Hpdrop_{^{DC}}}{P}=M_{Q}-M_{DC}\label{6}
-\end{align}\\
-
-Assume helium (he) generates no extra heater vs. hydrogen generates extra heater 
-\begin{align}
-cop & =\frac{Hpdrop_{^{h2Q}}-Hpdrop_{^{heQ}}}{P}=M_{h2Q}-M_{heQ}\label{7}
-\end{align}
 \end{document}

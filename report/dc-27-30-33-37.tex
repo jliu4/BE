@@ -1,0 +1,54 @@
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage{amsmath}%
+\setcounter{MaxMatrixCols}{30}%
+\usepackage{amsfonts}%
+\usepackage{amssymb}%
+\title{IPB Reactor DC Runs Observation}
+\author{Jin Liu}
+\date{February 16, 2017}
+\setlength\parindent{0pt}
+\begin{document}
+\maketitle
+
+Definition\\
+\\
+$P:$ power deposit to the core by $DC$ in watts
+
+$HpDrop:$ heater power drop after DC power deposit to the core in watts\\
+
+$V^{2};$ voltage drop when applied $DC$ power\\
+
+We have analyzed the data of DC runs gas helium (he) vs. hydrogen (h2) on cores 30 on ipb1, 27 and 33 on sri-ipb2 and 37 on ipb3. \\
+\\
+core 27, 30 and 33 are similar, and core 37 is made from a newer version, which has copper on two sides about 2.75" from the end of 1.25", so the power applied from Q-pulse or DC will be more likely to the heater power from the core, also core 37 materials applied to core surface are different than core 27, 30 and 33. \\
+
+The resistance R is defined as below:
+
+\begin{equation}
+R=\frac{V^{2}}{P}\ [volts^{2}/watts], [volts^{2}/watts]=[ohms]\label{1}%
+\end{equation}
+
+The parameter M is defined as below:
+\begin{equation}
+M=\frac{Hpdrop}{P}\ \label{4}%
+\end{equation}
+
+The R and M are constant for any given core temperature. See attached plots $V^2$ vs. P[w] and HpDrop[w] vs. P[w].
+
+The ratio of R he vs. h2 is in the Table 1:
+\begin{table}
+[h]
+\centering
+\caption{Core and Resistance Ratio (he/h2)}
+\begin{tabular}{|c|c|}
+\hline
+core & R(h2)/R(he)\\ \hline
+30 & 0.72\\  \hline
+27 or 33 & 0.72\\  \hline
+37 & 0.60\\  \hline
+\end{tabular}
+\end{table}
+
+
+\end{document}
