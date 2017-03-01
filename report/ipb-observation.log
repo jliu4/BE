@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9) (preloaded format=pdflatex 2016.9.27)  17 FEB 2017 13:48
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9) (preloaded format=pdflatex 2016.9.27)  27 FEB 2017 14:25
 entering extended mode
 **./ipb-observation.tex
 (ipb-observation.tex
@@ -121,7 +121,14 @@ LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
 ("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\amssymb.sty"
 Package: amssymb 2013/01/14 v3.01 AMS font symbols
 )
-No file ipb-observation.aux.
+(ipb-observation.aux
+
+LaTeX Warning: Label `4' multiply defined.
+
+
+LaTeX Warning: Label `4' multiply defined.
+
+)
 \openout1 = `ipb-observation.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 12.
@@ -136,7 +143,7 @@ LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 12.
 LaTeX Font Info:    ... okay on input line 12.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 12.
 LaTeX Font Info:    ... okay on input line 12.
-("C:\Program Files\MiKTeX 2.9\tex\context\base\supp-pdf.mkii"
+ ("C:\Program Files\MiKTeX 2.9\tex\context\base\supp-pdf.mkii"
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count100
 \scratchdimen=\dimen114
@@ -248,17 +255,37 @@ Underfull \hbox (badness 10000) in paragraph at lines 45--48
 
  []
 
+
+Underfull \hbox (badness 10000) in paragraph at lines 49--52
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 49--52
+
+ []
+
 [1
 
-{C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map}] (ipb-observation.aux)
+{C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map}]
+Underfull \hbox (badness 10000) in paragraph at lines 53--54
 
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 57--59
+
+ []
+
+[2] (ipb-observation.aux)
+
+LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 2380 strings out of 493335
- 31006 string characters out of 3136680
- 91231 words of memory out of 3000000
+ 2382 strings out of 493335
+ 31044 string characters out of 3136680
+ 92294 words of memory out of 3000000
  5887 multiletter control sequences out of 15000+200000
  10283 words of font info for 41 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -270,9 +297,9 @@ es/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files/MiKTeX
 s/type1/public/amsfonts/cm/cmr17.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/p
 ublic/amsfonts/cm/cmr7.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsf
 onts/cm/cmsy10.pfb>
-Output written on ipb-observation.pdf (1 page, 79217 bytes).
+Output written on ipb-observation.pdf (2 pages, 81910 bytes).
 PDF statistics:
- 34 PDF objects out of 1000 (max. 8388607)
+ 37 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 
