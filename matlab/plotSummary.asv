@@ -4,7 +4,7 @@ function [tt,icT,hpdrop,v12,dqp,v122,hv,res,hva,hvb,hqpa,hqpb,resa,resb,hv0,hqp0
 %asignColumn name 
 
 uniqCT = unique(int16(pdata(:,1)));
-uniqCT(uniqCT>403)=[];
+uniqCT(uniqCT>)=[];
 uniqCT(uniqCT<198)=[];
 %assume for each run all temperatures have the same q-pulse length
 uniqQL = unique(int16(pdata(:,4)));

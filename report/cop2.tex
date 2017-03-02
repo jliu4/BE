@@ -4,10 +4,10 @@
 \setcounter{MaxMatrixCols}{30}%
 \usepackage{amsfonts}%
 \usepackage{amssymb}%
-\title{IPB Reactor Observation Note}
-\author{Jin Liu}
-\date{January 25, 2017}
-\date{February 17, 2017}
+\title{IPB Reactor COP Calculation}
+%\author{Jin Liu}
+%\date{January 25, 2017}
+%\date{February 17, 2017}
 \setlength\parindent{0pt}
 \begin{document}
 \maketitle
@@ -33,53 +33,60 @@ P=\frac{(V_{1}-V_{2})*V_{3}}{R_{term}} \label{1}%
 $V^{2}=(V_{1}-V_{2})^{2}$ when $Q$-pulse or voltage drop when $DC$ \\
 
 
-Observation\\
-
 \begin{equation}
 R=\frac{V^{2}}{P}\ [volts^{2}/watts], [volts^{2}/watts]=[ohms]\label{3}%
 \end{equation}
 %
-Where R is constant at any given core temperature for power DC or $Q$-pulse, gas helium or hydrogen.\\
+Where R is the resistance of the core at a given core temperature.\\
 \begin{equation}
 M=\frac{Hpdrop}{P}\ \label{4}%
 \end{equation}
 %
-Where M is constant at any given core temperature for power DC or $Q$-pulse, gas helium or hydrogen.\\
+Where M is the ratio of Hpdrop vs. power DC or power $Q$-pulse at a given core temperature. \\
+Note:
+$M$ vs. temperature is an approximately second order correlation.\\
+\\
 COP Estimation\\
 \begin{figure}
 [h]
 \begin{center}
-\includegraphics[scale=0.5]{jin1.jpg} 
+\includegraphics[scale=0.5]{jin2.JPG} 
 \caption{Hpdrop vs. P}%
 \end{center}
 \end{figure}
+
 At a given core temperature\\
 
-Method 1:
-\begin{equation}
-cop=1+\frac{Hpdrop(Q)-Hpdrop(DC)}{P}= 1+M_{Q}-M_{DC}\ \label{4}%
-\end{equation}
-Method 2:\\
+From the Figure 1
 
-Assuming $LENR = P_{2}-P_{1}$ see the Figure 1. 
+$P_{1}$ is stimulated power from DC or $Q$-pulse
+
+$P_{2}-P_{1}$ is stimulated power gain or LENR (Low Energy Nuclear Reaction) Power \\
+
+$COP$ is Coefficient Of Performance\\
 \begin{equation}
-cop=1+\frac{LENR}{P_{1}}=1+\frac{Hpdrop(Q)-Hpdrop(DC)}{M_{DC}*P_{1}}= \frac{M_{Q}}{M_{DC}} \ \label{4}%
+P_{2} = \frac{Hpdrop(Q)}{M_{calibration}}
 \end{equation}
-\\
-COP calculation of ipb1-30b and sri-ipb2-27b based on the method 2, normalized at the temperature 200c, which means at 200c COP = 1, and x axis is the temperature in below Figure 2 and 3. 
+
+\begin{equation}
+COP=1+\frac{P_{2}-P_{1}}{P_{1}}=\frac{P_{2}}{P_{1}}=\frac{Hpdrop(Q)}{M_{calibration}*P_{1}} \label{4}%
+\end{equation}
+
+
+COP calculation of ipb1-30b and sri-ipb2-27b are in Figure 2 and Figure 3.
 \begin{figure}
 [h]
 %\begin{top}
-\includegraphics[scale=1.0]{ipb1-30b-cop.jpg} 
-\caption{cop vs. temperature of ipb1-30b}%
+\includegraphics[scale=1.0]{ipb-30b.png} 
+\caption{COP vs. temperature of ipb1-30b}%
 %\end{top}
 \end{figure}
 
 \begin{figure}
 %[h]
 %\begin{bottom}
-\includegraphics[scale=1.0]{sri-ipb2-27b-cop.png} 
-\caption{cop vs. temperature of sri-ipb2-27b}%
+\includegraphics[scale=1.0]{sri-ipb2-27b.png} 
+\caption{COP vs. temperature of sri-ipb2-27b}%
 %\end{bottom}
 \end{figure} 
 
