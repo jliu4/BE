@@ -92,7 +92,7 @@ aSetMap = containers.Map(...
   });
 %perferred order dc-he,dc-h2,q-he,q-h2
 descSet = keys(aSetMap);
-aSetdesc = char(descSet(8));
+aSetdesc = char(descSet(3));
 aSet = aSetMap(aSetdesc);
 figname = strcat(outputPath,aSetdesc,'.pdf');
 delete(figname);
@@ -127,7 +127,7 @@ case {'ipb1-30';'ipb1-13'}
 case {'sri-ipb2-27';'sri-ipb2-33'}
   rtFolder='SRI-IPB2';  
 case {'ipb3-32';'ipb3-37'}
-  rtFolder='IPB3_DATA';     
+  rtFolder='\IPB3_DATA\';     
 case 'google'
   rtFolder='\BECteam\Jin\google';
 end %switch
