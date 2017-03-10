@@ -19,12 +19,15 @@ for ti = 1:numel(uniqCT)
   if size(tdata,1) > 4 %&& tdata(1,16) < 1 && tdata(end,16) < 1 
     i = i + 1;
     tt(i) = uniqCT(ti);
-    hp0 = max(tdata(1,6),tdata(end,6)); %sometimes the first row is not converged yet
+    %hp0 = min(tdata(1,6),tdata(end,6)); %sometimes the first row is not converged yet
     %hp0 = tdata(end,6); %sometimes the first row is not converged yet
+    %assuming first a few points end is better and 
     if tt(i) >= 300
       %TODO JLIU hacked here  
       hp0 = tdata(1,6);
-    end
+    else
+      hp0 = tdata(end,6);
+    end  
     qp0 = tdata(1,10);
     termP0 = tdata(1,11);
     pcbP0 = tdata(1,12);
