@@ -12,8 +12,10 @@ model_type = run_data.model.type;
 
 % check if starting parameters were sent in the argument list
 if exist('parameter_argin', 'var');
+  % identify the number of parameters to assign
+  nparam = min(numel(parameter_argin),numel(parameters));
   % load in the fixed parameters
-  for iParam = 1:numel(parameters)
+  for iParam = 1:nparam
     if isstruct(parameter_argin)
       pfields = fieldnames(parameter_argin);
       for kpf = 1:length(pfields)
@@ -31,11 +33,10 @@ fprintf('Analyzing dataset of length %d points.\n', npoints);
 
 %% Construct the starting grey box model
 if strcmp(model_class, 'idnlgrey')
-  mGrey_start = idnlgrey(model_name, getOrder(var_labels), ...
-                             parameters);
-  for istate=1:numel(mGrey_start.InitialStates) %loop over the the number of states
-  mGrey_start.InitialStates(istate).Fixed = 0; % do not fix the initial conditions of any state
-  end  
+  mGrey_start = idnlgrey(model_name, getOrder(var_labels), parameters);
+%   for istate=1:numel(mGrey_start.InitialStates) %loop over the the number of states
+%   mGrey_start.InitialStates(istate).Fixed = 0; % do not fix the initial conditions of any state
+%   end  
 elseif strcmp(model_class, 'idgrey') 
   if isstruct (parameters)
     param = paramStruct2Cell(parameters);
@@ -70,28 +71,39 @@ run_data.fit.range = range_fit;
 % fit (if needed) and compare the model
 if strcmp(run_data.model.action, 'predict')
   mGrey = mGrey_start;
-  [~, ~, x0] = compare(data_input(range_fit), mGrey);
+  if isfield(run_data.fit, 'x0') && ...
+    numel(mGrey.InitialStates) == numel(run_data.fit.x0)
+    x0 = run_data.fit.x0;
+  else
+    [~, ~, x0] = compare(data_input(range_fit), mGrey);
+  end
 else
   [mGrey, x0] = ...
     fitModel(data_input, mGrey_start, parameters, run_data);
 end
 figure;
+% Compare measurement to prediction, plot and report fit percentage
 cmp_opt = compareOptions('InitialCondition', x0);
-compare(data_input(range_fit), mGrey, cmp_opt, 'b-.'); % plot the comparison
+compare(data_input(range_fit), mGrey, cmp_opt, 'b-.'); % plot
+if strcmp(run_data.model.action, 'predict') % report fit
+  [~, fit, ~] = compare(data_input(range_fit), mGrey, cmp_opt, 'b-.');
+  for kfit = 1:length(fit)
+    var = mGrey.InitialStates(kfit).Name;
+    fitval = fit(kfit);
+    fprintf('Fit Percentage %.2f%% for %s\n', fitval, var)
+  end
+end
 run_data.model.model = mGrey;
 
-% display the parameters
-range = (min(run_data.core_temp.data):max(run_data.core_temp.data))';
-PlotModelParams(mGrey, range)
-
-%% Plot the model fit to the temperature with 99% (2 sigma) confidence interval
+%% Compute the internal states of the system
 simOpt = simOptions('InitialCondition', x0);
-[ysim_obs, ~, x] = sim(mGrey, data_input(range_fit), simOpt);
-ysim_obs = AddModeled(ysim_obs);
-run_data = plotOutputWithConfidenceIntervals...
-    ( {data_input(range_fit), ysim_obs}, {[], []}, run_data );
+[~, ~, x] = sim(mGrey, data_input(range_fit), simOpt);
 run_data.x = x;
 run_data.data_input = data_input;
+
+%% display the parameters
+PlotModelParams(mGrey, run_data)
+PlotModelPowerScaling(mGrey, run_data)
 
 %% calculate energetics
 % define energy input quantity required before COP calculation is meaningful 

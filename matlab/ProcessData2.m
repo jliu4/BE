@@ -5,6 +5,7 @@ addpath('C:\jinwork\BE\matlab\addaxis5')
 addpath('C:\jinwork\BE\matlab\export_fig\altmany-export_fig-2763b78')
 dataPath = 'C:\Users\Owner\Dropbox (BEC)\';
 outputPath ='C:\jinwork\BEC\tmp\';
+googleModelPath = 'C:\jinwork\BE\matlab\df-google\matfiles\';
 %[1 1 0]	Yellow
 %[0 0 0]	Black
 %[0 0 1]	Blue
@@ -40,14 +41,14 @@ colors=[0 0 0
     128/255 1 128/255
     0 240/255 120/255
     128/255 64/255 128/255
-    rand rand rand
-    rand rand rand
-    rand rand rand];
+    1 0.3333   0
+    1 0.6667   0
+    1 1    0.5];
 %Control parameters
-qPlot = true; dcPlot = true; debugPlot = false; tempExpFit = false; hpExpFit = true; %has to set true TODO JLIU
+tsPlot = true; googleCopPlot = true; debugPlot = false; tsMultiPlot = false; tempExpFit = false; hpExpFit = true;  %has to set true TODO JLIU
 postProcess = true; writeOutput = true; plotOutput = true; detailPlot = true;findDuplicates = false;
 %plot bounds setting
-startOffset = 0;endOffset = 0;hp1 = 0;hp2 = 60; qp1 = 5;qp2 = 55;cqp1 = 0;cqp2 = 12;
+startOffset = 0;endOffset = 0;hp1 = 0;hp2 = 50; qp1 = 5;qp2 = 55;cqp1 = 0;cqp2 = 12;
 %read data in
 ipb1_13 = readtable('ipb1-13.xlsx');
 ipb1_29 = readtable('ipb1-29.xlsx');
@@ -63,16 +64,16 @@ ipb3_37 = readtable('ipb3-37.xlsx');
 %[ipb1_30(4:5,:);ipb1_30(17,:);ipb1_30(22,:);ipb3_32(2,:);ipb3_32(5:6,:);ipb3_37(3,:);ipb3_37(8:9,:);sri_ipb2_27(4:5,:);sri_ipb2_33(1,:)],...
 %[ipb3_37(3,:);ipb3_37(8:10,:);ipb3_37(4:6,:);ipb3_37(11,:)],...
 aSetMap = containers.Map(...
-{'10-ipb1-30b-he-h2-dc-q-5',...
- '13-ipb1-30b-h2-dc-q-2',...
- '11-ipb1-13-h2-q',...
- '12-ipb1-40-he-q',...
- '20-sri-ipb2-27b-h2-dc-q',...
- '21-sri-ipb2-33b-h2-dc-q',...
- '30-ipb3-32b-he-h2-dc-q',...
- '31-ipb3-37b-he-dc-q',...
- '5-all-dcs',...
- '7-ipb1-30b-sri-ipb2-he-h2-dc-q',...
+{'10-ipb1-30-032217',...
+ '11-ipb1-30',...
+ '12-ipb1-13',...
+ '13-ipb1-40-032117',...
+ '20-sri-ipb2-27-032217',...
+ '21-sri-ipb2-33-032417',...
+ '30-ipb3-32',...
+ '31-ipb3-37-032317',...
+ '5-all-dcs-032317',...
+ '7-ipb1-30-sri-ipb2-27',...
  '8-dc-ipb1-2',...
  '9-ipb1',...
  '91-ipb1-29',...
@@ -81,21 +82,20 @@ aSetMap = containers.Map(...
  {[ipb1_30(5,:);ipb1_30(22,:);ipb1_30(14,:);ipb1_30(26:27,:)],...
   [ipb1_30(22,:);ipb1_30(26,:)],...
   ipb1_13(1:2,:),...
-  ipb1_40(1,:),...
+  [ipb1_40(1:2,:);ipb1_40(5,:)],...
   [sri_ipb2_27(4:6,:);sri_ipb2_27(9:11,:)],...
-  [sri_ipb2_33(1:4,:)],...
+  [sri_ipb2_33(1,:);sri_ipb2_33(9:10,:)],...
   [ipb3_32(2,:);ipb3_32(5:6,:);ipb3_32(9:10,:)],...
-  [ipb3_37(8,:);ipb3_37(10,:);ipb3_37(6,:);ipb3_37(15:16,:)],...
-  [ipb1_30(5,:);ipb1_30(22,:);ipb3_37(8,:);ipb3_37(10,:);sri_ipb2_33(1,:);sri_ipb2_27(4,:);ipb1_13(1,:)],...
+  [ipb3_37(8,:);ipb3_37(10,:);ipb3_37(6,:);ipb3_37(21:22,:)],...
+  [ipb1_30(5,:);ipb1_30(22,:);ipb3_37(8,:);ipb3_37(10,:);sri_ipb2_33(1,:);sri_ipb2_33(10,:);sri_ipb2_27(4,:);ipb1_40(5,:)],...
   [ipb1_30(4,:);ipb1_30(22,:);sri_ipb2_27(4,:);ipb1_30(10,:);ipb1_30(14,:);sri_ipb2_27(9,:);sri_ipb2_27(10,:)],...
   [ipb1_30(4:5,:);sri_ipb2_27(4:5,:)],...
   [ipb1_30(5,:);ipb1_30(22,:);ipb1_30(14,:);ipb1_30(26,:)],...
   ipb1_29(3:4,:),...
   ipb3_37(13,:)
   });
-%perferred order dc-he,dc-h2,q-he,q-h2
 descSet = keys(aSetMap);
-aSetdesc = char(descSet(5));
+aSetdesc = char(descSet(6));
 aSet = aSetMap(aSetdesc);
 figname = strcat(outputPath,aSetdesc,'.pdf');
 delete(figname);
@@ -106,7 +106,10 @@ T1=cell2table(cell(0,24),...
 'p1','p2','p3','p4','hp_','seq','steps','date'});
 T2 = cell2table(cell(0,14),'VariableNames',{'coreT','icT','icTsse','R','Rsse','C','M','Msse','Ra','Rb','Ca','Cb','Ma','Mb'});
 pos = [10 10 1000 800];
-f1=figure('Position',pos);
+fsummary=figure('Position',pos);
+if tsMultiPlot
+  ftsMulitplot = figure('Position',pos);
+end
 %the summary plot count number
 fcount = 0;
 for ai = 1:size(aSet,1)
@@ -122,11 +125,10 @@ for ai = 1:size(aSet,1)
  efficiency = aSet.efficiency(ai);
  termRes = aSet.termRes(ai);
  version = aSet.version(ai);
+ googleModel = aSet.googleModel(ai);
 switch (reactor)
-case 'ipb1-29'  
+case {'ipb1-29'; 'ipb1-30';'ipb1-13';'ipb1-40'}
   rtFolder='ISOPERIBOLIC_DATA';   
-case {'ipb1-30';'ipb1-13';'ipb1-40'}
-  rtFolder='ISOPERIBOLIC_DATA';      
 case {'sri-ipb2-27';'sri-ipb2-33'}
   rtFolder='SRI-IPB2';  
 case {'ipb3-32';'ipb3-37'}
@@ -255,10 +257,6 @@ else %we added v3
      PressureSensorPSI,...
      RoomTemperature);
 end
-%find duplicated
-if findDuplicates
-  duplicates(coreTemp);
-end
 %show startOffset and endOffset
 DateTime(1+int16(startOffset*360))
 DateTime(end - int16(endOffset*360))
@@ -302,22 +300,27 @@ rawDataN = dataset({rawData,'dateN',...
      'RoomTemperature'});
      %'HydrogenValves'}); 
 dt = datetime(rawDataN.dateN, 'ConvertFrom', 'datenum') ;
-if isDC
-  if dcPlot
-    plotDC(dt,hp1,hp2,rawDataN,plotTitle,pos,figname);   
-  end
-else  
-  if qPlot
-    plotQ(dt,hp1,hp2,qp1,qp2,cqp1,cqp2,rawDataN,plotTitle,pos,figname);  
-  end
-  if debugPlot
-    plotQdebug(dt,rawDataN,plotTitle,pos,figname);  
-  end    
+cop = 0;
+if googleCopPlot && strcmp(googleModel,'No') == 0
+  tmp = char(strcat(googleModelPath, reactor,'\',googleModel));
+  cop = doGoogleModel(rawDataN,tmp,isDC);
+end  
+if tsPlot
+  plotTS(dt,hp1,hp2,cqp1,cqp2,rawDataN,plotTitle,pos,figname,cop,isDC);
+end 
+if isDC == false && debugPlot
+  plotQdebug(dt,rawDataN,plotTitle,pos,figname);  
 end    
+if isDC == false && tsMultiPlot
+  figure(ftsMulitplot);
+  grid on;
+  grid minor;
+  hold on
+  plotMultiTS(dt,hp1,hp2,cqp1,cqp2,rawDataN,plotTitle);
+end
 if ~postProcess
-    continue;
+  continue;
 else   
-
   tStr = strcat(reactor,'-',runDate,'-',gas,'-',power);    
   %ff(ai) = figure('Position',pos);
   ff(ai) = 0;
@@ -335,13 +338,18 @@ else
       grid minor;
       hold on
       for i = 1:size(tt,2) 
-        tqStr = strcat(tStr,'-',num2str(ql(qi)),'-ns');
+        %tqStr = strcat(tStr,'-',num2str(ql(qi)),'-ns');
+        tqStr = strcat(tStr);
         ylabel('V^2');
         xlabel('P[w]'); 
         title(tqStr);  
         x=[0,max(dqp(:,qi,i))];
-        y=[0,res0(qi,i)*x(2)]; 
-        plot(dqp(:,qi,i),v122(:,qi,i),'-x','Color',colors(i,:));
+        y=[0,res0(qi,i)*x(2)];
+        x1 = [0 dqp(:,qi,i)'];
+        y1 = [resb(qi,i) v122(:,qi,i)'];
+        %plot(dqp(:,qi,i),v122(:,qi,i),'-x','Color',colors(i,:));
+        plot(x1,y1,'-x','Color',colors(i,:));
+        %ylim([0 7]);
         plot(x,y,'--','Color',colors(i,:));       
         l2{2*(i-1)+1}=strcat(power,'-',gas,'-CoreTemp=',num2str(tt(i))); 
         l2{2*i}=strcat(power,'-',gas,'-CoreTemp=',num2str(tt(i))); 
@@ -355,13 +363,19 @@ else
       grid minor;
       hold on
       for i = 1:size(tt,2) 
-        tqStr = strcat(tStr,'-',num2str(ql(qi)),'-ns');
+        %tqStr = strcat(tStr,'-',num2str(ql(qi)),'-ns');
+        tqStr = strcat(tStr);
         ylabel('HpDrop[w]');
         xlabel('P[w]'); 
         title(tqStr);  
         x=[0,max(dqp(:,qi,i))];
         y=[0,hqp0(qi,i)*x(2)];
-        plot(dqp(:,qi,i),hpdrop(:,qi,i),'-x','Color',colors(i,:));
+        %add one more point
+        x1 = [0 dqp(:,qi,i)'];
+        y1 = [hqpb(qi,i) hpdrop(:,qi,i)'];
+        %plot(dqp(:,qi,i),hpdrop(:,qi,i),'-x','Color',colors(i,:));
+        plot(x1,y1,'-x','Color',colors(i,:));
+        %ylim([0 7]);
         plot(x,y,'--','Color',colors(i,:));     
         l2{2*(i-1)+1}=strcat(power,'-',gas,'-CoreTemp=',num2str(tt(i))); 
         l2{2*i}=strcat(power,'-',gas,'-CoreTemp=',num2str(tt(i))); 
@@ -370,10 +384,11 @@ else
       export_fig(f(qi),figname,'-append');
     end  
   end  
-  figure(f1);
+  figure(fsummary);
   for qi = 1:size(ql,1) 
     fcount = fcount + 1; 
-    tqStr = strcat(tStr,'-',num2str(ql(qi)),'-ns');
+   % tqStr = strcat(tStr,'-',num2str(ql(qi)),'-ns');
+    tqStr = strcat(tStr);
     subplot(1,3,1);
     grid on;
     grid minor;
@@ -413,11 +428,15 @@ else
  end
 end
 end
+if tsMultiPlot
+  export_fig(ftsMulitplot,figname,'-append');
+end
 if postProcess
   legend(l1,'Location','SouthOutside');
   %legend(l1,'Location','NorthOutside','Orientation','horizontal');
-  export_fig(f1,figname,'-append');
+  export_fig(fsummary,figname,'-append');
   writetable(T1,filen1);
   writetable(T2,filen2);
 end
+
 

@@ -72,7 +72,7 @@ end
 
 %% Plot raw temperature and power data
 % temperature and power
-run_data.nStart = find(run_data.Hours.data > 0, 1);
+run_data.nStart = find(run_data.Hours.data >= 0, 1);
 run_data.nStop  = length(run_data.Hours.data);
 if isfield(run_data,'core_Q_power')
   q_field = 'core_Q_power';

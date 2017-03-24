@@ -97,7 +97,7 @@ if two_state_2_a_node_inputs
 end
 
 if lpf
-  tau_a = 10;
+  tau_a = 500;
   parameters = [parameters, ...
                    struct('Name', 'tau_a', 'Unit', 'sec', 'Value',  tau_a, ...
                        'Minimum', -inf, 'Maximum', inf, 'Fixed', false) 

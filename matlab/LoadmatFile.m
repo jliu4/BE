@@ -1,8 +1,5 @@
 clear; close all; clc
 addpath('C:\jinwork\BE\matlab')
-%addpath('C:\jinwork\BE\matlab\df-google\ipb1-30')
-%addpath('C:\jinwork\BE\matlab\df-google\sri-ipb2-33b')
-%addpath('C:\jinwork\BE\matlab\df-google\sri-ipb2-27b')
 
 matfileFolder='C:\jinwork\BE\matlab\df-google\matfiles';
 matfileSub = genpath(matfileFolder);
