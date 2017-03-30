@@ -1,11 +1,11 @@
 function [tt,icT,hpdrop,v12,dqp,v122,hv,res,hva,hvb,hqpa,hqpb,resa,resb,hv0,hqp0,res0,ql,...
-    hqp0sse,res0sse,icTsse] = plotSummary(pdata,isDC,efficiency)
+    hqp0sse,res0sse,icTsse] = plotSummary(pdata,isDC,efficiency,temp1,temp2)
 %pdata = horzcat(coreT', inT', outT', ql', qf', hp', v1', v2', v3',qPow', termP', pcbP', qSP', qSV', h2',coreQPow');
 %asignColumn name 
 
 uniqCT = unique(int16(pdata(:,1)));
-uniqCT(uniqCT>403)=[];
-uniqCT(uniqCT<198)=[];
+uniqCT(uniqCT>(temp2+3))=[];
+uniqCT(uniqCT<(temp1-2))=[];
 %assume for each run all temperatures have the same q-pulse length
 uniqQL = unique(int16(pdata(:,4)));
 i = 0;
