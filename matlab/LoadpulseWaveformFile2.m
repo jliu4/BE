@@ -5,17 +5,16 @@ dataPath = 'C:\Users\Owner\Dropbox (BEC)\BECteam\Jin\waveform\';
 fn = char(strcat(dataPath,'waveform.xlsx'));
 waveform = readtable(fn);
 %waveform = xlsread('waveform.xlsx');
-%factor of min or max
-factor = 0.99;
+lowB =150;
 nt = 5000000; %ntotal
 np = 100000; %n test
 nh = 21; %n header
 alignP = 0.1;
 delta = 100;
 deltat = 1.00000000012417E-09;
-tf = 4;
+t2 = 4;
 outputPath ='C:\jinwork\BEC\tmp\';
-filen1 = strcat(outputPath,'waveform_041017-ipb1-40.csv');
+filen1 = strcat(outputPath,'waveform_041017-2.csv');
 T1=cell2table(cell(0,12),...
 'VariableName',{'folder','date','filename','T','Zterm','v1rms','v2rms','v3rms','CoreQPow','P','v2A','v3A'});
 figname = strcat(outputPath,'waveform_041017-ipb1-40.pdf');
@@ -28,43 +27,27 @@ for wi = 5:5
    tt = char(strcat(folder,'-',dateN,'-',filename));
    fn = char(strcat(dataPath,folder,'\',filename));
    %zterm = str2double(table2cell(waveform(wi,7)));
-   zterm = 1.56;
+   zterm = 1.55;
    %fnmat = char(strcat(fn,'.mat'));
    %read first np point to figure out alignment and throw away first pulse
    %M = csvread(fn,nh,0,[nh,0,np+nh-1,3]);
    M = csvread(fn,nh,0);
-   %f2 = figure('Position',pos);
-  % plot(M(:,1),M(:,2),M(:,1),M(:,3),M(:,1),M(:,4))
-   %title(tt);
-   %legend('v1','v2','v3');
-   %export_fig(f2,figname,'-append');
    %find the fist pulse to throw away
-   [c1 maxP] = min(abs(M(:,2)-factor*max(M(:,2))));
-   [c2 minP] = min(abs(M(:,2)-factor*min(M(:,2))));
-   %maxP = find(M(:,2)== 0.98*max(M(:,2)));
-   %minP = find(M(:,2) == min(M(:,2)));
-   fstMax = maxP(1);
-   fstMin = minP(1);
+   fstMax = find(M(:,2)== max(M(:,2)));
+   t1 = fstMax(1) - delta;
+   t2 = fstMax(1) + t2*delta;
+   alignV = alignP*M(fstMax(1),2);
+   %find the 10% alignment for v2 
+   [c1 v1_index] = min(abs(M(fstMax(1)-delta:fstMax(1),2)-alignV));
+   [c2 v2_index] = min(abs(M(fstMax(1)-delta:fstMax(1),3)-alignV));
+   [c3 v3_index] = min(abs(M(fstMax(1)-delta:fstMax(1),4)-alignV));
+   v2s = v2_index-v1_index,v3s = v3_index-v1_index
+   fstMin = find(M(:,2) == min(M(:,2)));
    %estimate the period T
    T = abs(fstMax(1)-fstMin(1));
    %set starting point
-   firstP = min(fstMax,fstMin);
-   [c1 maxP] = min(abs(M(end-2*T:end,2)-factor*max(M(:,2))));
-   [c2 minP] = min(abs(M(end-2*T:end,2)-factor*min(M(:,2))));
-   lastMax = maxP(end);
-   lastMin = minP(end);
-   %set end point
-   lastP = max(lastMax,lastMin);
-   %plot alignment and p
-   t1 = fstMax - delta;
-   t2 = fstMax + tf*delta;
-   alignV = alignP*M(fstMax,2);
-   %find the 10% alignment for v2 
-   [c1 v1] = min(abs(M(fstMax-delta:fstMax,2)-alignV));
-   [c2 v2] = min(abs(M(fstMax-0.5*delta:fstMax,3)-alignV));
-   [c3 v3] = min(abs(M(fstMax-0.3*delta:fstMax+0.3*delta,4)-alignV));
-   v1,v2,v3
-   v2s = v2-v1,v3s = v3-v1
+   firstP = min(min(fstMax),min(fstMin));
+
    %make plot 
    f1 = figure('Position',pos);
    %tqStr = strcat(tStr);
@@ -74,13 +57,7 @@ for wi = 5:5
    grid minor;
    %hold on;
    suptitle(tt); 
-   x=[fstMax,fstMax];
-   y=[0,300];
    plot(M(t1:t2,1),M(t1:t2,2),M(t1:t2,1),M(t1:t2,3),M(t1:t2,1),M(t1:t2,4))
-   %line([fstMax fstMax],[0 300]);
-   %set(gca,'YLim',[0 300])
-   %plot(x,y);
-   %hold off;
    legend('v1','v2','v3');
    %ylabel('V'); 
    set(gca,'XTick',[]);
@@ -110,11 +87,11 @@ for wi = 5:5
    export_fig(f1,figname,'-append');
    %plot(M(1:end,1),M(1:end,2),M(1:end-v2s,1),M(1+v2s:end,3),M(1:end-v3s,1),M(1+v3s:end,4))
    % take last np points to throw away last pulse
-   %Mend =csvread(fn,nt-np-1,0,[nt-np-1,0,nt,3]); 
+   Mend =csvread(fn,nt-np-1,0,[nt-np-1,0,nt,3]); 
    %find the last pulse to throw away
-   %lastMax = find(Mend(:,2)==max(Mend(:,2)));
-   %lastMin = find(Mend(:,2)==min(Mend(:,2)));
-   %lastP = max(max(lastMax),max(lastMin));
+   lastMax = find(Mend(:,2)==max(Mend(:,2)));
+   lastMin = find(Mend(:,2)==min(Mend(:,2)));
+   lastP = max(max(lastMax),max(lastMin));
   % T = max(fstMin)-min(fstMax) 
    %figure('name','end');
    %plot(Mend(:,1),Mend(:,2),Mend(1:end-v2s,1),Mend(1:end-v2s,3),Mend(1:end-v3s,1),Mend(1:end-v3s,4));
@@ -122,25 +99,24 @@ for wi = 5:5
    %MendWo=Mend(1:lastP,:);
    %plot(MendWo(:,1),MendWo(:,2),MendWo(1:end-v2s,1),MendWo(1+v2s:end,3),MendWo(1:end-v3s,1),MendWo(1+v3s:end,4));
    %cut 
-   %M2=M(firstP:end,:);
-   %size(M2);
+   M2=M(firstP:end,:);
+   size(M2);
    
   % figure('name','begwo');
    %plot(M2(1:end,1),M2(1:end,2),M2(1:end-v2s,1),M2(1+v2s:end,3),M2(1:end-v3s,1),M2(1+v3s:end,4))
-  % MT = csvread(fn,nh,0);
+   MT = csvread(fn,nh,0);
    %f2 = figure('Position',pos);
    %plot(MT(:,1),MT(:,2),MT(:,1),MT(:,3),MT(:,1),MT(:,4))
    %legend('v1','v2','v3');
    %export_fig(f2,figname,'-append');
    %yrms= rms(MT(firstP:end-np+lastP,2:4))/sqrt(n)
    %takeout first pulse and last pulse
-   MM =M(firstP:end-2*T+lastP,2:4);
+   MM =MT(firstP:end-np+lastP,2:4);
    n = size(MM,1);
    yrms= rms(MM);
    y = fft(MM)/n;
    yf=rms(abs(y));yrms/sqrt(n);
    P0 = (yrms(1)-yrms(2))*yrms(3)/zterm;
-   
    deltaV = (MM(1:end-v2s,1)-MM(1+v2s:end,2));
    %size(deltaV)
    %size(MM(1+v3s:end,3))
