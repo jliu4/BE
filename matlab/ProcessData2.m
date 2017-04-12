@@ -3,7 +3,7 @@ clear; close all; clc
 addpath('C:\jinwork\BE\matlab')
 addpath('C:\jinwork\BE\matlab\addaxis5')
 addpath('C:\jinwork\BE\matlab\export_fig\altmany-export_fig-2763b78')
-dataPath = 'C:\Users\Owner\Dropbox (BEC)\';
+dataPath = 'D:\DropBox\Dropbox (BEC)\';
 outputPath ='C:\jinwork\BEC\tmp\';
 googleModelPath = 'C:\jinwork\BE\matlab\df-google\matfiles\';
 %[1 1 0]	Yellow
