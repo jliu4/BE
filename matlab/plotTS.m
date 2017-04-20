@@ -26,7 +26,7 @@ else
 end  
 %addaxis(dt,data.InnerBlockTemp1./data.CoreTemp,[0.5,1]); 
 if size(cop) == size(dt)
-  %addaxis(dt,cop,[0.8,1.5]) ;  
+  addaxis(dt,cop,[0.8,1.5]) ;  
 end  
 %addaxis(dt,data.CoreQV1Rms,[cqp1,cqp2]); 
 %addaxis(dt,data.CoreQV2Rms,[cqp1,cqp2]) ;
@@ -39,7 +39,7 @@ addaxislabel(4,'R');
 %addaxislabel(5,'V');
 %addaxislabel(3,'IntT/coreT');
 if size(cop) == size(dt)
- %addaxislabel(5,'COP'); 
+ addaxislabel(5,'COP'); 
 end  
 %addaxislabel(4,'CoreQPow(W)'); 
 %addaxislabel(4,'V1Rms(Volt)');

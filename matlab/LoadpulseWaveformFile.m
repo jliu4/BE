@@ -4,7 +4,8 @@ addpath('C:\jinwork\BE\matlab\export_fig\altmany-export_fig-2763b78')
 dataPath = 'D:\DropBox\Dropbox (BEC)\BECteam\Jin\waveform\';
 fn = char(strcat(dataPath,'waveform.xlsx'));
 waveform = readtable(fn);
-input = [waveform(1,:);waveform(3,:);waveform(6,:);waveform(8:9,:)];
+input = [waveform(1,:);waveform(4,:);waveform(6,:);waveform(8,:);waveform(10,:)];
+%input = [waveform(2:9,:);waveform(3,:);waveform(6,:);waveform(8:10,:)];
 %input = [waveform(11:12,:)];
 %10:10 3.722723	8.649782	7.514548	7.048463
 input.folder(1);
@@ -20,12 +21,12 @@ inchNs = 0.0847253; % speed light
 coreL = 16.5; %inch
 deltat = 1.00000000012417E-09;
 outputPath ='C:\jinwork\BEC\tmp\';
-filen1 = strcat(outputPath,'waveform_041417-ipb3-37.csv');
+filen1 = strcat(outputPath,'waveform_041817.csv');
 
 
 T1=cell2table(cell(0,11),...
 'VariableName',{'folder','date','filename','T','Zterm','v1rms','v2rms','v3rms','CoreQPow','P','noise'});
-figname = strcat(outputPath,'waveform_041417-ipb3-371.pdf');
+figname = strcat(outputPath,'waveform_041817.pdf');
 delete(figname);
 pos = [10 10 1000 800];
 for wi = 1:n
@@ -45,14 +46,14 @@ for wi = 1:n
    M = csvread(fn,nh,0);
    [row, col] = find(isnan(M(:,2:4)))
    M(end,1)-M(1,1)
-   vpa(M(1:10,1))
-   max2 = max(M(:,4))
-   max2 = max(M(:,3))
-   %max2 = max(M(:,2))
+   %vpa(M(1:10,1))
+   %max2 = max(M(:,4))
+   %max2 = max(M(:,3))
+   max2 = max(M(:,2));
    filterValue = filterCount * max2 /128 %256?
-   min2 = min(M(:,4))
+   %min2 = min(M(:,4))
    %min2 = min(M(:,3))
-   %min2 = min(M(:,2))
+   min2 = min(M(:,2));
    y1 = [0,max2(1)];
    y = [min2(1),max2(1)];
    maxP = find(M(:,2) > mFactor*max2);
@@ -216,13 +217,13 @@ for wi = 1:n
    grid on;
    grid minor;
    deltaV = (M(t1:t2-v2s,2)-M(t1+v2s:t2,3));
-   P = deltaV(1:end-v3s+v2s).*M(t1+v3s:t2,4)/zterm*deltat;
+   P = deltaV(1:end-v3s+v2s).*M(t1+v3s:t2,4)/zterm;
    yyaxis left
    plot(M(t1:t2-v2s,1),deltaV);
    ylabel('v1-v2');
    yyaxis right
    plot(M(t1:t2-v3s,1),P);
-   ylabel('P');
+   ylabel('Instantaneous Pulse Power');
    
    else
    Ms = M(1 : downSample : end,:);
@@ -257,13 +258,13 @@ for wi = 1:n
    grid on;
    grid minor;
    deltaV = (Ms(t1s:t2s,2)-Ms(t1s:t2s,3));
-   P = deltaV(1:end).*Ms(t1s:t2s,4)/zterm*deltat;
+   P = deltaV(1:end).*Ms(t1s:t2s,4)/zterm;
    yyaxis left
    plot(Ms(t1s:t2s,1),deltaV);
    ylabel('v1-v2');
    yyaxis right
    plot(Ms(t1s:t2s,1),P);
-   ylabel('P');  
+   ylabel('Instantaneous Pulse Power');
    %vpexp = expFit1(M(fstMax:fstMax+delta,2:4),figname,pos,2)
    end
 export_fig(f1,figname,'-append');

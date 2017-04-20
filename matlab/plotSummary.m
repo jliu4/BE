@@ -11,12 +11,14 @@ uniqQL = unique(int16(pdata(:,4)));
 i = 0;
 for ti = 1:numel(uniqCT) 
   tdata = pdata(int16(pdata(:,1)) == uniqCT(ti),:);
+  tdata = tdata(tdata(:,6) > 1,:);
+ 
   %exception 
   %we have to have at least 4 data points the first row needs to be no powerfor 
   %TODO JLIU where DC and Q both power zero.
   %need to have at least three datapoints for each temperature, and the
   %first row and last row qpow = 0
-  if size(tdata,1) > 4 %&& tdata(1,16) < 1 && tdata(end,16) < 1 
+  if size(tdata,1) > 4  %heatpower has to larger than && tdata(end,16) < 1 
     i = i + 1;
     tt(i) = uniqCT(ti);
     %hp0 = min(tdata(1,6),tdata(end,6)); %sometimes the first row is not converged yet
