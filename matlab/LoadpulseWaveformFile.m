@@ -4,9 +4,9 @@ addpath('C:\jinwork\BE\matlab\export_fig\altmany-export_fig-2763b78')
 dataPath = 'D:\DropBox\Dropbox (BEC)\BECteam\Jin\waveform\';
 fn = char(strcat(dataPath,'waveform.xlsx'));
 waveform = readtable(fn);
-input = [waveform(1,:);waveform(4,:);waveform(6,:);waveform(8,:);waveform(10,:)];
+%input = [waveform(1,:);waveform(4,:);waveform(6,:);waveform(8,:);waveform(10,:)];
 %input = [waveform(2:9,:);waveform(3,:);waveform(6,:);waveform(8:10,:)];
-%input = [waveform(11:12,:)];
+input = [waveform(13:14,:)];
 %10:10 3.722723	8.649782	7.514548	7.048463
 input.folder(1);
 n = size(input,1);
@@ -21,12 +21,10 @@ inchNs = 0.0847253; % speed light
 coreL = 16.5; %inch
 deltat = 1.00000000012417E-09;
 outputPath ='C:\jinwork\BEC\tmp\';
-filen1 = strcat(outputPath,'waveform_041817.csv');
-
-
+filen1 = strcat(outputPath,'waveform_042117.csv');
 T1=cell2table(cell(0,11),...
 'VariableName',{'folder','date','filename','T','Zterm','v1rms','v2rms','v3rms','CoreQPow','P','noise'});
-figname = strcat(outputPath,'waveform_041817.pdf');
+figname = strcat(outputPath,'waveform-ipb4-37-042117.pdf');
 delete(figname);
 pos = [10 10 1000 800];
 for wi = 1:n
@@ -49,11 +47,12 @@ for wi = 1:n
    %vpa(M(1:10,1))
    %max2 = max(M(:,4))
    %max2 = max(M(:,3))
-   max2 = max(M(:,2));
+   %max2 = max(M(:,2));
+   max2 = max(M(isfinite(M(:,2)),2));
    filterValue = filterCount * max2 /128 %256?
    %min2 = min(M(:,4))
    %min2 = min(M(:,3))
-   min2 = min(M(:,2));
+   min2 = min(M(isfinite(M(:,2)),2));
    y1 = [0,max2(1)];
    y = [min2(1),max2(1)];
    maxP = find(M(:,2) > mFactor*max2);
@@ -121,10 +120,13 @@ for wi = 1:n
    %filter out noise.
    MM(abs(MM) < filterValue)= 0;
    n = size(MM,1);
-   yrms= rms(MM);
+   y1rms = rms(MM(isfinite(MM(:,1)),1));
+   y2rms = rms(MM(isfinite(MM(:,2)),2));
+   y3rms = rms(MM(isfinite(MM(:,3)),3));
+   %yrms= max(MM(isfinite(MM(:,1:3)),2));
    yfft = fft(MM)/n;
-   yf=rms(abs(yfft));yrms/sqrt(n);
-   P0 = (yrms(1)-yrms(2))*yrms(3)/zterm;
+   %yf=rms(abs(yfft));yrms/sqrt(n);
+   P0 = (y1rms-y2rms)*y3rms/zterm;
    %clean the noise
    
    %MM(abs(MM) < filterValue)= 0;
@@ -138,11 +140,11 @@ for wi = 1:n
    %P = mean(abs(deltaV(1:end-v3s+v2s).*MM(1+v3s:end,3)))/zterm;
    P =mean(deltaV(1:end-v3s+v2s).*MM(1+v3s:end,3))/zterm
    
-   T1 =[T1;table(folder,dateN,filename,T,zterm,yrms(1),yrms(2),yrms(3),P0,P,filterValue,...
+   T1 =[T1;table(folder,dateN,filename,T,zterm,y1rms,y2rms,y3rms,P0,P,filterValue,...
     'VariableName',{'folder','date','filename','T','Zterm','v1rms','v2rms','v3rms','CoreQPow','P','noise'})];
 
    p1 = char(strcat('RMS Voltage Method: (rms(v1)-rms(v2))*rms(v3)/Z = ',num2str(P0),...
-       ' rms(v1) = ',num2str(yrms(1)), ' rms(v2) = ',num2str(yrms(2)), ' rms(v3) = ',num2str(yrms(3))));
+       ' rms(v1) = ',num2str(y1rms), ' rms(v2) = ',num2str(y2rms), ' rms(v3) = ',num2str(y3rms)));
    
    p2 = char(strcat('Pulse Alignment Method: mean((v1-v2)*v3)/Z = ',num2str(P),' Z=', num2str(zterm), ' propagate speed = ',num2str(c),'c ratio = ',num2str(P/P0) ));
    p3 = char(strcat('max(v1) = ', num2str(max2),' min(v1) = ', num2str(min2)));
