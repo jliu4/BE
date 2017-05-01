@@ -1,26 +1,33 @@
 clear; close all; clc
 addpath('C:\jinwork\BE\matlab')
-addpath('C:\jinwork\BE\matlab\export_fig\altmany-export_fig-2763b78')
+addpath('C:\jinwork\BE\matlab\export_fig\altmany-export_fig-5be2ca4')
 dataPath = 'D:\DropBox\Dropbox (BEC)\BECteam\Jin\waveform\';
 outputPath ='C:\jinwork\BEC\tmp\';
 %dataPath = 'C:\Users\admin\Dropbox (BEC)\BECteam\Jin\waveform\';
-fn = char(strcat(dataPath,'waveform1.xlsx'));
+fn = char(strcat(dataPath,'waveform.xlsx'));
 waveform = readtable(fn);
-%input = [waveform(1:10,:);waveform(14:14,:);waveform(16:23,:)];
+input = [waveform(21:28,:)];
 %input = [waveform(2:9,:);waveform(3,:);waveform(6,:);waveform(8:10,:)];
-input = [waveform(1:19,:)];
+%input = [waveform(20:27,:)];
 numWaveform = size(input,1);
 vfactor = 0.94;% off 0.6 seconds for each 10 seconds q-pulse measurement.
 nh = 21; %waveform file header
-Fs = 2.5*1000000000; %sampling frequency 2.5 ghz.
-c = 0; %propagate speed
+s2ns = 1e9;
+hz2kHz = 1e3;
+Fs = 2.5*1e9; %sampling frequency 2.5 ghz.
+
 inchNs = 0.0847253; % [inch/ns] speed light
 coreL = 16.5; %inch
-riseTime = 0;
-filen1 = strcat(outputPath,'waveform_042817.csv');
-T1=cell2table(cell(0,14),...
-'VariableName',{'folder','date','filename','input_frequency','frequency','Zterm','v1rms','v2rms','v3rms','CoreQPow','alignPower','c','riseTime','noise'});
-figname = strcat(outputPath,'waveform-042817.pdf');
+riseTimePos = 0;
+cPos = 0; %propagate speed up
+riseTimeNeg = 0;
+cNeg = 0; %propagate speed
+
+filen1 = strcat(outputPath,'waveform_0501-2.csv');
+T1=cell2table(cell(0,17),...
+'VariableName',{'folder','date','filename','input_frequency','frequency','Zterm','v1rms','v2rms','v3rms','CoreQPow',...
+'alignPowerPos','cPos','riseTimePos','alignPowerNeg','cNeg','riseTimeNeg','noise'});
+figname = strcat(outputPath,'waveform-0501-2.pdf');
 delete(figname);
 pos = [10 10 1000 800];
 for wi = 1:numWaveform
@@ -51,25 +58,32 @@ for wi = 1:numWaveform
    plot(M(end-3*T:end,1),M(end-3*T:end,2),M(end-3*T:end,1),M(end-3*T:end,3),M(end-3*T:end,1),M(end-3*T:end,4))
    
    end
-
    totalTime = M(end,1) - M(1,1);
    numPoint = size(M,1);
-   timeInterval = totalTime/numPoint;
+   timeInterval = totalTime/numPoint;%sec
+   pulseWidthPoint = pulseWidth/timeInterval/s2ns; 
+   %pulseWidthPoint = pulseWidth/0.4;
    %take out 
-   M0 = M(isfinite(M(:,2)),2);
+   %M0 = M(isfinite(M(:,2)),2);
    %if there is inf, there is no sense to align them.   
-   if size(M0,1) < numPoint
-      continue;
-   end     
+   %if size(M0,1) < numPoint
+   %   continue;
+  % end     
    max2 = max(M(:,2));
    min2 = min(M(:,2));
+   
    %make sure to catch the complete pulse, so trim some before and after.
-   [pk1,lc1] = findpeaks(M(delta:end-delta,2),'MinPeakProminence',0.5*max2,'MinPeakHeight',mFactor*max2,'MinPeakDistance',pulseWidth);
-   [pk2,lc2] = findpeaks(-M(delta:end-delta,2),'MinPeakProminence',-0.5*min2,'MinPeakHeight',-mFactor*min2,'MinPeakDistance',pulseWidth);
+   %[pk1,lc1] = findpeaks(M(delta:end-delta,2),'MinPeakProminence',0.5*max2,'MinPeakHeight',mFactor*max2,'MinPeakDistance',pulseWidth);
+   %[pk2,lc2] = findpeaks(-M(delta:end-delta,2),'MinPeakProminence',-0.5*min2,'MinPeakHeight',-mFactor*min2,'MinPeakDistance',pulseWidth);
+   [pk1,lc1] = findpeaks(M(delta:end-delta,2),'MinPeakHeight',mFactor*max2,'MinPeakDistance',pulseWidthPoint);
+   [pk2,lc2] = findpeaks(-M(delta:end-delta,2),'MinPeakHeight',-mFactor*min2,'MinPeakDistance',pulseWidthPoint);
+   %[pk1,lc1] = findpeaks(M(:,2),'MinPeakHeight',mFactor*max2,'MinPeakDistance',pulseWidthPoint);
+   %[pk2,lc2] = findpeaks(-M(:,2),'MinPeakHeight',-mFactor*min2,'MinPeakDistance',pulseWidthPoint);
    numOfPulse = size(pk1,1)+size(pk2,1); %count a positive pulse and a negtive pulse as two pulses
-   %frequency = numOfPulse/totalTime/1000; %as per seconds how many pulses
-   frequency = numOfPulse; %kHz as the frequency unit
-   T = 1.0/(frequency*1000*timeInterval);
+   calculatePulseWid =abs(lc1(1)-lc2(1))*timeInterval*s2ns
+   
+   frequency = int16(numOfPulse/totalTime/hz2kHz); %kHz as the frequency unit
+   T = 1.0/(frequency*hz2kHz*timeInterval)
    fstMax = delta + lc1(1);
    fstMin = delta + lc2(1);
    lastMax = delta + lc1(end);
@@ -83,39 +97,59 @@ for wi = 1:numWaveform
       lastP = uint32(lastMin);
    end   
    %firstP = min(fstMax,fstMin);
- 
-   first1 = max(1,firstP - 4*pulseWidth);
-   first2 = min(numPoint,firstP + 4*pulseWidth);
+   t0 = int16(0.8*pulseWidthPoint);
+   first1 = max(1,firstP - t0);
+   first2 = min(numPoint,firstP + t0);
    %lastP =  uint32(max(lastMax,lastMin));
-   last1 = max(1,lastP - 4*pulseWidth);
-   last2 = min(numPoint,lastP + 4*pulseWidth);
+   last1 = max(1,lastP - t0);
+   last2 = min(numPoint,lastP + t0);
+   %first1 = max(1,firstP - 4*delta);
+   %first2 = min(numPoint,firstP + 4*delta);
+   %lastP =  uint32(max(lastMax,lastMin));
+   %last1 = max(1,lastP - 4*delta);
+   %last2 = min(numPoint,lastP + 4*delta);
    filterValue = filterCount * 4* panelDivision /128; %TODO JLIU 256?
-   y1 = [0,max2(1)];
+   yPos = [0,max2(1)];
+   yNeg = [min2(1),0];
    y = [min2(1),max2(1)];
    
-   t1 = max(1,fstMax - 8*pulseWidth);
-   t2 = fstMax + 8*pulseWidth;
-   v1 = 0;
-   v2s = 0;
-   v3s = 0;
+   v1sPos = 0;
+   v2sPos = 0;
+   v3sPos = 0;
    if alignP > 0 %do alignment
-   alignV = alignP*M(fstMax,2);
-   %find the 10% alignment for v2 
-   [c1 v1] = min(abs(M(fstMax-delta:fstMax+delta,2)-alignV));
-   [c2 v2] = min(abs(M(fstMax-delta:fstMax+delta,3)-alignV));
-   [c3 v3] = min(abs(M(fstMax-delta:fstMax+delta,4)-alignV));
-   %M(fstMax-delta+v1,2)
-   %M(fstMax-delta+v2,3)
-   %M(fstMax-delta+v3,4)
+   %align up   
+   alignVPos = alignP*M(fstMax,2);
+   %find the alignP% alignment for v2 
+   [c1 v1sPos] = min(abs(M(fstMax-delta:fstMax+delta,2)-alignVPos));
+   [c2 v2] = min(abs(M(fstMax-delta:fstMax+delta,3)-alignVPos));
+   [c3 v3] = min(abs(M(fstMax-delta:fstMax+delta,4)-alignVPos));
+ 
    %v1,v2,v3
-   riseTime = (delta-v1) * 0.4;
-   v2s = v2-v1;
-   c = coreL/(v2s*timeInterval)*inchNs/1e9;
-   v3s = v3-v1;
-   if v2s <0 || v3s < 0
-       v2s = 0;
-       v3s = 0;
-   end    
+   riseTimePos = (delta-v1sPos) * timeInterval*s2ns;
+   v2sPos = v2-v1sPos;
+   cPos = coreL/(v2sPos*timeInterval)*inchNs/s2ns;
+   
+   v3sPos = v3-v1sPos;
+   if v2sPos <0 || v3sPos < 0
+       v2sPos = 0;
+       v3sPos = 0;
+   end 
+   alignVNeg = alignP*M(fstMin,2);
+   %find the alignP% alignment for v2 
+   [c1 v1sNeg] = min(abs(M(fstMin-delta:fstMin+delta,2)-alignVNeg));
+   [c2 v2] = min(abs(M(fstMin-delta:fstMin+delta,3)-alignVNeg));
+   [c3 v3] = min(abs(M(fstMin-delta:fstMin+delta,4)-alignVNeg));
+ 
+   %v1,v2,v3
+   riseTimeNeg = (delta-v1sNeg) * timeInterval*s2ns;
+   v2sNeg = v2-v1sNeg;
+   cNeg = coreL/(v2sNeg*timeInterval)*inchNs/s2ns;
+   
+   v3sNeg = v3-v1sNeg;
+   if v2sNeg <0 || v3sNeg < 0
+       v2sNeg = 0;
+       v3sNeg = 0;
+   end 
    end
    %make plot 
 
@@ -132,29 +166,18 @@ for wi = 1:numWaveform
    P0 = (y1rms-y2rms)*y3rms/zterm;
    %clean the noise
    
-   %MM(abs(MM) < filterValue)= 0;
-   deltaV = (MM(1:end-v2s,1)-MM(1+v2s:end,2));
-   P1 = deltaV(1:end-v3s+v2s).*MM(1+v3s:end,3);
-   n1 = size(P1);
-   %deltaV1 = (M(firstP:end-2*T+lastP-v2s,2)-M(firstP+v2s:end-2*T+lastP,3));
-   %size(deltaV)
-   %size(MM(1+v3s:end,3))
-   %size(deltaV(1:end-v3s+v2s))
-   %P = mean(abs(deltaV(1:end-v3s+v2s).*MM(1+v3s:end,3)))/zterm;
-   P =mean(deltaV(1:end-v3s+v2s).*MM(1+v3s:end,3))/zterm;
+   pPos = calculateAlignedPower(v2sPos, v3sPos, MM,zterm);
+   pNeg = calculateAlignedPower(v2sNeg, v3sNeg, MM,zterm);
+
    
-   T1 =[T1;table(folder,dateN,filename,input_frequency,frequency,zterm,y1rms,y2rms,y3rms,P0,P,c,riseTime,filterValue,...
-    'VariableName',{'folder','date','filename','input_frequency','frequency','Zterm','v1rms','v2rms','v3rms','CoreQPow','alignPower','c','riseTime','noise'})];
+   T1 =[T1;table(folder,dateN,filename,input_frequency,frequency,zterm,y1rms,y2rms,y3rms,P0,pPos,cPos,riseTimePos,pNeg,cNeg,riseTimeNeg,filterValue,...
+    'VariableName',{'folder','date','filename','input_frequency','frequency','Zterm','v1rms','v2rms','v3rms','CoreQPow',...
+    'alignPowerPos','cPos','riseTimePos','alignPowerNeg','cNeg','riseTimeNeg','noise'})];
 
    p1 = char(strcat('RMS Voltage Method: (rms(v1)-rms(v2))*rms(v3)/Z = ',num2str(P0),...
        ' rms(v1) = ',num2str(y1rms), ' rms(v2) = ',num2str(y2rms), ' rms(v3) = ',num2str(y3rms)));
    
-   p2 = char(strcat('Pulse Alignment Method: mean((v1-v2)*v3)/Z = ',num2str(P),' Z=', num2str(zterm), ' propagate speed = ',num2str(c),'c rmsP/alignP = ',num2str(P0/P) ));
-   p3 = char(strcat('max(v1) = ', num2str(max2),' min(v1) = ', num2str(min2), ' frequency = ',num2str(frequency),'kHz riseTime = ', num2str(riseTime),'ns filter noise = ', num2str(filterValue)));
-   p4 = char(strcat('\leftarrow', 'aligned at ',num2str(alignP*100), '% pulse amplitude'));
-  
-   p4 = ['\leftarrow aligned at ' num2str(alignP*100)  '% pulse amplitude'];
-   p5 = ['riseTime = ' num2str(riseTime) 'ns \rightarrow' ];
+  p3 = char(strcat('max(v1) = ', num2str(max2),' min(v1) = ', num2str(min2), ' frequency = ',num2str(frequency),'kHz filter noise = ', num2str(filterValue)));
    f2 = figure('Position',pos);
    subplot(3,1,1);
    suptitle(tt); 
@@ -183,103 +206,9 @@ for wi = 1:numWaveform
    plot(x,y,'black');
    text(x(1),y(2),'\rightarrow trim last pulse after');
    hold off;
-   export_fig(f2,figname,'-append'); 
-
-   f1 = figure('Position',pos);
-   if (v2s > 0 && v3s > 0)
-   subplot(3,1,1);
-   grid on;
-   grid minor;
-   %hold on;
-   suptitle(tt); 
-   x = [M(fstMax,1),M(fstMax,1)];
-  
-   x1=[M(fstMax-delta+v1,1),M(fstMax-delta+v1,1)];
-   dim = [0.14 0.645 0.1 0.1];
-   annotation('textbox',dim,'String',p1,'FitBoxToText','on');
-   hold on;
-   plot(M(t1:t2,1),M(t1:t2,2),M(t1:t2,1),M(t1:t2,3),M(t1:t2,1),M(t1:t2,4))
-   plot(x,y1,'black','linewidth',1);
-   plot(x1,y1,'black','linewidth',1);
-   text(x1(1),y(2), p5,'HorizontalAlignment','right');
-   %plot(x,y1);
-   %xlabel(p1);
-   hold off;
-   legend('v1','v2','v3');
-   
-   %ylabel('V'); 
-   set(gca,'XTick',[]);
-   subplot(3,1,2);
-   grid on;
-   grid minor;
-   hold on;
-   
-   plot(M(t1:t2,1),M(t1:t2,2),M(t1:t2-v2s,1),M(t1+v2s:t2,3),M(t1:t2-v3s,1),M(t1+v3s:t2,4))
-   plot(x1,y1,'black','linewidth',1);
-   %annotation('arrow',x(1),alignV,p4);
-   %text(x(1),alignV,'\leftarrow aligned at 5% pulse amplitude');
-   text(x1(1),alignV,p4);
-   %xlabel(p2);
-   hold off;
-   dim = [0.14 0.35 0.1 0.1];
-   annotation('textbox',dim,'String',p2,'FitBoxToText','on');
-   legend('v1','v2','v3');
-   set(gca,'XTick',[]);
-   subplot(3,1,3);
-   grid on;
-   grid minor;
-   deltaV = (M(t1:t2-v2s,2)-M(t1+v2s:t2,3));
-   P = deltaV(1:end-v3s+v2s).*M(t1+v3s:t2,4)/zterm;
-   yyaxis left
-   plot(M(t1:t2-v2s,1),deltaV);
-   ylabel('v1-v2');
-   yyaxis right
-   plot(M(t1:t2-v3s,1),P);
-   ylabel('Instantaneous Pulse Power');
-   
-   else
-   Ms = M(1 : downSample : end,:);
-   t1s = max(1,fix(t1/downSample));
-   t2s = fix(t2/downSample);
-   subplot(2,1,1);
-   grid on;
-   grid minor;
-   %hold on;
-   suptitle(tt); 
-   
-   dim = [0.14 0.52 0.1 0.1];
-   annotation('textbox',dim,'String',p1,'FitBoxToText','on');
-   hold on;
-   plot(Ms(t1s:t2s,1),Ms(t1s:t2s,2),Ms(t1s:t2s,1),Ms(t1s:t2s,3),Ms(t1s:t2s,1),Ms(t1s:t2s,4))
-   %plot(x,y1);
-   %xlabel(p1);
-   hold off;
-   legend('v1','v2','v3');
-    
-   %ylabel('V'); 
-   set(gca,'XTick',[]);
-
-   dim = [0.14 0.05 0.1 0.1];
-   % dim = [0.15 0.25 0.5 0.5];
- 
-   annotation('textbox',dim,'String',p2,'FitBoxToText','on');
-   
-   legend('v1','v2','v3');
-   set(gca,'XTick',[]);
-   subplot(2,1,2);
-   grid on;
-   grid minor;
-   deltaV = (Ms(t1s:t2s,2)-Ms(t1s:t2s,3));
-   P = deltaV(1:end).*Ms(t1s:t2s,4)/zterm;
-   yyaxis left
-   plot(Ms(t1s:t2s,1),deltaV);
-   ylabel('v1-v2');
-   yyaxis right
-   plot(Ms(t1s:t2s,1),P);
-   ylabel('Instantaneous Pulse Power');
-   %vpexp = expFit1(M(fstMax:fstMax+delta,2:4),figname,pos,2)
-   end
-export_fig(f1,figname,'-append');
+   %export_fig(f2,figname,'-append'); 
+   plotAligned(v1sPos,v2sPos,v3sPos,M,fstMax,delta,pulseWidthPoint,zterm,figname,P0,pPos,cPos,alignVPos,alignP,riseTimePos,pos,tt,p1,yPos(2),yPos)
+   plotAligned(v1sNeg,v2sNeg,v3sNeg,M,fstMin,delta,pulseWidthPoint,zterm,figname,P0,pNeg,cNeg,alignVNeg,alignP,riseTimeNeg,pos,tt,p1,yNeg(1),yNeg)
 end
 writetable(T1,filen1);
 
