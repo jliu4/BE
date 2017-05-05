@@ -18,13 +18,13 @@ for ti = 1:numel(uniqCT)
   %TODO JLIU where DC and Q both power zero.
   %need to have at least three datapoints for each temperature, and the
   %first row and last row qpow = 0
-  if size(tdata,1) > 4  %heatpower has to larger than && tdata(end,16) < 1 
+  if size(tdata,1) > 2  %heatpower has to larger than && tdata(end,16) < 1 
     i = i + 1;
     tt(i) = uniqCT(ti);
     %hp0 = min(tdata(1,6),tdata(end,6)); %sometimes the first row is not converged yet
     %hp0 = tdata(end,6); %sometimes the first row is not converged yet
     %assuming first a few points end is better and 
-    if tt(i) >= 300
+    if tt(i) >= 200
       %TODO JLIU hacked here  
       hp0 = tdata(1,6);
     else
@@ -34,7 +34,8 @@ for ti = 1:numel(uniqCT)
     termP0 = tdata(1,11);
     pcbP0 = tdata(1,12);
     %hiked here to accomodate sri-ipb2-33-lowvoltage run
-    qtdata = tdata(2:end-1,:);
+    %JLIU TODO
+    qtdata = tdata(2:end,:);
     %also filter out qPow < 1
     %qtdata = qtdata(qtdata(:,10) > 0.9,:);
     if isDC  %assign DC as index =1 for QL

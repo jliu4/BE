@@ -9,11 +9,11 @@ else
   dataPath = 'D:\DropBox\Dropbox (BEC)\BECteam\Jin\waveform\';
 end  
 %control parameter
-plotSummary = false; plotPos = false; plotNeg = false; plotCN = false;
+plotSummary = true; plotPos = true; plotNeg = true; plotCN = true;
 plotErrBar = true;
 fn = char(strcat(dataPath,'waveform53.xlsx'));
 waveform = readtable(fn);
-input = [waveform(22:29,:)];
+input = [waveform(34:34,:)];
 %input = [waveform(2:9,:);waveform(3,:);waveform(6,:);waveform(8:10,:)];
 %input = [waveform(20:27,:)];
 numWaveform = size(input,1);
@@ -28,8 +28,8 @@ riseTimePos = 0;
 cPos = 0; %propagate speed positive side
 riseTimeNeg = 0;
 cNeg = 0; %propagate speed negtive side
-filen1 = strcat(outputPath,'waveform_0503.csv');
-filen2 = strcat(outputPath,'waveform_0503-vr.csv');
+filen1 = strcat(outputPath,'waveform_0505-3.csv');
+filen2 = strcat(outputPath,'waveform_0505-3-cv.csv');
 output1 = cell2table(cell(0,22),...
 'VariableName',{'folder','date','filename','pulseWidth','frequency','Zterm','v1rms','v2rms','v3rms','CoreQPow',...
 'alignPowerPos','cPosM','riseTimePosM','cPosCV','riseTimePosCV',...
@@ -37,7 +37,7 @@ output1 = cell2table(cell(0,22),...
 output2 = cell2table(cell(0,6),...
 'VariableName',{'loc','c','riseTime','v1','v2','v3'});
 pw = [];
-figname = strcat(outputPath,'waveform-0503.pdf');
+figname = strcat(outputPath,'waveform-0505-3.pdf');
 delete(figname);
 pos = [10 10 1000 800];
 for wi = 1:numWaveform
@@ -52,7 +52,7 @@ for wi = 1:numWaveform
    delta = input.delta(wi);
    downSample = input.downSample(wi);
    pulseWidth = input.pulseWidth(wi); %ns
-   pw(wi) = pulseWidth;
+   pw(wi) = wi;% pulseWidth;
    panelDivision = input.panelDivision(wi); %vol
    type = input.type(wi);
    tt = char(strcat(folder,'-',dateN,'-',num2str(pulseWidth),'-',type));
@@ -122,8 +122,8 @@ for wi = 1:numWaveform
       [pPos,cPos,riseTimePos,v1sPos,v2sPos,v3sPos,alignVPos] = calculateAlignedPower(fstMax,M,MM,delta,alignP,zterm,timeInterval,s2ns,coreL,inchNs);
      
       posArray(pi,1:6)=[delta+lc1(pi),cPos,riseTimePos,v1sPos,v2sPos,v3sPos];
-      
-      if cPos < 0 && plotPos
+      %only plot the first one
+      if pi==1 && plotPos
         plotAligned(v1sPos,v2sPos,v3sPos,M,fstMax,delta,pulseWidthPoint,zterm,figname,P0,pPos,cPos,alignVPos,alignP,riseTimePos,pos,tt,p1,yPos(2),yPos)
       end  
      end
@@ -135,7 +135,7 @@ for wi = 1:numWaveform
        fstMin = delta + lc2(pi); 
        [pNeg,cNeg,riseTimeNeg,v1sNeg,v2sNeg,v3sNeg,alignVNeg] = calculateAlignedPower(fstMin,M,MM,delta,alignP,zterm,timeInterval,s2ns,coreL,inchNs);
        negArray(pi,1:6)=[delta+lc2(pi),cNeg,riseTimeNeg,v1sNeg,v2sNeg,v3sNeg];
-       if cNeg < 0 && plotNeg
+       if pi == 1 && plotNeg
          plotAligned(v1sNeg,v2sNeg,v3sNeg,M,fstMin,delta,pulseWidthPoint,zterm,figname,P0,pNeg,cNeg,alignVNeg,alignP,riseTimeNeg,pos,tt,p1,yNeg(1),yNeg)
        end  
      end

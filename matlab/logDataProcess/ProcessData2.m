@@ -58,7 +58,9 @@ for ai = 1:size(aSet,1)
     case {'sri-ipb2-27';'sri-ipb2-33'}
       rtFolder='SRI-IPB2';  
     case {'ipb3-32';'ipb3-37';'ipb3-42'}
-      rtFolder='IPB3_DATA';     
+      rtFolder='IPB3_DATA';   
+    case {'ipb4-37';'ipb4-44'}
+      rtFolder='IPB4_DATA';       
     case 'google'
       rtFolder='\BECteam\Jin\google';
   end %switch
@@ -87,7 +89,8 @@ for ai = 1:size(aSet,1)
     [T1,pdata] = writeOut(rawDataN,T1,hpExpFit,tempExpFit,writeOutput,figname,tStr,ff(ai));
     %comment out , too many plots
     %export_fig(ff(ai),figname,'-append');
-    if false
+    if true
+       
       [tt,icT,hpdrop,v12,dqp,v122,hv,res,hva,hvb,hqpa,hqpb,resa,resb,hv0,hqp0,res0,ql,...
        hqp0sse,res0sse,icTsse] = plotSummary(pdata,isDC,efficiency,temp1,temp2);
     if detailPlot
