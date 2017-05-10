@@ -50,6 +50,7 @@ for ai = 1:size(aSet,1)
   termRes = aSet.termRes(ai);
   version = aSet.version(ai);
   googleModel = aSet.googleModel(ai);
+  desc = char(aSet.desc(ai));
   switch (reactor)
     case {'ipb1-29'; 'ipb1-30';'ipb1-13';'ipb1-40';'ipb1-41'}
       rtFolder='ISOPERIBOLIC_DATA'; 
@@ -83,7 +84,8 @@ for ai = 1:size(aSet,1)
   if ~postProcess
     continue;
   else   
-    tStr = strcat(reactor,'-',runDate,'-',gas,'-',power);    
+    %tStr = strcat(reactor,'-',runDate,'-',gas,'-',power);    
+    tStr = strcat(reactor,'-',runDate,'-',desc);    
     %ff(ai) = figure('Position',pos);
     ff(ai) = 0;
     [T1,pdata] = writeOut(rawDataN,T1,hpExpFit,tempExpFit,writeOutput,figname,tStr,ff(ai));
@@ -196,7 +198,7 @@ if tsMultiPlot
 end
 if postProcess
   legend(l1,'Location','SouthOutside');
-  legend(l1,'Location','NorthOutside','Orientation','horizontal');
+  %legend(l1,'Location','NorthOutside','Orientation','horizontal');
   export_fig(fsummary,figname,'-append');
   writetable(T1,filen1);
   writetable(T2,filen2);

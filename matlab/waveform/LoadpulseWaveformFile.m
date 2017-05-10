@@ -9,12 +9,13 @@ else
   dataPath = 'D:\DropBox\Dropbox (BEC)\Jin\waveform\';
 end  
 debug = false;
+visible = 'off';
 %control parameter
 plotSummary = true; plotPos = true; plotNeg = true; plotCN = true;
 plotErrBar = true;
 fn = char(strcat(dataPath,'waveform.xlsx'));
 waveform = readtable(fn);
-input = [waveform(42:46,:)];
+input = [waveform(31:41,:)];
 %input = [waveform(2:9,:);waveform(3,:);waveform(6,:);waveform(8:10,:)];
 %input = [waveform(20:27,:)];
 numWaveform = size(input,1);
@@ -29,8 +30,8 @@ riseTimePos = 0;
 cPos = 0; %propagate speed positive side
 riseTimeNeg = 0;
 cNeg = 0; %propagate speed negtive side
-filen1 = strcat(outputPath,'ipb4-44-0509-6000.csv');
-filen2 = strcat(outputPath,'ipb4-44-0509-6000cv.csv');
+filen1 = strcat(outputPath,'ipb3-42-0510.csv');
+filen2 = strcat(outputPath,'ipb3-42-0510.csv');
 output1 = cell2table(cell(0,22),...
 'VariableName',{'folder','date','filename','pulseWidth','frequency','Zterm','CoreQPow','v1rms','v2rms','v3rms',...
 'alignPowerPos','cPosM','riseTimePosM','cPosCV','riseTimePosCV',...
@@ -38,7 +39,7 @@ output1 = cell2table(cell(0,22),...
 output2 = cell2table(cell(0,6),...
 'VariableName',{'loc','c','riseTime','v1','v2','v3'});
 pw = [];
-figname = strcat(outputPath,'ipb4-44-0509-6000.pdf');
+figname = strcat(outputPath,'ipb3-42-0510.pdf');
 delete(figname);
 pos = [10 10 1000 800];
 for wi = 1:numWaveform
@@ -90,7 +91,7 @@ for wi = 1:numWaveform
    lc20 = loc2;
    if loc2(1) < delta
      lc20 = [];
-     lc20 = loc1(2:end);
+     lc20 = loc2(2:end);
    end
    numOfPulse = size(lc10,1)+size(lc20,1); %count a positive pulse and a negtive pulse as two pulses
    %calculatePulseWid =abs(lc1(1)-lc2(1))*timeInterval*s2ns 
@@ -103,35 +104,40 @@ for wi = 1:numWaveform
    hold on
    plot(M(:,1), M(:,2)/max2);
    plot(M(loc1,1), pk10/max2*mFactor, '^g', 'MarkerFaceColor','g')
-   plot(M(loc2,1), pk20/(-min2*mFactor), '^c', 'MarkerFaceColor','r')
+   plot(M(loc2,1), pk20/(min2*mFactor), '^c', 'MarkerFaceColor','r')
    hold off
    grid
    end
    %find the peak at the edge
+   if alignP > 0 
    j1 = size(lc10,1);
    ii = 0;
    for i = 1:j1
-     ji1 = max(lc10(i)-pulseWidthPoint,1)
+     ji1 = max(lc10(i)-pulseWidthPoint,1);
      jm = max(M(ji1:lc10(i),2));
-     ji2 = find(M(ji1:lc10(i),2) > mFactor*jm,1,'first');
-     ji3 = max(lc10(i)-pulseWidthPoint,1)+ji2
+     ji2 = find(M(ji1:lc10(i),2) > mFactor*max2,1,'first'); %TODO  should use the same max
+     ji3 = max(lc10(i)-pulseWidthPoint,1)+ji2;
      if  ji3 > delta
        ii = ii + 1;  
        lc1(ii) = ji3;
      end  
    end  
-   j1 = size(lc20,1)
-   ii = 0
+   j1 = size(lc20,1);
+   ii = 0;
    for i = 1:j1
      ji1 = max(lc20(i)-pulseWidthPoint,1);
      jm = min(M(ji1:lc20(i),2));
-     ji2 = find(-M(ji1:lc20(i),2) > -mFactor*jm,1,'first');
-     ji3 = max(lc20(i)-pulseWidthPoint,1)+ji2
+     ji2 = find(-M(ji1:lc20(i),2) > -mFactor*min2,1,'first');
+     ji3 = max(lc20(i)-pulseWidthPoint,1)+ji2;
      if  ji3 > delta
        ii = ii + 1;  
        lc2(ii) = ji3;
      end  
 
+   end  
+   else
+     lc1 = lc10;
+     lc2 = lc20;
    end  
    if debug
    figure;
@@ -178,9 +184,11 @@ for wi = 1:numWaveform
    p1 = char(strcat('RMS Voltage Method: (rms(v1)-rms(v2))*rms(v3)/Z = ',num2str(P0),...
        ' rms(v1) = ',num2str(y1rms), ' rms(v2) = ',num2str(y2rms), ' rms(v3) = ',num2str(y3rms)));
    if plotSummary
-      plotWaveFormSummary(M,max2,min2,frequency,filterValue,firstP,lastP,first1,first2,last1,last2,pos,figname,tt,p1)   
+      plotWaveFormSummary(M,max2,min2,frequency,filterValue,firstP,lastP,first1,first2,last1,last2,pos,figname,tt,p1,visible)   
    end   
-   
+   if alignP ==0 
+       continue;
+   end     
    yPos = [0,max2(1)];
    yNeg = [min2(1),0];
    posArray = [];
@@ -196,7 +204,7 @@ for wi = 1:numWaveform
       riseTimePosArray(pi)= riseTimePos;
       %only plot the first one
       if pi==1 && plotPos %let's plot two
-        plotAligned(v1sPos,v2sPos,v3sPos,M,fstMax,delta,pulseWidthPoint,zterm,figname,P0,pPos,cPos,alignVPos,alignP,riseTimePos,pos,tt,p1,yPos(2),yPos)
+        plotAligned(v1sPos,v2sPos,v3sPos,M,fstMax,delta,pulseWidthPoint,zterm,figname,P0,pPos,cPos,alignVPos,alignP,riseTimePos,pos,tt,p1,yPos(2),yPos,visible)
       end  
      end
      cPosM(wi) = meanabs(posArray(isfinite(cPosArray(:,2)),2));
@@ -210,7 +218,7 @@ for wi = 1:numWaveform
        [pNeg,cNeg,riseTimeNeg,v1sNeg,v2sNeg,v3sNeg,alignVNeg] = calculateAlignedPower(fstMin,M,MM,delta,alignP,zterm,timeInterval,s2ns,coreL,inchNs,debug);
        negArray(pi,1:6)=[lc2(pi),cNeg,riseTimeNeg,v1sNeg,v2sNeg,v3sNeg];
        if pi == 1 && plotNeg
-         plotAligned(v1sNeg,v2sNeg,v3sNeg,M,fstMin,delta,pulseWidthPoint,zterm,figname,P0,pNeg,cNeg,alignVNeg,alignP,riseTimeNeg,pos,tt,p1,yNeg(1),yNeg)
+         plotAligned(v1sNeg,v2sNeg,v3sNeg,M,fstMin,delta,pulseWidthPoint,zterm,figname,P0,pNeg,cNeg,alignVNeg,alignP,riseTimeNeg,pos,tt,p1,yNeg(1),yNeg,visible)
        end  
      end
      cNegM(wi) = meanabs(negArray(isfinite(negArray(:,2)),2));
@@ -224,7 +232,7 @@ for wi = 1:numWaveform
      
      %size(pn1)
      if plotCN
-     plotCNs(posArray,negArray,pos,figname,tt);
+        plotCNs(posArray,negArray,pos,figname,tt,visible);
      end
    end
    output1 =[output1;table(folder,dateN,filename,pulseWidth,frequency,zterm,P0*0.94,y1rms,y2rms,y3rms,...
@@ -241,29 +249,28 @@ end
 writetable(output1,filen1);
 writetable(output2,filen2);
 if plotErrBar
-  f10 = figure('Position',pos);
+  f10 = figure('Position',pos,'visible',visible);
   subplot(2,1,1);
   %suptitle(tt); 
   grid on;
   grid minor;
   hold on;  
-  errorbar(pw,cPosM,cPosCV,'-x');
-  legend('cPos');
-  errorbar(pw,cNegM,cNegCV,'-o');
-  legend('cNeg');
-  set(gca,'XTick',[]);
-  hold off;
+  p1=errorbar(pw,cPosM,cPosCV,'-x');
   
+  p2=errorbar(pw,cNegM,cNegCV,'-o');
+  
+  %set(gca,'XTick',[]);
+  hold off;
+  legend([p1,p2],'cPos','cNeg')
   subplot(2,1,2);
   grid on;
   grid minor;
   hold on;  
-  errorbar(pw,riseTimePosM,riseTimePosCV,'-x');
-  legend('riseTimePos');
-  %ylabel('riseTimePos');
-  errorbar(pw,riseTimeNegM,riseTimeNegCV,'-o');
+  p1=errorbar(pw,riseTimePosM,riseTimePosCV,'-x');
+
+  p2=errorbar(pw,riseTimeNegM,riseTimeNegCV,'-o');
   legend('riseTimeNeg');
-  xlabel('pulseWidth(ns)'); 
-  %hold off;
+  hold off;
+  legend([p1,p2],'riseTimePos','riseTimeNeg')
   export_fig(f10,figname,'-append');
 end    

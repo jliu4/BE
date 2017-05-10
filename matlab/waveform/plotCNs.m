@@ -1,5 +1,5 @@
-function plotCNs(posArray,negArray,pos,figname,tt)
-  f5 = figure('Position',pos);
+function plotCNs(posArray,negArray,pos,figname,tt,visible)
+  f5 = figure('Position',pos,'visible',visible);
 
    %if (v2s > 0 && v3s > 0)
    subplot(2,1,1)

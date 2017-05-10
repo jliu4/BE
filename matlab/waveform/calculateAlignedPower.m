@@ -8,21 +8,25 @@ function [P,c,riseTime,v1s,v2s,v3s,alignV]  = calculateAlignedPower(fstMax,M,MM,
    %find the alignP% alignment for v2
    j1 = max(1,fstMax-delta);
    ij1 = int32(j1);
+   
+    ij2 = min(ifstMax+delta,size(M,1));
+ 
+
   % [c1 v1s] = min(abs(M(fstMax-delta:fstMax+delta,2)-alignV));
   % [c2 v2] = min(abs(M(fstMax-delta:fstMax+delta,3)-alignV));
   % [c3 v3] = min(abs(M(fstMax-delta:fstMax+delta,4)-alignV));
-   [c1 v1s] = min(abs(M(ij1:ifstMax,2)-alignV));
+   [c1 v1s] = min(abs(M(ij1:ij2,2)-alignV));
    
-   [c2 v2] = min(abs(M(ij1+v1s:ifstMax,3)-alignV));
+   [c2 v2] = min(abs(M(ij1+v1s:ij2,3)-alignV));
    
-   [c3 v3] = min(abs(M(ij1+v1s:ifstMax,4)-alignV));
+   [c3 v3] = min(abs(M(ij1+v1s:ij2,4)-alignV));
    if debug
    figure;
    
    hold on
   
-   plot(M(ij1:ifstMax,1),M(ij1:ifstMax,2:4))
-   plot(M(ifstMax,1),alignV, '^r', 'MarkerFaceColor','r')
+   plot(M(ij1:ij2,1),M(ij1:ij2,2:4))
+   plot(M(ifstMax,1),M(ifstMax,2), '^r', 'MarkerFaceColor','r')
    plot(M(ij1+v1s,1),alignV, '^g','MarkerFaceColor','g')
    plot(M(ij1+v1s+v2,1),alignV, '^k','MarkerFaceColor','k')
    plot(M(ij1+v1s+v3,1),alignV, '^c','MarkerFaceColor','c')
