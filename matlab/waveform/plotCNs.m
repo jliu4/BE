@@ -8,13 +8,13 @@ function plotCNs(posArray,negArray,pos,figname,tt)
    %hold on;
    suptitle(tt); 
    
-   plot(posArray(:,1),posArray(:,2))
+   plot(posArray(:,1),posArray(:,2),'-x')
    yyaxis left
    ylabel('c');
   
   
    yyaxis right
-    plot(posArray(:,1),posArray(:,3));
+    plot(posArray(:,1),posArray(:,3),'-o');
    ylabel('RiseTime');
    
    subplot(2,1,2)
@@ -22,13 +22,13 @@ function plotCNs(posArray,negArray,pos,figname,tt)
    grid minor;
    %hold on; 
    
-   plot(negArray(:,1),negArray(:,2))
+   plot(negArray(:,1),negArray(:,2),'-x')
    yyaxis left
    ylabel('c');
   
   
    yyaxis right
-    plot(negArray(:,1),negArray(:,3));
+    plot(negArray(:,1),negArray(:,3),'-o');
    ylabel('RiseTime');
 
 

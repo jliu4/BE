@@ -7,7 +7,7 @@ uniqCT = unique(int16(pdata(:,1)));
 uniqCT(uniqCT>(temp2+3))=[];
 uniqCT(uniqCT<(temp1-2))=[];
 %assume for each run all temperatures have the same q-pulse length
-uniqQL = unique(int16(pdata(:,4)));
+
 i = 0;
 for ti = 1:numel(uniqCT) 
   tdata = pdata(int16(pdata(:,1)) == uniqCT(ti),:);
@@ -35,7 +35,11 @@ for ti = 1:numel(uniqCT)
     pcbP0 = tdata(1,12);
     %hiked here to accomodate sri-ipb2-33-lowvoltage run
     %JLIU TODO
-    qtdata = tdata(2:end,:);
+    if tt(i) >= 200
+        qtdata = tdata(2:end,:);
+    else
+    qtdata = tdata(2:end-1,:);
+    end
     %also filter out qPow < 1
     %qtdata = qtdata(qtdata(:,10) > 0.9,:);
     if isDC  %assign DC as index =1 for QL
@@ -43,12 +47,17 @@ for ti = 1:numel(uniqCT)
       v12(:,1,i)= qtdata(:,14);%qsupplyPower
       dqp(:,1,i) = qtdata(:,13); %power 
       ql(1,i)=0; %assume pulselength of dc = 0
-    else         
+    else 
+        uniqQL = unique(int16(qtdata(:,4)));
+        %qi = 1;
        for qi = 1:numel(uniqQL)
-          if qi == 1 
+         if qi == 1 
             ql(qi)=uniqQL(qi);
-          end  
+         end  
+      
           qtdata = qtdata(int16(qtdata(:,4)) == uniqQL(qi),:); 
+        %  if size(qtdata,1)<2 
+        %      continue;
           %if size(qtdata,1) < 5 %hike here
           %  qtdata(5,:)=qtdata(end-1,:);
           %end   
@@ -66,7 +75,7 @@ for ti = 1:numel(uniqCT)
        end  
     end 
     for qi = 1:numel(uniqQL)
-        
+      
       cT(:,qi,i) = qtdata(:,1);
       inT(:,qi,i) = qtdata(:,2);
   

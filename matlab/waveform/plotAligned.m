@@ -3,18 +3,19 @@ function plotAligned(v1,v2s,v3s,M,fstMax,delta,pulseWidthPoint,zterm,figname,P0,
   
    p4 = ['\leftarrow aligned at ' num2str(alignP*100)  '% pulse amplitude'];
    p5 = ['riseTime = ' num2str(riseTime) 'ns \rightarrow' ];
- t10 = min(1000,pulseWidthPoint);
-   t1 = max(1,fstMax - t10);
-   t2 = fstMax + t10;
-f1 = figure('Position',pos);
+   t10 = min(2500,pulseWidthPoint);
+   ifstMax = int32(fstMax);
+   t1 = max(1,ifstMax - t10);
+   t2 = ifstMax + t10;
+   f1 = figure('Position',pos);
    %if (v2s > 0 && v3s > 0)
    subplot(3,1,1);
    grid on;
    grid minor;
    %hold on;
    suptitle(tt); 
-   x = [M(fstMax,1),M(fstMax,1)];
-   x1=[M(fstMax-delta+v1,1),M(fstMax-delta+v1,1)];
+   x = [M(ifstMax,1),M(ifstMax,1)];
+   x1=[M(ifstMax-delta+v1,1),M(ifstMax-delta+v1,1)];
    dim = [0.14 0.6 0.1 0.1];
    annotation('textbox',dim,'String',p2,'FitBoxToText','on');
    hold on;

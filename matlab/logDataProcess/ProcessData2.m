@@ -61,8 +61,8 @@ for ai = 1:size(aSet,1)
       rtFolder='IPB3_DATA';   
     case {'ipb4-37';'ipb4-44'}
       rtFolder='IPB4_DATA';       
-    case 'google'
-      rtFolder='\BECteam\Jin\google';
+    case 'sri-conflat'
+      rtFolder='SRIdata';
   end %switch
   Directory=char(strcat(dataPath,rtFolder,'\',folder));
   tmpDir = extractAfter(Directory,dataPath);
@@ -195,9 +195,9 @@ if tsMultiPlot
   export_fig(ftsMulitplot,figname,'-append');
 end
 if postProcess
-  %legend(l1,'Location','SouthOutside');
-  %legend(l1,'Location','NorthOutside','Orientation','horizontal');
-  %export_fig(fsummary,figname,'-append');
+  legend(l1,'Location','SouthOutside');
+  legend(l1,'Location','NorthOutside','Orientation','horizontal');
+  export_fig(fsummary,figname,'-append');
   writetable(T1,filen1);
   writetable(T2,filen2);
 end
