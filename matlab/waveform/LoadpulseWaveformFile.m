@@ -9,13 +9,13 @@ else
   dataPath = 'D:\DropBox\Dropbox (BEC)\Jin\waveform\';
 end  
 debug = false;
-visible = 'off';
+visible = 'on';
 %control parameter
 plotSummary = true; plotPos = true; plotNeg = true; plotCN = true;
 plotErrBar = true;
 fn = char(strcat(dataPath,'waveform.xlsx'));
 waveform = readtable(fn);
-input = [waveform(31:41,:)];
+input = [waveform(44:50,:)];
 %input = [waveform(2:9,:);waveform(3,:);waveform(6,:);waveform(8:10,:)];
 %input = [waveform(20:27,:)];
 numWaveform = size(input,1);
@@ -30,8 +30,8 @@ riseTimePos = 0;
 cPos = 0; %propagate speed positive side
 riseTimeNeg = 0;
 cNeg = 0; %propagate speed negtive side
-filen1 = strcat(outputPath,'ipb3-42-0510.csv');
-filen2 = strcat(outputPath,'ipb3-42-0510.csv');
+filen1 = strcat(outputPath,'ipb4-44-0511.csv');
+filen2 = strcat(outputPath,'ipb4-44-0511.csv');
 output1 = cell2table(cell(0,22),...
 'VariableName',{'folder','date','filename','pulseWidth','frequency','Zterm','CoreQPow','v1rms','v2rms','v3rms',...
 'alignPowerPos','cPosM','riseTimePosM','cPosCV','riseTimePosCV',...
@@ -39,7 +39,7 @@ output1 = cell2table(cell(0,22),...
 output2 = cell2table(cell(0,6),...
 'VariableName',{'loc','c','riseTime','v1','v2','v3'});
 pw = [];
-figname = strcat(outputPath,'ipb3-42-0510.pdf');
+figname = strcat(outputPath,'ipb4-44-0511.pdf');
 delete(figname);
 pos = [10 10 1000 800];
 for wi = 1:numWaveform
@@ -57,7 +57,7 @@ for wi = 1:numWaveform
    pw(wi) = wi;% pulseWidth;
    panelDivision = input.panelDivision(wi); %vol
    type = input.type(wi);
-   tt = char(strcat(folder,'-',dateN,'-',num2str(pulseWidth),'-',type));
+   tt = char(strcat(folder,'-',dateN,'-',filename,'-',type));
    fn = char(strcat(dataPath,folder,'\',filename));
    %read in big file  
    M = csvread(fn,nh,0);
@@ -194,7 +194,7 @@ for wi = 1:numWaveform
    posArray = [];
    negArray = [];
    if alignP > 0
-     j1 = size(lc1,2)  
+     j1 = size(lc1,2); 
      for pi = 1:j1   
       fstMax =lc1(pi);   
       [pPos,cPos,riseTimePos,v1sPos,v2sPos,v3sPos,alignVPos] = calculateAlignedPower(fstMax,M,MM,delta,alignP,zterm,timeInterval,s2ns,coreL,inchNs,debug);
@@ -211,7 +211,7 @@ for wi = 1:numWaveform
      cPosCV(wi) = std(posArray(isfinite(posArray(:,2)),2));
      riseTimePosM(wi) = mean(posArray(isfinite(posArray(:,3)),3));
      riseTimePosCV(wi) = std(posArray(isfinite(posArray(:,3)),3));
-     j1 = size(lc2,2)
+     j1 = size(lc2,2);
      
      for pi = 1:j1
        fstMin = lc2(pi);
