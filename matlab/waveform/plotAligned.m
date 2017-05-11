@@ -3,10 +3,10 @@ function plotAligned(v1,v2s,v3s,M,fstMax,delta,pulseWidthPoint,zterm,figname,P0,
   
    p4 = ['\leftarrow aligned at ' num2str(alignP*100)  '% pulse amplitude'];
    p5 = ['riseTime = ' num2str(riseTime) 'ns \rightarrow' ];
-   t10 = min(1000,pulseWidthPoint);
+  
    ifstMax = int32(fstMax);
-   t1 = max(1,ifstMax - 2*delta);
-   t2 = ifstMax + 2*delta;
+   t1 = max(1,ifstMax - delta);
+   t2 = min(ifstMax + 2*delta,size(M,1));
    f1 = figure('Position',pos,'visible',visible);
    %if (v2s > 0 && v3s > 0)
    subplot(3,1,1);
