@@ -9,14 +9,14 @@ else
   dataPath = 'D:\DropBox\Dropbox (BEC)\Jin\waveform\';
 end  
 debug = false;
-visible = 'off';
+visible = 'on';
 %control parameters
 plotSummary = true; plotPos = true; plotNeg = true; plotCN = true; plotErrBar = true;
-fftAnalysis = true;
+fftAnalysis = false;
 
 fn = char(strcat(dataPath,'waveform.xlsx'));
 waveform = readtable(fn);
-input = [waveform(38:38,:)];
+input = [waveform(37:37,:)];
 %input = [waveform(2:9,:);waveform(3,:);waveform(6,:);waveform(8:10,:)];
 numWaveform = size(input,1);
 vfactor = 0.94;% off 0.6 seconds for each 10 seconds q-pulse measurement.
@@ -31,15 +31,15 @@ coreL = 16.5; %core length in inch
 %cPosCV = [];
 %riseTimePosM = [];
 %riseTimePosCV = [];
-filen1 = strcat(outputPath,'ipb3-42-square-0511.csv');
-filen2 = strcat(outputPath,'ipb3-42-square-0511-detail.csv');
+filen1 = strcat(outputPath,'ipb3-42-square-0512.csv');
+filen2 = strcat(outputPath,'ipb3-42-square-0512-detail.csv');
 output1 = cell2table(cell(0,22),...
 'VariableName',{'folder','date','filename','pulseWidth','frequency','Zterm','CoreQPow','v1rms','v2rms','v3rms',...
 'alignPowerPos','cPosM','riseTimePosM','cPosCV','riseTimePosCV',...
 'alignPowerNeg','cNegM','riseTimeNegM','cNegCV','riseTimeNegCV','noise','type'});
 output2 = cell2table(cell(0,6),...
 'VariableName',{'loc','c','riseTime','v1','v2','v3'});
-figname = strcat(outputPath,'ipb3-42-square-0511.pdf');
+figname = strcat(outputPath,'ipb3-42-square-0512.pdf');
 delete(figname);
 pos = [10 10 1000 800];
 for wi = 1:numWaveform

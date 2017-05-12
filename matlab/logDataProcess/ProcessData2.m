@@ -16,7 +16,7 @@ googleModelPath = 'C:\jinwork\BE\matlab\df-google\matfiles\';
 tsPlot = true; googleCopPlot = true; debugPlot = false; tsMultiPlot = false; tempExpFit = false; hpExpFit = true;  %has to set true TODO JLIU
 postProcess = true; writeOutput = true; plotOutput = true; detailPlot = true;findDuplicates = false;
 %plot bounds setting
-startOffset = 0;endOffset = 0;hp1 = 0;hp2 = 50; qp1 = 5;qp2 = 55;cqp1 = 0;cqp2 = 12; temp1 = 200; temp2 = 275;
+startOffset = 0;endOffset = 0;hp1 = 0;hp2 = 50; qp1 = 5;qp2 = 55;cqp1 = 0;cqp2 = 12; temp1 = 200; temp2 = 400;
 colors = setColors();
 %read cases
 readCase;
