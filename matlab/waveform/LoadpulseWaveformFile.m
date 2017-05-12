@@ -12,9 +12,11 @@ debug = false;
 visible = 'off';
 %control parameters
 plotSummary = true; plotPos = true; plotNeg = true; plotCN = true; plotErrBar = true;
+fftAnalysis = true;
+
 fn = char(strcat(dataPath,'waveform.xlsx'));
 waveform = readtable(fn);
-input = [waveform(49:49,:)];
+input = [waveform(38:38,:)];
 %input = [waveform(2:9,:);waveform(3,:);waveform(6,:);waveform(8:10,:)];
 numWaveform = size(input,1);
 vfactor = 0.94;% off 0.6 seconds for each 10 seconds q-pulse measurement.
@@ -29,15 +31,15 @@ coreL = 16.5; %core length in inch
 %cPosCV = [];
 %riseTimePosM = [];
 %riseTimePosCV = [];
-filen1 = strcat(outputPath,'ipb4-44-0511.csv');
-filen2 = strcat(outputPath,'ipb4-44-0511-detail.csv');
+filen1 = strcat(outputPath,'ipb3-42-square-0511.csv');
+filen2 = strcat(outputPath,'ipb3-42-square-0511-detail.csv');
 output1 = cell2table(cell(0,22),...
 'VariableName',{'folder','date','filename','pulseWidth','frequency','Zterm','CoreQPow','v1rms','v2rms','v3rms',...
 'alignPowerPos','cPosM','riseTimePosM','cPosCV','riseTimePosCV',...
 'alignPowerNeg','cNegM','riseTimeNegM','cNegCV','riseTimeNegCV','noise','type'});
 output2 = cell2table(cell(0,6),...
 'VariableName',{'loc','c','riseTime','v1','v2','v3'});
-figname = strcat(outputPath,'ipb4-44-0511.pdf');
+figname = strcat(outputPath,'ipb3-42-square-0511.pdf');
 delete(figname);
 pos = [10 10 1000 800];
 for wi = 1:numWaveform
@@ -69,24 +71,32 @@ for wi = 1:numWaveform
      msg = strcat('file:',filename,'has inf');  
      disp(msg);  
      continue;
-   end     
+   end   
    max2 = max(M(:,2));
    min2 = min(M(:,2));
    %[pk10,lc10] = findpeaks(M(delta:end-delta,2),'MinPeakProminence',100,'MinPeakHeight',mFactor*max2,'MinPeakDistance',pulseWidthPoint);
    %[pk20,lc20] = findpeaks(-M(delta:end-delta,2),'MinPeakProminence',100,'MinPeakHeight',-mFactor*min2,'MinPeakDistance',pulseWidthPoint);
- 
+   lc10 = []; lc20 = []; lc1 = []; lc2 = [];
    [pk10,lc10] = findpeaks(M(:,2),'MinPeakHeight',mFactor*max2,'MinPeakDistance',pulseWidthPoint);
    [pk20,lc20] = findpeaks(-M(:,2),'MinPeakHeight',-mFactor*min2,'MinPeakDistance',pulseWidthPoint);
    if lc10(1) < delta
      lc10(1) = [];
    end
+   if lc10(end) > numPoint - delta
+     lc10(end) = [];
+   end  
    if lc20(1) < delta
      lc20(1) = [];
    end
+   if lc20(end) > numPoint - delta
+     lc20(end) = [];
+   end  
    numOfPulse = size(lc10,1)+size(lc20,1); %count a positive pulse and a negtive pulse as two pulses
    %calculatePulseWid =abs(lc1(1)-lc2(1))*timeInterval*s2ns 
    frequency = int32(numOfPulse/totalTime/hz2kHz); %kHz as the frequency unit
    T = 1.0/(frequency*hz2kHz*timeInterval);
+   
+
    %find the peak at the edge
    if alignP > 0 
    j1 = size(lc10,1);
@@ -118,7 +128,39 @@ for wi = 1:numWaveform
    else
      lc1 = lc10;
      lc2 = lc20;
+   end 
+   if fftAnalysis
+     fs = 45000;
+     NFFT = length(M(:,1));
+     Y2 = fft(M(:,2),NFFT);
+     F2 = ((0:1/NFFT:1-1/NFFT)*Fs).';
+     magnitudeY2 = abs(Y2);        % Magnitude of the FFT
+     phaseY2 = unwrap(angle(Y2));  % Phase of the FFT
+
+     %helperFrequencyAnalysisPlot1(F2,magnitudeY2,phaseY2,NFFT)
+   end    
+   if false
+     t1 = int32(lc1(1)-delta);
+     t2 = int32(lc1(1)+pulseWidthPoint+delta);
+     freq = 1;
+     figure
+     plot(M(t1:t2,1),M(t1:t2,2),M(t1:t2,1),M(t1:t2,3),M(t1:t2,1),M(t1:t2,4));
+     legend('v1','v2','v3');
+     Y2 = fft(M(t1:t2,2),t2-t1);
+     Py2 = Y2.*conj(Y2)/single(t2-t1);
+     Y3 = fft(M(t1:t2,3),t2-t1);
+     Py3 = Y3.*conj(Y3)/single(t2-t1);
+     Y4 = fft(M(t1:t2,4),t2-t1);
+     Py4 = Y4.*conj(Y4)/single(t2-t1);
+     f2 = 0:freq; 
+     figure
+     plot(f2,Py2(1:freq+1),f2,Py3(1:freq+1),f2,Py4(1:freq+1))
+     title('Power spectral density')
+     xlabel('Frequency (kHz)')
+     legend('v1','v2','v3');
+     
    end  
+
    if debug
    figure;
    hold on
@@ -175,7 +217,7 @@ for wi = 1:numWaveform
      j1 = size(lc1,2); 
      for pi = 1:j1   
       fstMax =lc1(pi);   
-      [pPos,cPos,riseTimePos,v1sPos,v2sPos,v3sPos,alignVPos] = calculateAlignedPower(fstMax,M,MM,delta,alignP,zterm,timeInterval,s2ns,coreL,inchNs,debug);  
+      [pPos,cPos,riseTimePos,v1sPos,v2sPos,v3sPos,alignVPos] = calculateAlignedPower(fstMax,M,MM,delta,alignP,zterm,timeInterval,s2ns,coreL,inchNs,debug,tt,pi);  
       posArray(pi,1:6)=[lc1(pi),cPos,riseTimePos,v1sPos,v2sPos,v3sPos];
       %only plot the first one
       if pi==1 && plotPos %let's plot two
@@ -189,7 +231,7 @@ for wi = 1:numWaveform
      j1 = size(lc2,2); 
      for pi = 1:j1
        fstMin = lc2(pi);
-       [pNeg,cNeg,riseTimeNeg,v1sNeg,v2sNeg,v3sNeg,alignVNeg] = calculateAlignedPower(fstMin,M,MM,delta,alignP,zterm,timeInterval,s2ns,coreL,inchNs,debug);
+       [pNeg,cNeg,riseTimeNeg,v1sNeg,v2sNeg,v3sNeg,alignVNeg] = calculateAlignedPower(fstMin,M,MM,delta,alignP,zterm,timeInterval,s2ns,coreL,inchNs,debug,tt,pi);
        negArray(pi,1:6)=[lc2(pi),cNeg,riseTimeNeg,v1sNeg,v2sNeg,v3sNeg];
        if pi == 1 && plotNeg
          plotAligned(v1sNeg,v2sNeg,v3sNeg,M,fstMin,delta,pulseWidthPoint,zterm,figname,P0,pNeg,cNeg,alignVNeg,alignP,riseTimeNeg,pos,tt,p1,yNeg(1),yNeg,visible)
