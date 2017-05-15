@@ -52,10 +52,14 @@ for ti = 1:numel(uniqCT)
         
        
       if tt(i) == 350
-        qtdata = tdata(2:end,:);
+        if tdata(end,16) > 1.0  
+          qtdata = tdata(2:end,:);
+        else
+          qtdata = tdata(2:end-1,:);
+        end
       else
-        qtdata = tdata(2:end-1,:);
-      end
+         qtdata = tdata(2:end-1,:);
+      end   
        uniqQL = unique(int16(qtdata(:,4)));
         %qi = 1;
        for qi = 1:numel(uniqQL)

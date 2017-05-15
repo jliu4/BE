@@ -19,7 +19,7 @@ function [P,c,riseTime,v1s,v2s,v3s,alignV]  = calculateAlignedPower(fstMax,M,MM,
      plot(M(ifstMax,1),M(ifstMax,2), '^r', 'MarkerFaceColor','r')
      plot(M(ij1+v1s,1),alignV, '^g','MarkerFaceColor','g')
      plot(M(ij1+v1s+v2s,1),alignV, '^k','MarkerFaceColor','k')
-     plot(M(ij1+v1s+v2s+v3s,1),alignV, '^c','MarkerFaceColor','c')
+     plot(M(ij1+v1s+v3s,1),alignV, '^c','MarkerFaceColor','c')
      hold off
      grid
    end
@@ -40,7 +40,8 @@ function [P,c,riseTime,v1s,v2s,v3s,alignV]  = calculateAlignedPower(fstMax,M,MM,
      v2s = 0;
      v3s = 0;
    end
-   deltaV = (MM(1:end-v2s,1)-MM(1+v2s:end,2)); 
-   P = mean(deltaV(1:end-v3s).*MM(1+v3s+v2s:end,3))/zterm; %TODO abs
+   deltaV = (MM(1:end-v2s,1)-MM(1+v2s:end,2));
+   P1 = deltaV(1:end-v3s+v2s).*MM(1+v3s:end,3);
+   P = mean(deltaV(1:end-v3s+v2s).*MM(1+v3s:end,3))/zterm;
 end
 

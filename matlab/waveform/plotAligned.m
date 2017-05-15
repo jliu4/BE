@@ -30,7 +30,7 @@ function plotAligned(v1,v2s,v3s,M,fstMax,delta,pulseWidthPoint,zterm,figname,P0,
    grid on;
    grid minor;
    hold on;
-   plot(M(t1:t2,1),M(t1:t2,2),M(t1:t2-v2s,1),M(t1+v2s:t2,3),M(t1:t2-v3s,1),M(t1+v3s:t2,4))
+   plot(M(t1:t2,1),M(t1:t2,2),M(t1:t2-v2s,1),M(t1+v2s:t2,3),M(t1:t2-v3s-v2s,1),M(t1+v3s+v2s:t2,4))
    plot(x1,y1,'black','linewidth',1);
    text(x1(1),alignV,p4);
    hold off;
@@ -42,16 +42,13 @@ function plotAligned(v1,v2s,v3s,M,fstMax,delta,pulseWidthPoint,zterm,figname,P0,
    grid on;
    grid minor;
    deltaV = (M(t1:t2-v2s,2)-M(t1+v2s:t2,3));
-   P = deltaV(1:end-v3s+v2s).*M(t1+v3s:t2,4)/zterm;
+   P = deltaV(1:end-v3s).*M(t1+v3s+v2s:t2,4)/zterm;
    yyaxis left
    plot(M(t1:t2-v2s,1),deltaV);
    ylabel('v1-v2');
    yyaxis right
-   plot(M(t1:t2-v3s,1),P);
+   plot(M(t1:t2-v3s-v2s,1),P);
    ylabel('Instantaneous Pulse Power');
-   
-   %else
-
    export_fig(f1,figname,'-append');
 
 end
