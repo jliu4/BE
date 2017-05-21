@@ -1,12 +1,12 @@
-function plotAligned(v1,v2s,v3s,M,fstMax,delta,pulseWidthPoint,zterm,figname,P0,P,c,alignV,alignP,riseTime,pos,tt,p1,y,y1,visible)
+function plotAligned(v1,v2s,v3s,M,fstMax,delta,zterm,figname,P0,P,c,alignV,alignP,riseTime,pos,tt,y,y1,visible,it1,it2)
   p2 = char(strcat('Pulse Alignment Method: mean((v1-v2)*v3)/Z = ',num2str(P),' Z=', num2str(zterm), ' propagate speed = ',num2str(c),'c rmsP/alignP = ',num2str(P0/P) ));
   
    p4 = ['\leftarrow aligned at ' num2str(alignP*100)  '% pulse amplitude'];
    p5 = ['riseTime = ' num2str(riseTime) 'ns \rightarrow' ];
   
    ifstMax = int32(fstMax);
-   t1 = max(1,ifstMax - delta);
-   t2 = min(ifstMax + 2*delta,size(M,1));
+   t1 = max(1,ifstMax - it1);
+   t2 = min(ifstMax + it2,size(M,1));
    f1 = figure('Position',pos,'visible',visible);
    %if (v2s > 0 && v3s > 0)
    subplot(3,1,1);

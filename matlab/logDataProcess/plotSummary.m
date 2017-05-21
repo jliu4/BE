@@ -24,7 +24,7 @@ for ti = 1:numel(uniqCT)
     %hp0 = min(tdata(1,6),tdata(end,6)); %sometimes the first row is not converged yet
     %hp0 = tdata(end,6); %sometimes the first row is not converged yet
     %assuming first a few points end is better and 
-    if tt(i) == 350
+    if tt(i) > 200
       %TODO JLIU hacked here  
       hp0 = tdata(1,6);
     else
@@ -34,11 +34,7 @@ for ti = 1:numel(uniqCT)
     termP0 = tdata(1,11);
     pcbP0 = tdata(1,12);
     %hiked here to accomodate sri-ipb2-33-lowvoltage run
-    %JLIU TODO
-   
-    
-  
-   
+    %JLIU TODO   
     %also filter out qPow < 1
     %qtdata = qtdata(qtdata(:,10) > 0.9,:);
     if isDC  %assign DC as index =1 for QL
@@ -48,10 +44,8 @@ for ti = 1:numel(uniqCT)
       v12(:,1,i)= qtdata(:,14);%qsupplyPower
       dqp(:,1,i) = qtdata(:,13); %power 
       ql(1,i)=0; %assume pulselength of dc = 0
-    else 
-        
-       
-      if tt(i) == 350
+    else   
+      if tt(i) >= 325
         if tdata(end,16) > 1.0  
           qtdata = tdata(2:end,:);
         else

@@ -16,7 +16,7 @@ googleModelPath = 'C:\jinwork\BE\matlab\df-google\matfiles\';
 tsPlot = true; googleCopPlot = true; debugPlot = false; tsMultiPlot = false; tempExpFit = false; hpExpFit = true;  %has to set true TODO JLIU
 postProcess = true; writeOutput = true; plotOutput = true; detailPlot = true;findDuplicates = false;
 %plot bounds setting
-startOffset = 0;endOffset = 0;hp1 = 0;hp2 = 50; qp1 = 5;qp2 = 55;cqp1 = 0;cqp2 = 12; temp1 = 200; temp2 = 400;
+startOffset = 0;endOffset = 0;hp1 = 0;hp2 = 50; qp1 = 5;qp2 = 55;cqp1 = 0;cqp2 = 12; temp1 = 250; temp2 = 350;
 colors = setColors();
 %read cases
 readCase;
@@ -58,7 +58,7 @@ for ai = 1:size(aSet,1)
       rtFolder='SRI-IPB1';  
     case {'sri-ipb2-27';'sri-ipb2-33'}
       rtFolder='SRI-IPB2';  
-    case {'ipb3-32';'ipb3-37';'ipb3-42'}
+    case {'ipb3-32';'ipb3-37';'ipb3-42';'ipb3-43'}
       rtFolder='IPB3_DATA';   
     case {'ipb4-37';'ipb4-44'}
       rtFolder='IPB4_DATA';       
@@ -79,6 +79,9 @@ for ai = 1:size(aSet,1)
   else   
    %IPB
     loadIPB;
+  end
+  if findDuplicates
+   numberOfAppearancesOfRepeatedValues =duplicates(CoreQV1Rms);
   end
 
   if ~postProcess
