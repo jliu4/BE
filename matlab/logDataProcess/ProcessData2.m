@@ -94,7 +94,7 @@ for ai = 1:size(aSet,1)
     [T1,pdata] = writeOut(rawDataN,T1,hpExpFit,tempExpFit,writeOutput,figname,tStr,ff(ai));
     %comment out , too many plots
     %export_fig(ff(ai),figname,'-append');
-    if true
+    if false
        
       [tt,icT,hpdrop,v12,dqp,v122,hv,res,hva,hvb,hqpa,hqpb,resa,resb,hv0,hqp0,res0,ql,...
        hqp0sse,res0sse,icTsse] = plotSummary(pdata,isDC,efficiency,temp1,temp2);
@@ -200,9 +200,9 @@ if tsMultiPlot
   export_fig(ftsMulitplot,figname,'-append');
 end
 if postProcess
-  legend(l1,'Location','SouthOutside');
+  %legend(l1,'Location','SouthOutside');
   %legend(l1,'Location','NorthOutside','Orientation','horizontal');
-  export_fig(fsummary,figname,'-append');
+  %export_fig(fsummary,figname,'-append');
   writetable(T1,filen1);
   writetable(T2,filen2);
 end

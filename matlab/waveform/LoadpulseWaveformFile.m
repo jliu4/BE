@@ -12,12 +12,12 @@ end
 debug = false;
 visible = 'on';
 %control parameters
-plotSummary = true; plotPos = true; plotNeg = true; plotCN = true; plotErrBar = true;
-fftAnalysis = false;
+plotSummary = true; plotPos = true; plotNeg = true; plotCN = true; plotErrBar = false;
+fftAnalysis = true;
 
 fn = char(strcat(dataPath,'waveform.xlsx'));
 waveform = readtable(fn);
-input = [waveform(48:49,:)];
+input = [waveform(4,:);waveform(22,:);waveform(66,:);waveform(48:49,:)];
 %input = [waveform(2:9,:);waveform(3,:);waveform(6,:);waveform(8:10,:)];
 numWaveform = size(input,1);
 vfactor = 0.94;% off 0.6 seconds for each 10 seconds q-pulse measurement.
@@ -26,12 +26,12 @@ s2ns = 1e9;
 hz2kHz = 1e3;
 Fs = 2.5*1e9; %sampling frequency 2.5 ghz.
 inchNs = 0.0847253; %  speed light in unit [inch/ns]
-filen1 = strcat(outputPath,'ipb3-43-0519.csv');
+filen1 = strcat(outputPath,'fft-all-types-5-21.csv');
 output1 = cell2table(cell(0,22),...
 'VariableName',{'folder','date','filename','pulseWidth','frequency','Zterm','CoreQPow','v1rms','v2rms','v3rms',...
 'alignPowerPos','cPosM','riseTimePosM','cPosCV','riseTimePosCV',...
 'alignPowerNeg','cNegM','riseTimeNegM','cNegCV','riseTimeNegCV','noise','type'});
-figname = strcat(outputPath,'ipb3-43-0519.pdf');
+figname = strcat(outputPath,'fft-all-types-5-21.pdf');
 delete(figname);
 pos = [10 10 1000 800];
 for wi = 1:numWaveform
@@ -56,87 +56,20 @@ for wi = 1:numWaveform
    M = csvread(fn,nh,0);
    totalTime = M(end,1) - M(1,1);
    numPoint = size(M,1);
-   timeInterval = totalTime/numPoint;%sec
+   timeInterval = totalTime/numPoint; %sec
    pulseWidthPoint = pulseWidth/timeInterval/s2ns; 
    %take out 
    M0 = M(isfinite(M(:,2)),2);
+   filterValue = filterCount *4* panelDivision /128; %TODO JLIU 256?
    
+  
    %if there is inf, there is no sense to align them.   
    if size(M0,1) < numPoint
      msg = strcat('file:',filename,'has inf');  
      disp(msg);  
      continue;
    end   
-if fftAnalysis
-  nfft = length(M(:,1)); 
-  Y1 = fft(M(:,2),nfft);
-  F1 = ((0:1/nfft:1-1/nfft)*Fs).';
-  magnitudeY1 = abs(Y1);        % Magnitude of the FFT
-  phaseY1 = unwrap(angle(Y1));  % Phase of the FFT
-  helperFrequencyAnalysisPlot1(F1,magnitudeY1,phaseY1,nfft,'v1','v1')
-  y1 = ifft(Y1,nfft,'symmetric');
-  norm(Y1-y1)
-  Ylp = Y1;
-  Ylp(F1>=5000 & F1<=Fs-5000) = 0;
-
-   helperFrequencyAnalysisPlot1(F1,abs(Ylp),unwrap(angle(Ylp)),nfft,...
-  'Frequency components above 5 kHz have been zeroed','v1')
-end    
-if false   
-     fs = Fs;
-     fn = fs/2;
-     t=1/fs;
-     L = length(M(:,1));  
-y = fft(M(:,2),nfft)/nfft;
-f = linspace(0, 1, fix(L/2)+1)*fn;
-y = y(1:length(f));
-mag = abs(y)*2;
-f = linspace(0, 1, fix(L/2)+1)*fn;
-figure(2)
-subplot(2,1,1)
-plot(f,mag)
-ylabel('Amplitude (m)')
-grid
-subplot(2,1,2)
-plot(f,angle(y))
-grid
-xlabel('Frequency (Hz)')
-ylabel('\Phi (rad)')
-ysg = sgolayfilt(mag, 3, 25);
-[sgp,frq] = findpeaks(ysg,f, 'MinPeakDistance',0.1, 'MinPeakHeight',0.001);
-figure(3)
-plot(f,mag)
-hold on
-plot(f, ysg, '-r', 'LineWidth',1)
-plot(frq, sgp, 'g^', 'MarkerSize',7, 'MarkerFaceColor','g')
-hold off
-grid
-xlabel('Frequency (Hz)')
-ylabel('Amplitude (v)')
-legend('Data', 'Savitzky-Golay Filtered Data', 'Identified Harmonics', 'Location','NE')
-end
-
-   if false
-     t1 = int32(lc1(1)-delta);
-     t2 = int32(lc1(1)+pulseWidthPoint+delta);
-     freq = 1;
-     figure
-     plot(M(t1:t2,1),M(t1:t2,2),M(t1:t2,1),M(t1:t2,3),M(t1:t2,1),M(t1:t2,4));
-     legend('v1','v2','v3');
-     Y2 = fft(M(t1:t2,2),t2-t1);
-     Py2 = Y2.*conj(Y2)/single(t2-t1);
-     Y3 = fft(M(t1:t2,3),t2-t1);
-     Py3 = Y3.*conj(Y3)/single(t2-t1);
-     Y4 = fft(M(t1:t2,4),t2-t1);
-     Py4 = Y4.*conj(Y4)/single(t2-t1);
-     f2 = 0:freq; 
-     figure
-     plot(f2,Py2(1:freq+1),f2,Py3(1:freq+1),f2,Py4(1:freq+1))
-     title('Power spectral density')
-     xlabel('Frequency (kHz)')
-     legend('v1','v2','v3');
-     
-   end  
+  
    max2 = max(M(:,2));
    min2 = min(M(:,2));
    switch char(type)
@@ -173,9 +106,22 @@ end
    end  
    numOfPulse = size(lc10,1)+size(lc20,1); %count a positive pulse and a negtive pulse as two pulses
    %calculatePulseWid =abs(lc1(1)-lc2(1))*timeInterval*s2ns 
-   frequency = int32(numOfPulse/totalTime/hz2kHz); %kHz as the frequency unit
-   T = 1.0/(frequency*hz2kHz*timeInterval);
-   %find the peak at the edge
+   frequency = int32(numOfPulse/totalTime/hz2kHz) %kHz as the frequency unit
+   if fftAnalysis  
+     xrange = 4;
+      %filter out noise.
+      M0 = M(:,2:4);
+      
+      M0(abs(M0) <= filterValue*0)= 0;
+      M1 = horzcat(M(:,1),M0(:,1:3));
+   
+     t1 = int32(lc20(1)-2*delta);
+     t2 = int32(lc20(2)-2*delta);
+     plotFFT0(M1,t1,t2,pos,figname,tt,Fs,xrange,visible);
+  end
+  continue;
+   
+ %find the peak at the edge
    if alignP > 0 
    j1 = size(lc10,1);
    ii = 0;
