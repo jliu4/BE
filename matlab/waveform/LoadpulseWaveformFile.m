@@ -10,14 +10,15 @@ else
   dataPath = 'D:\DropBox\Dropbox (BEC)\Jin\waveform\';
 end  
 debug = false;
+
 visible = 'on';
 %control parameters
-plotSummary = true; plotPos = true; plotNeg = true; plotCN = true; plotErrBar = false;
+plotSummary = true; plotPos = true; plotNeg = true; plotCN = true; plotErrBar = true;
 fftAnalysis = true;
 
 fn = char(strcat(dataPath,'waveform.xlsx'));
 waveform = readtable(fn);
-input = [waveform(4,:);waveform(22,:);waveform(66,:);waveform(48:49,:)];
+input = [waveform(22:22,:)];
 %input = [waveform(2:9,:);waveform(3,:);waveform(6,:);waveform(8:10,:)];
 numWaveform = size(input,1);
 vfactor = 0.94;% off 0.6 seconds for each 10 seconds q-pulse measurement.
@@ -26,12 +27,12 @@ s2ns = 1e9;
 hz2kHz = 1e3;
 Fs = 2.5*1e9; %sampling frequency 2.5 ghz.
 inchNs = 0.0847253; %  speed light in unit [inch/ns]
-filen1 = strcat(outputPath,'fft-all-types-5-21.csv');
+filen1 = strcat(outputPath,'sri-ipb1-41-052517.csv');
 output1 = cell2table(cell(0,22),...
 'VariableName',{'folder','date','filename','pulseWidth','frequency','Zterm','CoreQPow','v1rms','v2rms','v3rms',...
 'alignPowerPos','cPosM','riseTimePosM','cPosCV','riseTimePosCV',...
 'alignPowerNeg','cNegM','riseTimeNegM','cNegCV','riseTimeNegCV','noise','type'});
-figname = strcat(outputPath,'fft-all-types-5-21.pdf');
+figname = strcat(outputPath,'sri-ipb1-41-052517.pdf');
 delete(figname);
 pos = [10 10 1000 800];
 for wi = 1:numWaveform
@@ -61,8 +62,6 @@ for wi = 1:numWaveform
    %take out 
    M0 = M(isfinite(M(:,2)),2);
    filterValue = filterCount *4* panelDivision /128; %TODO JLIU 256?
-   
-  
    %if there is inf, there is no sense to align them.   
    if size(M0,1) < numPoint
      msg = strcat('file:',filename,'has inf');  
@@ -73,7 +72,8 @@ for wi = 1:numWaveform
    max2 = max(M(:,2));
    min2 = min(M(:,2));
    switch char(type)
-       case {'square';'square-cal'}
+       case {'square';'square-cal';'Trapezoid'}
+        %mVolt = min(max2,-min2); %
         mVolt = 0.5*voltage;
         it1 = delta;
         it2 = 3*delta; %max(1000,pulseWidthPoint+0.5*delta);
@@ -83,8 +83,8 @@ for wi = 1:numWaveform
         it2 = 3*delta;
        case {'dualNarrow'}
         mVolt = min(max2,-min2);
-        it1 = delta; %min(1000,pulseWidthPoint+0.5*delta);
-        it2 = 3*delta;
+        it1 = 10*delta; %min(1000,pulseWidthPoint+0.5*delta);
+        it2 = 3*delta;  
    end   
        
    %[pk10,lc10] = findpeaks(M(delta:end-delta,2),'MinPeakProminence',100,'MinPeakHeight',mFactor*max2,'MinPeakDistance',pulseWidthPoint);
@@ -117,9 +117,9 @@ for wi = 1:numWaveform
    
      t1 = int32(lc20(1)-2*delta);
      t2 = int32(lc20(2)-2*delta);
-     plotFFT0(M1,t1,t2,pos,figname,tt,Fs,xrange,visible);
+     plotFFT(M1,t1,t2,pos,figname,tt,Fs,xrange,visible);
   end
-  continue;
+  %continue;
    
  %find the peak at the edge
    if alignP > 0 
@@ -236,6 +236,7 @@ for wi = 1:numWaveform
      riseTimeNegCV(wi) = std(negArray(isfinite(negArray(:,3)),3));
      if plotCN
         plotCNs(posArray,negArray,pos,figname,tt,visible);
+
      end
    end
    output1 =[output1;table(folder,dateN,filename,pulseWidth,frequency,zterm,P0*0.94*0.94,y1rms,y2rms,y3rms,...

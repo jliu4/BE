@@ -16,7 +16,7 @@ googleModelPath = 'C:\jinwork\BE\matlab\df-google\matfiles\';
 tsPlot = true; googleCopPlot = true; debugPlot = false; tsMultiPlot = false; tempExpFit = false; hpExpFit = true;  %has to set true TODO JLIU
 postProcess = true; writeOutput = true; plotOutput = true; detailPlot = true;findDuplicates = false;
 %plot bounds setting
-startOffset = 0;endOffset = 0;hp1 = 0;hp2 = 50; qp1 = 5;qp2 = 55;cqp1 = 0;cqp2 = 12; temp1 = 250; temp2 = 350;
+startOffset = 0;endOffset = 0;hp1 = 0;hp2 = 50; qp1 = 5;qp2 = 55;cqp1 = 0;cqp2 = 18; temp1 = 250; temp2 = 350;
 colors = setColors();
 %read cases
 readCase;
@@ -45,6 +45,7 @@ for ai = 1:size(aSet,1)
   startOffset = aSet.startOffset(ai);
   endOffset = aSet.endOffset(ai);
   gas = char(aSet.gas(ai));
+  coreL = aSet.coreL(ai);
   isDC = aSet.isDC(ai);
   efficiency = aSet.efficiency(ai);
   termRes = aSet.termRes(ai);
@@ -94,7 +95,7 @@ for ai = 1:size(aSet,1)
     [T1,pdata] = writeOut(rawDataN,T1,hpExpFit,tempExpFit,writeOutput,figname,tStr,ff(ai));
     %comment out , too many plots
     %export_fig(ff(ai),figname,'-append');
-    if false
+    if true
        
       [tt,icT,hpdrop,v12,dqp,v122,hv,res,hva,hvb,hqpa,hqpb,resa,resb,hv0,hqp0,res0,ql,...
        hqp0sse,res0sse,icTsse] = plotSummary(pdata,isDC,efficiency,temp1,temp2);
@@ -200,9 +201,9 @@ if tsMultiPlot
   export_fig(ftsMulitplot,figname,'-append');
 end
 if postProcess
-  %legend(l1,'Location','SouthOutside');
+  legend(l1,'Location','SouthOutside');
   %legend(l1,'Location','NorthOutside','Orientation','horizontal');
-  %export_fig(fsummary,figname,'-append');
+  export_fig(fsummary,figname,'-append');
   writetable(T1,filen1);
   writetable(T2,filen2);
 end

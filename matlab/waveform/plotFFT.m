@@ -48,17 +48,18 @@ function plotFFT(M,t1,t2,pos,figname,tt,Fs,xrange,visible )
      subplot(2,2,3);
      grid on;
      F1 = (0:1/nfft:1/2-1/nfft)*Fs;
-          [P1,F]=periodogram(M(t1:t2,2),[],nfft,Fs,'power');
+     [P1,F]=periodogram(M(t1:t2,2),[],nfft,Fs,'power');
     [P2,F]=periodogram(M(t1:t2,3),[],nfft,Fs,'power');
      [P3,F]=periodogram(M(t1:t2,4),[],nfft,Fs,'power');
  
-     plot(F/1e3,10*log10(P1),F/1e3,10*log10(P2),F/1e3,10*log10(P3));
+     %plot(F/1e3,10*log10(P1),F/1e3,10*log10(P2),F/1e3,10*log10(P3));
      %legend('v1','v2','v3');
-     %plot(F1/1e3,(Y1(1:nfft/2)),F1/1e3,(Y2(1:nfft/2)),F1/1e3,(Y3(1:nfft/2)));
+     plot(F1/1e3,(Y1(1:nfft/2)),F1/1e3,(Y2(1:nfft/2)),F1/1e3,(Y3(1:nfft/2)));
      grid on;
      grid minor;
      xlabel('Frequency in kHz')
-     ylabel('Power spectrum (dBW)')
+     %ylabel('Power spectrum (dBW)')
+     ylabel('FFT')
      %legend('v1','v2','v3');
      ax = axis;
      axis([0 xrange*1e2 ax(3:4)])
