@@ -16,7 +16,7 @@ googleModelPath = 'C:\jinwork\BE\matlab\df-google\matfiles\';
 tsPlot = true; googleCopPlot = true; debugPlot = false; tsMultiPlot = false; tempExpFit = false; hpExpFit = true;  %has to set true TODO JLIU
 postProcess = true; writeOutput = true; plotOutput = true; detailPlot = true;findDuplicates = false;
 %plot bounds setting
-startOffset = 0;endOffset = 0;hp1 = 0;hp2 = 50; qp1 = 5;qp2 = 55;cqp1 = 0;cqp2 = 18; temp1 = 250; temp2 = 350;
+startOffset = 0;endOffset = 0;hp1 = 0;hp2 = 40; qp1 = 5;qp2 = 55;cqp1 = 0;cqp2 = 12; temp1 = 250; temp2 = 350;
 colors = setColors();
 %read cases
 readCase;
@@ -74,6 +74,7 @@ for ai = 1:size(aSet,1)
   Experiment'
   loadCSVFile; 
   dateN=datenum(DateTime,'mm/dd/yyyy HH:MM:SS');
+  tStr = strcat(reactor,'-',runDate,'-',desc);    
   if contains(rtFolder,'SRIdata')
    %conflat
     loadConflat;
@@ -88,9 +89,6 @@ for ai = 1:size(aSet,1)
   if ~postProcess
     continue;
   else   
-    %tStr = strcat(reactor,'-',runDate,'-',gas,'-',power);    
-    tStr = strcat(reactor,'-',runDate,'-',desc);    
-    %ff(ai) = figure('Position',pos);
     ff(ai) = 0;
     [T1,pdata] = writeOut(rawDataN,T1,hpExpFit,tempExpFit,writeOutput,figname,tStr,ff(ai));
     %comment out , too many plots
@@ -158,7 +156,7 @@ for ai = 1:size(aSet,1)
     fcount = fcount + 1; 
    % tqStr = strcat(tStr,'-',num2str(ql(qi)),'-ns');
     tqStr = strcat(tStr);
-    subplot(1,3,1);
+    subplot(1,2,1);
     grid on;
     grid minor;
     hold on;
@@ -169,7 +167,7 @@ for ai = 1:size(aSet,1)
     xlim([temp1 temp2]);
     ytemp = strcat('V^2 / P');
     ylabel(ytemp); 
-    subplot(1,3,2);
+    subplot(1,2,2);
     grid on;
     grid minor;
     hold on;
@@ -178,6 +176,7 @@ for ai = 1:size(aSet,1)
     xlim([temp1 temp2]);
     ytemp = strcat('HpDrop / P');
     ylabel(ytemp);
+    if false
     subplot(1,3,3);
     grid on;
     grid minor;
@@ -187,6 +186,7 @@ for ai = 1:size(aSet,1)
     xlim([temp1 temp2]);
     ytemp = strcat('Inner / core Temp');
     ylabel(ytemp);
+    end
     l1{fcount}=tStr; 
     T2 =[T2;table(tt(:),icT(qi,:)',icTsse(qi,:)',res0(qi,:)',res0sse(qi,:)',hv0(qi,:)',hqp0(qi,:)',hqp0sse(qi,:)',...
     resa(qi,:)',resb(qi,:)',...   

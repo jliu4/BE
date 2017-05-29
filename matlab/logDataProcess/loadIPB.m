@@ -6,7 +6,7 @@ power = 'q';
 if isDC
   power = 'dc';
 end  
-plotTitle =strcat(tmpDir,'-',runDate,'-',power,'-',gas); 
+plotTitle =strcat(tmpDir,'-',tStr); 
 %change datetime to number
 
 %if version < 173  
