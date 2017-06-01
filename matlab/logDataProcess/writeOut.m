@@ -3,7 +3,8 @@ dataSize = size(data,1);
 ctFit = [];
 itFit = [];
 dt1 = [];
-coreT =[];inT=[];outT=[];ql=[];qf=[];hp=[];coreQPow=[];v1=[];v2=[];qPow=[];qSP=[];qSV=[];qCur=[];qSetV=[];h2=[];termP=[];pcbP=[];seq1=[];i12=[];dt2=[];
+seq1=strings();
+coreT =[];inT=[];outT=[];ql=[];qf=[];hp=[];coreQPow=[];v1=[];v2=[];qPow=[];qSP=[];qSV=[];qCur=[];qSetV=[];h2=[];termP=[];pcbP=[];i12=[];dt2=[];
 i=0;
 %start point of the sequence
 i1 = 1;
@@ -25,7 +26,7 @@ while (i < dataSize-1)
     seq2=seq2+1;
     %one point
     seq = data.SeqStepNum(i);
-    seq1(seq2)=seq;
+    seq1(seq2)=strcat(tStr,num2str(seq2));
     dt1(seq2) = data.dateN(i2); 
     h2(seq2) = 1; %HydrogenValves(i);
     ql(seq2) = data.QPulseLengthns(i);

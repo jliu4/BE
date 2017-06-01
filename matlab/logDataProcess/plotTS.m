@@ -15,8 +15,8 @@ else
    
    pUp = data.QPow - data.CoreQV3Rms.*data.CoreQV3Rms/termRes; 
    pUp2 = data.QPow - data.TerminationHeatsinkPower;
-   addaxisplot(dt,pUp,1,'--');
-   addaxisplot(dt,smooth(pUp2,12),1,':');
+   %addaxisplot(dt,pUp,1,'--');
+   %addaxisplot(dt,smooth(pUp2,12),1,':');
    addaxisplot(dt,data.CoreQPower,1,'linewidth',2);
    v2 = (data.CoreQV1Rms-data.CoreQV2Rms).*(data.CoreQV1Rms-data.CoreQV2Rms);
    q = data.CoreQPower;
@@ -36,9 +36,9 @@ addaxisplot(dt,data.CoreQV2Rms,4,'--'); %light purple
 addaxisplot(dt,data.CoreQV3Rms,4,':'); %light purple
 
 %addaxis(dt,data.InnerBlockTemp1./data.CoreTemp,[0.5,1]); 
-%if size(cop) == size(dt)
-%  addaxis(dt,cop,[0.8,1.5]) ;  
-%end  
+if size(cop) == size(dt)
+ addaxis(dt,cop,[0.8,1.5]) ;  
+end  
 %addaxis(dt,data.CoreQV1Rms,[cqp1,cqp2]); 
 %addaxis(dt,data.CoreQV2Rms,[cqp1,cqp2]) ;
 %addaxis(dt,(data.CoreQV1Rms-data.CoreQV2Rms).*(data.CoreQV1Rms-data.CoreQV2Rms)/coreRes,[cqp1,cqp2]) ;
@@ -48,10 +48,11 @@ addaxislabel(2,'R(ohm)-c');
 %addaxislabel(5,'coreQPowUpbound');
 addaxislabel(3,'coreT-innerT');
 addaxislabel(4,'v1-v2-v3(v)');
-legend('hp','coreQpowUpBound','P-term','coreQPow','R','c','coreT','innerT','v1','v2','v3','Location','northwest');
-%if size(cop) == size(dt)
-% addaxislabel(5,'COP'); 
-%end  
+%legend('hp','coreQpowUpBound','P-term','coreQPow','R','c','coreT','innerT','v1','v2','v3','Location','northwest');
+legend('hp','coreQPow','R','c','coreT','innerT','v1','v2','v3','Location','northwest');
+if size(cop) == size(dt)
+ addaxislabel(5,'COP'); 
+end  
 %if isDC==false && version > 188
 %  addaxislabel(3,'c');
 %end  

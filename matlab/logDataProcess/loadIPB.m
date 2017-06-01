@@ -6,7 +6,7 @@ power = 'q';
 if isDC
   power = 'dc';
 end  
-plotTitle =strcat(tmpDir,'-',tStr); 
+plotTitle =strcat(tmpDir,'\',tStr); 
 %change datetime to number
 
 %if version < 173  
@@ -151,9 +151,15 @@ end
 %show startOffset and endOffset
 DateTime(1+int16(startOffset*360))
 DateTime(end - int16(endOffset*360))
-rawData = rawData(1+int16(startOffset*360):end-int16(endOffset*360),:);
+
+n1 = int16(startOffset*360);
+n2 =int16(endOffset*360);
+if n1 + n2 > 0  %work around
+rawData = rawData(1+n1:end-n2,:);
+end
+
 %(isnan(j1)) = -2 ;
-rawData = rawData(rawData(:,2) > 0,:); %only process data with seq
+ rawData = rawData(rawData(:,2) > 0,:); %only process data with seq
 %rawData(any(isnan(rawData)),:)=[]; %take out rows with NaN but not a good code
 %rawData(any(isnan(rawData),2),:)=[];
 %asignColumn name 

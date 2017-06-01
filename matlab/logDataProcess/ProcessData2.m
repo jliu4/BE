@@ -28,7 +28,7 @@ filen2 = strcat(outputPath,aSetdesc,'.csv');
 T1=cell2table(cell(0,24),...
 'VariableName',{'coreT','inT','outT','QL','QF','HP','CoreQPower','v1','v2','v3','qPow','qSP','qSV','h2','termP','pcbP',...
 'p1','p2','p3','p4','hp_','seq','steps','date'});
-T2 = cell2table(cell(0,14),'VariableNames',{'coreT','icT','icTsse','R','Rsse','C','M','Msse','Ra','Rb','Ca','Cb','Ma','Mb'});
+T2 = cell2table(cell(0,13),'VariableNames',{'run','coreT','R','Rsse','C','M','Msse','Ra','Rb','Ca','Cb','Ma','Mb'});
 pos = [10 10 1000 800];
 fsummary=figure('Position',pos);
 if tsMultiPlot
@@ -74,7 +74,8 @@ for ai = 1:size(aSet,1)
   Experiment'
   loadCSVFile; 
   dateN=datenum(DateTime,'mm/dd/yyyy HH:MM:SS');
-  tStr = strcat(reactor,'-',runDate,'-',desc);    
+  tStr = strcat(reactor,'-',runDate,'-',desc);  
+  
   if contains(rtFolder,'SRIdata')
    %conflat
     loadConflat;
@@ -91,12 +92,18 @@ for ai = 1:size(aSet,1)
   else   
     ff(ai) = 0;
     [T1,pdata] = writeOut(rawDataN,T1,hpExpFit,tempExpFit,writeOutput,figname,tStr,ff(ai));
+    if size(pdata,1) <1
+        continue;
+    end    
     %comment out , too many plots
     %export_fig(ff(ai),figname,'-append');
-    if true
-       
+    if true     
       [tt,icT,hpdrop,v12,dqp,v122,hv,res,hva,hvb,hqpa,hqpb,resa,resb,hv0,hqp0,res0,ql,...
        hqp0sse,res0sse,icTsse] = plotSummary(pdata,isDC,efficiency,temp1,temp2);
+   if length(tt) < 1
+     continue;
+   end  
+     
     if detailPlot
       %plot for all temperatures each q-pulse  
       for qi = 1:size(ql,1)   
@@ -152,6 +159,7 @@ for ai = 1:size(aSet,1)
     end  
   end  
   figure(fsummary);
+  
   for qi = 1:size(ql,1) 
     fcount = fcount + 1; 
    % tqStr = strcat(tStr,'-',num2str(ql(qi)),'-ns');
@@ -167,7 +175,7 @@ for ai = 1:size(aSet,1)
     xlim([temp1 temp2]);
     ytemp = strcat('V^2 / P');
     ylabel(ytemp); 
-    subplot(1,2,2);
+    ax2 = subplot(1,2,2);
     grid on;
     grid minor;
     hold on;
@@ -188,11 +196,14 @@ for ai = 1:size(aSet,1)
     ylabel(ytemp);
     end
     l1{fcount}=tStr; 
-    T2 =[T2;table(tt(:),icT(qi,:)',icTsse(qi,:)',res0(qi,:)',res0sse(qi,:)',hv0(qi,:)',hqp0(qi,:)',hqp0sse(qi,:)',...
+    j1 = length(tt);
+    str = strings(j1,1);
+    str(1) = tStr;
+    T2 =[T2;table(str(:,1),tt(:),res0(qi,:)',res0sse(qi,:)',hv0(qi,:)',hqp0(qi,:)',hqp0sse(qi,:)',...
     resa(qi,:)',resb(qi,:)',...   
     hva(qi,:)',hvb(qi,:)',...
     hqpa(qi,:)',hqpb(qi,:)',...
-    'VariableNames',{'coreT','icT','icTsse','R','Rsse','C','M','Msse','Ra','Rb','Ca','Cb','Ma','Mb'})];
+    'VariableNames',{'run','coreT','R','Rsse','C','M','Msse','Ra','Rb','Ca','Cb','Ma','Mb'})];
   end
  end
 end
@@ -201,7 +212,7 @@ if tsMultiPlot
   export_fig(ftsMulitplot,figname,'-append');
 end
 if postProcess
-  legend(l1,'Location','SouthOutside');
+  legend(ax2,l1,'Location','SouthOutside');
   %legend(l1,'Location','NorthOutside','Orientation','horizontal');
   export_fig(fsummary,figname,'-append');
   writetable(T1,filen1);
