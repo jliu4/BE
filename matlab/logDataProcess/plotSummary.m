@@ -20,7 +20,7 @@ for ti = 1:numel(uniqCT)
   %TODO JLIU where DC and Q both power zero.
   %need to have at least three datapoints for each temperature, and the
   %first row and last row qpow = 0
-  if size(tdata,1) > 2  %heatpower has to larger than && tdata(end,16) < 1 
+  if size(tdata,1) > 3  %heatpower has to larger than && tdata(end,16) < 1 
     i = i + 1;
     tt(i) = uniqCT(ti);
     %hp0 = min(tdata(1,6),tdata(end,6)); %sometimes the first row is not converged yet

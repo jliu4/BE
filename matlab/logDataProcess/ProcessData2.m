@@ -34,6 +34,7 @@ fsummary=figure('Position',pos);
 if tsMultiPlot
   ftsMulitplot = figure('Position',pos);
 end
+
 %the summary plot count number
 fcount = 0;
 for ai = 1:size(aSet,1)
@@ -52,6 +53,8 @@ for ai = 1:size(aSet,1)
   version = aSet.version(ai);
   googleModel = aSet.googleModel(ai);
   desc = char(aSet.desc(ai));
+  fileName = char(aSet.fileName(ai));
+  
   switch (reactor)
     case {'ipb1-29'; 'ipb1-30';'ipb1-13';'ipb1-40';'ipb1-41'}
       rtFolder='ISOPERIBOLIC_DATA'; 
@@ -86,7 +89,10 @@ for ai = 1:size(aSet,1)
   if findDuplicates
    numberOfAppearancesOfRepeatedValues =duplicates(CoreQV1Rms);
   end
-
+  if contains(fileName,'excitation') %JLIU TODO hacked here
+    continue;
+  end
+      
   if ~postProcess
     continue;
   else   
@@ -173,7 +179,7 @@ for ai = 1:size(aSet,1)
     errorbar(tt(:),res0(qi,:),res0sse(qi,:),'Color',colors(ai,:));
     %h1=plot(tt(:),res0(qi,:),'-o','Color',Col);
     xlim([temp1 temp2]);
-    ytemp = strcat('V^2 / P');
+    ytemp = strcat('V^2 / P [ohm]');
     ylabel(ytemp); 
     ax2 = subplot(1,2,2);
     grid on;
@@ -182,7 +188,7 @@ for ai = 1:size(aSet,1)
     errorbar(tt(:),hqp0(qi,:),hqp0sse(qi,:),'Color',colors(ai,:));
     %h3=plot(tt(:),hqp0(qi,:),'-o','Color',Col);
     xlim([temp1 temp2]);
-    ytemp = strcat('HpDrop / P');
+    ytemp = strcat('M - HpDrop / P');
     ylabel(ytemp);
     if false
     subplot(1,3,3);
