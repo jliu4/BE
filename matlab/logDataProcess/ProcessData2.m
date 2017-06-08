@@ -68,6 +68,8 @@ for ai = 1:size(aSet,1)
       rtFolder='IPB4_DATA';       
     case 'sri-conflat'
       rtFolder='SRIdata';
+    case 'google'
+      rtFolder='Jin\google\060217';
   end %switch
   Directory=char(strcat(dataPath,rtFolder,'\',folder));
   tmpDir = extractAfter(Directory,dataPath);

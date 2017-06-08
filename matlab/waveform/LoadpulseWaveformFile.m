@@ -9,16 +9,16 @@ if contains(home,'admin')
 else
   dataPath = 'D:\DropBox\Dropbox (BEC)\Jin\waveform\';
 end  
-debug = false;
+debug = true;
 
 visible = 'on';
 %control parameters
 plotSummary = true; plotPos = true; plotNeg = true; plotCN = true; plotErrBar = true;
-fftAnalysis = true;
+fftAnalysis = false;
 
 fn = char(strcat(dataPath,'waveform.xlsx'));
 waveform = readtable(fn);
-input = [waveform(22:22,:)];
+input = [waveform(71:71,:)];
 %input = [waveform(2:9,:);waveform(3,:);waveform(6,:);waveform(8:10,:)];
 numWaveform = size(input,1);
 vfactor = 0.94;% off 0.6 seconds for each 10 seconds q-pulse measurement.
