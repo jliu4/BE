@@ -2,6 +2,7 @@ clear; close all; clc
 addpath('C:\jinwork\BE\matlab')
 
 matfileFolder='C:\jinwork\BE\matlab\df-google\matfiles';
+matfileFolder='D:\DropBox\Dropbox (BEC)\Jin\google\060217\';
 matfileSub = genpath(matfileFolder);
 remain = matfileSub;
 listOfFolderNames = {};

@@ -30,7 +30,7 @@ else
   end  
 end 
 addaxis(dt,data.CoreTemp,[150,400],'color','r','linewidth',1.5);
-addaxisplot(dt,data.InnerBlockTemp2,3,'--');
+addaxisplot(dt,data.InnerBlockTemp1,3,'--');
 addaxis(dt,data.CoreQV1Rms,[cqp1,cqp2]); %light purple
 addaxisplot(dt,data.CoreQV2Rms,4,'--'); %light purple
 addaxisplot(dt,data.CoreQV3Rms,4,':'); %light purple

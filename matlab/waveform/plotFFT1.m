@@ -28,12 +28,13 @@ function plotFFT(M,t1,t2,pos,figname,tt,Fs,xrange,visible )
      pY3 = unwrap(angle(Y3));
      subplot(2,2,2)
      %yyaxis left
-     plot(F(1:nfft/2)/1e6,20*log10(mY1(1:nfft/2)),F(1:nfft/2)/1e6,20*log10(mY2(1:nfft/2)),F(1:nfft/2)/1e6,20*log10(mY3(1:nfft/2)));
+     %plot(F(1:nfft/2)/1e6,20*log10(mY1(1:nfft/2)),F(1:nfft/2)/1e6,20*log10(mY2(1:nfft/2)),F(1:nfft/2)/1e6,20*log10(mY3(1:nfft/2)));
+     plot(F(1:nfft/2)/1e6,20*log10(mY1(1:nfft/2)));
      %plot(F(1:nfft/2)/1e3,mY1(1:nfft/2),F(1:nfft/2)/1e3,mY2(1:nfft/2),F(1:nfft/2)/1e3,mY3(1:nfft/2));
      grid on;
      grid minor;
      %legend('v1','v2','v3');
-     ylabel('dB Magnitude of FFT [volt^2]')
+     ylabel('v1 dB Magnitude of FFT [volt^2]')
      %yyaxis right
      %cla
      %cla reset
@@ -45,7 +46,7 @@ function plotFFT(M,t1,t2,pos,figname,tt,Fs,xrange,visible )
      xlabel('Frequency in mHz')
      ax = axis;
      axis([0 xrange*1e2 ax(3:4)])
-     axis([0 10 ax(3:4)])
+     axis([0 150 ax(3:4)])
      subplot(2,2,3);
      grid on;
      F1 = (0:1/nfft:1/2-1/nfft)*Fs;
@@ -56,15 +57,15 @@ function plotFFT(M,t1,t2,pos,figname,tt,Fs,xrange,visible )
      %plot(F/1e3,10*log10(P1),F/1e3,10*log10(P2),F/1e3,10*log10(P3));
      %legend('v1','v2','v3');
      %plot(F1/1e3,(Y1(1:nfft/2)),F1/1e3,(Y2(1:nfft/2)),F1/1e3,(Y3(1:nfft/2)));
-      plot(F(1:nfft/2)/1e6,20*log10(mY1(1:nfft/2)),F(1:nfft/2)/1e6,20*log10(mY2(1:nfft/2)),F(1:nfft/2)/1e6,20*log10(mY3(1:nfft/2)));
+     plot(F(1:nfft/2)/1e6,20*log10(mY2(1:nfft/2))); 
      grid on;
      grid minor;
      xlabel('Frequency in mHz')
      %ylabel('Power spectrum (dBW)')
-     ylabel('dB Magnitude of FFT [volt^2]')
+     ylabel('v2 dB Magnitude of FFT [volt^2]')
      %legend('v1','v2','v3');
      ax = axis;
-     axis([11 200 ax(3:4)])
+     axis([0 150 ax(3:4)])
    
 
      %ax = axis;
@@ -76,16 +77,17 @@ function plotFFT(M,t1,t2,pos,figname,tt,Fs,xrange,visible )
      [P1,F]=pwelch(M(t1:t2,2),ones(segmentLength,1),0,nfft,Fs,'power');
      [P2,F]=pwelch(M(t1:t2,3),ones(segmentLength,1),0,nfft,Fs,'power');
      [P3,F]=pwelch(M(t1:t2,4),ones(segmentLength,1),0,nfft,Fs,'power');
-     
-      plot(F/1e6,20*log10(P1),F/1e6,20*log10(P2),F/1e6,20*log10(P3));
+      plot(F(1:nfft/2)/1e6,20*log10(mY3(1:nfft/2))); 
+      %plot(F/1e6,20*log10(P1),F/1e6,20*log10(P2),F/1e6,20*log10(P3));
      %  plot(F/1e6,P1,F/1e6,P2,F/1e6,P3);
       grid on;
       grid minor;
       xlabel('Frequency in mHz')
-      ylabel('Power spectrum')
+      ylabel('v3 dB Magnitude of FFT [volt^2]');
+      %ylabel('Power spectrum')
       %legend('v1','v2','v3');
       ax = axis;
-      axis([0 200 ax(3:4)])
+      axis([0 150 ax(3:4)])
   export_fig(f1,figname,'-append');
 
 end
