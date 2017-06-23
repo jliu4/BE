@@ -13,8 +13,8 @@ end
 outputPath ='C:\jinwork\BEC\tmp\';
 googleModelPath = 'C:\jinwork\BE\matlab\df-google\matfiles\';
 %Control parameters
-tsPlot = true; googleCopPlot = true; debugPlot = false; tsMultiPlot = false; tempExpFit = false; hpExpFit = true;  %has to set true TODO JLIU
-postProcess = false; writeOutput = true; plotOutput = true; detailPlot = true;findDuplicates = false;
+tsPlot = true; googleCopPlot = true; debugPlot = false; tsMultiPlot = false; tempExpFit = false; hpExpFit = false;  %has to set true TODO JLIU
+postProcess = false; writeOutput = true; plotOutput = true; detailPlot = true;findDuplicates = false; hpDropCal=false;
 %plot bounds setting
 startOffset = 0;endOffset = 0;hp1 = 0;hp2 = 50; qp1 = 5;qp2 = 55;cqp1 = 0;cqp2 = 12; temp1 = 250; temp2 = 350;
 colors = setColors();
@@ -25,9 +25,9 @@ figname = strcat(outputPath,aSetdesc,'.pdf');
 delete(figname);
 filen1 = strcat(outputPath,aSetdesc,'detail.csv');
 filen2 = strcat(outputPath,aSetdesc,'.csv');
-T1=cell2table(cell(0,24),...
+T1=cell2table(cell(0,27),...
 'VariableName',{'coreT','inT','outT','QL','QF','HP','CoreQPower','v1','v2','v3','qPow','qSP','qSV','h2','termP','pcbP',...
-'p1','p2','p3','p4','hp_','seq','steps','date'});
+'p1','p2','p3','p4','hp_','it2','it3','it4','seq','steps','date'});
 T2 = cell2table(cell(0,13),'VariableNames',{'run','coreT','R','Rsse','C','M','Msse','Ra','Rb','Ca','Cb','Ma','Mb'});
 pos = [10 10 1000 800];
 fsummary=figure('Position',pos);
@@ -105,14 +105,14 @@ for ai = 1:size(aSet,1)
     end    
     %comment out , too many plots
     %export_fig(ff(ai),figname,'-append');
-    if true     
+    if hpDropCal  
       [tt,icT,hpdrop,v12,dqp,v122,hv,res,hva,hvb,hqpa,hqpb,resa,resb,hv0,hqp0,res0,ql,...
        hqp0sse,res0sse,icTsse] = plotSummary(pdata,isDC,efficiency,temp1,temp2);
-   if length(tt) < 1
-     continue;
-   end  
+      if length(tt) < 1
+        continue;
+      end  
      
-    if detailPlot
+     if detailPlot
       %plot for all temperatures each q-pulse  
       for qi = 1:size(ql,1)   
         f(qi)=figure('Position',pos);
@@ -219,11 +219,14 @@ end
 if tsMultiPlot
   export_fig(ftsMulitplot,figname,'-append');
 end
-if postProcess
+if writeOutput
+writetable(T1,filen1);
+end
+if postProcess && hpDropCal
   legend(ax2,l1,'Location','SouthOutside');
   %legend(l1,'Location','NorthOutside','Orientation','horizontal');
   export_fig(fsummary,figname,'-append');
-  writetable(T1,filen1);
+  
   writetable(T2,filen2);
 end
 

@@ -18,8 +18,9 @@ fftAnalysis = true;
 
 fn = char(strcat(dataPath,'waveform.xlsx'));
 waveform = readtable(fn);
-input = [waveform(22,:);waveform(7,:);waveform(51,:);waveform(73,:)];
+%input = [waveform(22,:);waveform(7,:);waveform(51,:);waveform(73:74,:)];
 %input = [waveform(2:9,:);waveform(3,:);waveform(6,:);waveform(8:10,:)];
+input = [waveform(58,:)];
 numWaveform = size(input,1);
 vfactor = 0.94;% off 0.6 seconds for each 10 seconds q-pulse measurement.
 nh = 21; %waveform file header lines
@@ -27,12 +28,12 @@ s2ns = 1e9;
 hz2kHz = 1e3;
 Fs = 2.5*1e9; %sampling frequency 2.5 ghz.
 inchNs = 0.0847253; %  speed light in unit [inch/ns]
-filen1 = strcat(outputPath,'ipb1-2-3-4-61517.csv');
+filen1 = strcat(outputPath,'ipb4-44-6000ns.csv');
 output1 = cell2table(cell(0,22),...
 'VariableName',{'folder','date','filename','pulseWidth','frequency','Zterm','CoreQPow','v1rms','v2rms','v3rms',...
 'alignPowerPos','cPosM','riseTimePosM','cPosCV','riseTimePosCV',...
 'alignPowerNeg','cNegM','riseTimeNegM','cNegCV','riseTimeNegCV','noise','type'});
-figname = strcat(outputPath,'ipb1-2-3-4-61517.pdf');
+figname = strcat(outputPath,'ipb4-44-6000ns.pdf');
 delete(figname);
 pos = [10 10 1000 800];
 for wi = 1:numWaveform
@@ -76,7 +77,7 @@ for wi = 1:numWaveform
         %mVolt = min(max2,-min2); %
         mVolt = 0.5*voltage;
         it1 = delta;
-        it2 = 3*delta; %max(1000,pulseWidthPoint+0.5*delta);
+        it2 = 3*delta; %it2=max(1000,pulseWidthPoint+0.5*delta);
        case {'singleNarrow'}
         mVolt = min(max2,-min2);
         it1 = delta;

@@ -207,7 +207,11 @@ if googleCopPlot && strcmp(googleModel,'No') == 0
   cop = doGoogleModel(rawDataN,tmp,isDC);
 end  
 if tsPlot
-  plotTS(dt,hp1,hp2,cqp1,cqp2,rawDataN,plotTitle,pos,figname,cop,isDC,version,coreL,termRes);
+  if contains(reactor,'ipb41-44') || contains(folder,'ipb41-44')
+    plotTS_ipb41(dt,hp1,hp2,cqp1,cqp2,rawDataN,plotTitle,pos,figname,cop,isDC,version,coreL,termRes);
+  else
+    plotTS(dt,hp1,hp2,cqp1,cqp2,rawDataN,plotTitle,pos,figname,cop,isDC,version,coreL,termRes);
+  end
 end 
 if isDC == false && debugPlot
   plotQdebug(dt,rawDataN,plotTitle,pos,figname,version);  
