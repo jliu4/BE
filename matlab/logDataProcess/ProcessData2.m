@@ -13,10 +13,10 @@ end
 outputPath ='C:\jinwork\BEC\tmp\';
 googleModelPath = 'C:\jinwork\BE\matlab\df-google\matfiles\';
 %Control parameters
-tsPlot = true; googleCopPlot = true; debugPlot = false; tsMultiPlot = false; tempExpFit = false; hpExpFit = false;  %has to set true TODO JLIU
-postProcess = false; writeOutput = true; plotOutput = true; detailPlot = true;findDuplicates = false; hpDropCal=false;
+tsPlot = true; googleCopPlot = true; debugPlot = false; tsMultiPlot = false; tempExpFit = false; hpExpFit = true;  %has to set true TODO JLIU
+postProcess = true; writeOutput = true; plotOutput = true; detailPlot = true;findDuplicates = false; hpDropCal=true;
 %plot bounds setting
-startOffset = 0;endOffset = 0;hp1 = 0;hp2 = 50; qp1 = 5;qp2 = 55;cqp1 = 0;cqp2 = 12; temp1 = 250; temp2 = 350;
+startOffset = 0;endOffset = 0;hp1 = 0;hp2 = 60; qp1 = 5;qp2 = 55;cqp1 = 0;cqp2 = 12; temp1 = 250; temp2 = 350;
 colors = setColors();
 %read cases
 readCase;
@@ -25,9 +25,16 @@ figname = strcat(outputPath,aSetdesc,'.pdf');
 delete(figname);
 filen1 = strcat(outputPath,aSetdesc,'detail.csv');
 filen2 = strcat(outputPath,aSetdesc,'.csv');
-T1=cell2table(cell(0,27),...
+if tempExpFit 
+   T1=cell2table(cell(0,27),...
 'VariableName',{'coreT','inT','outT','QL','QF','HP','CoreQPower','v1','v2','v3','qPow','qSP','qSV','h2','termP','pcbP',...
 'p1','p2','p3','p4','hp_','it2','it3','it4','seq','steps','date'});
+else 
+       T1=cell2table(cell(0,24),...
+'VariableName',{'coreT','inT','outT','QL','QF','HP','CoreQPower','v1','v2','v3','qPow','qSP','qSV','h2','termP','pcbP',...
+'p1','p2','p3','p4','hp_','seq','steps','date'});
+end
+
 T2 = cell2table(cell(0,13),'VariableNames',{'run','coreT','R','Rsse','C','M','Msse','Ra','Rb','Ca','Cb','Ma','Mb'});
 pos = [10 10 1000 800];
 fsummary=figure('Position',pos);
@@ -58,7 +65,7 @@ for ai = 1:size(aSet,1)
   switch (reactor)
     case {'ipb1-29'; 'ipb1-30';'ipb1-13';'ipb1-40';'ipb1-41'}
       rtFolder='ISOPERIBOLIC_DATA'; 
-    case {'sri-ipb1-41'}
+    case {'sri-ipb1-41';'sri-ipb1-48'}
       rtFolder='SRI-IPB1';  
     case {'sri-ipb2-27';'sri-ipb2-33'}
       rtFolder='SRI-IPB2';  

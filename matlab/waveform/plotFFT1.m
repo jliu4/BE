@@ -1,7 +1,8 @@
 function plotFFT(M,t1,t2,pos,figname,tt,Fs,xrange,visible )
      f1 = figure('Position',pos,'visible',visible);
  
-     nfft = length(M(t1:t2,1))
+     nfft = length(M(t1:t2,1));
+     infft2 = int32(nfft/2);
     % fre = numPoint/nfft
      subplot(2,2,1)
      suptitle(tt); 
@@ -29,7 +30,7 @@ function plotFFT(M,t1,t2,pos,figname,tt,Fs,xrange,visible )
      subplot(2,2,2)
      %yyaxis left
      %plot(F(1:nfft/2)/1e6,20*log10(mY1(1:nfft/2)),F(1:nfft/2)/1e6,20*log10(mY2(1:nfft/2)),F(1:nfft/2)/1e6,20*log10(mY3(1:nfft/2)));
-     plot(F(1:nfft/2)/1e6,20*log10(mY1(1:nfft/2)));
+     plot(F(1:infft2)/1e6,20*log10(mY1(1:infft2)));
      %plot(F(1:nfft/2)/1e3,mY1(1:nfft/2),F(1:nfft/2)/1e3,mY2(1:nfft/2),F(1:nfft/2)/1e3,mY3(1:nfft/2));
      grid on;
      grid minor;
@@ -57,7 +58,7 @@ function plotFFT(M,t1,t2,pos,figname,tt,Fs,xrange,visible )
      %plot(F/1e3,10*log10(P1),F/1e3,10*log10(P2),F/1e3,10*log10(P3));
      %legend('v1','v2','v3');
      %plot(F1/1e3,(Y1(1:nfft/2)),F1/1e3,(Y2(1:nfft/2)),F1/1e3,(Y3(1:nfft/2)));
-     plot(F(1:nfft/2)/1e6,20*log10(mY2(1:nfft/2))); 
+     plot(F(1:infft2)/1e6,20*log10(mY2(1:infft2))); 
      grid on;
      grid minor;
      xlabel('Frequency in mHz')
@@ -77,7 +78,7 @@ function plotFFT(M,t1,t2,pos,figname,tt,Fs,xrange,visible )
      [P1,F]=pwelch(M(t1:t2,2),ones(segmentLength,1),0,nfft,Fs,'power');
      [P2,F]=pwelch(M(t1:t2,3),ones(segmentLength,1),0,nfft,Fs,'power');
      [P3,F]=pwelch(M(t1:t2,4),ones(segmentLength,1),0,nfft,Fs,'power');
-      plot(F(1:nfft/2)/1e6,20*log10(mY3(1:nfft/2))); 
+      plot(F(1:infft2)/1e6,20*log10(mY3(1:infft2))); 
       %plot(F/1e6,20*log10(P1),F/1e6,20*log10(P2),F/1e6,20*log10(P3));
      %  plot(F/1e6,P1,F/1e6,P2,F/1e6,P3);
       grid on;

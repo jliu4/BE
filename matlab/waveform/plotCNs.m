@@ -1,7 +1,7 @@
 function plotCNs(posArray,negArray,pos,figname,tt,visible)
   f5 = figure('Position',pos,'visible',visible);
    %if (v2s > 0 && v3s > 0)
-   subplot(2,1,1)
+   subplot(3,1,1)
    %hold on;
    suptitle(tt); 
    plot(posArray(:,1),posArray(:,2),'-x')
@@ -15,7 +15,7 @@ function plotCNs(posArray,negArray,pos,figname,tt,visible)
    grid minor;
    ylabel('RiseTime');
    
-   subplot(2,1,2)
+   subplot(3,1,2)
    grid on;
    grid minor;
    %hold on; 
@@ -29,6 +29,17 @@ function plotCNs(posArray,negArray,pos,figname,tt,visible)
    grid on;
    grid minor;
    ylabel('RiseTime');
+   subplot(3,1,3)
+   grid on;
+   grid minor;
+   hold on; 
+   plot(posArray(:,1),posArray(:,7),'-x');
+   plot(negArray(:,1),negArray(:,7),'-o');
+   grid on;
+   grid minor;
+   
+   ylabel('dvdt');
+   legend('dvdt-Pos','dvdt-Neg');
    export_fig(f5,figname,'-append');
 
 end
