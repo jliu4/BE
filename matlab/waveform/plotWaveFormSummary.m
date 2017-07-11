@@ -7,7 +7,10 @@ function plotWaveFormSummary(M,max2,min2,frequency,filterValue,firstP,lastP,firs
    suptitle(tt); 
    grid on;
    grid minor;
+   %t = M(:,1)/M(1,1);
    plot(M(:,1),M(:,2),M(:,1),M(:,3),M(:,1),M(:,4))
+   %xlabel('time');
+   %ylabel('volt');
    dim = [0.14 0.57 0.1 0.1];
    % dim = [0.15 0.25 0.5 0.5];
  
@@ -20,6 +23,8 @@ function plotWaveFormSummary(M,max2,min2,frequency,filterValue,firstP,lastP,firs
    x=[M(firstP,1),M(firstP,1)];
    plot(M(first1:first2,1),M(first1:first2,2),M(first1:first2,1),M(first1:first2,3),M(first1:first2,1),M(first1:first2,4))
    dim = [0.14 0.27 0.1 0.1];
+   xlabel('time');
+   ylabel('volt');
    annotation('textbox',dim,'String',p1,'FitBoxToText','on');
 
    plot(x,y,'black');
@@ -33,6 +38,8 @@ function plotWaveFormSummary(M,max2,min2,frequency,filterValue,firstP,lastP,firs
    hold on;
    plot(M(last1:last2,1),M(last1:last2,2),M(last1:last2,1),M(last1:last2,3),M(last1:last2,1),M(last1:last2,4))
    plot(x,y,'black');
+   %xlabel('time');
+   %ylabel('volt');
    text(x(1),y(2),'\rightarrow trim last pulse after');
    hold off;
    export_fig(f2,figname,'-append');

@@ -7,8 +7,8 @@ function plotAligned(v1,v2s,v3s,M,fstMax,delta,zterm,figname,P0,P,c,alignV,align
   p2 = char(strcat('Pulse Alignment Method: mean((v1-v2)*v3)/Z = ',num2str(P,'%.2f'),' Z=', num2str(zterm), ' propagate speed = ',num2str(c,'%.2f'),'c rmsP/alignP = ',num2str(P0/P,'%.2f') ));
   p3 = [num2str(mFactor*100) '%=' num2str(M(ifstMax,2))  '\rightarrow'];
   p4 = ['\leftarrow aligned at ' num2str(alignP*100) '%=' num2str(M(iv1+ij1,2))];
-  p5 = ['riseTime:' num2str(riseTime,'%.1f') 'ns dvdt:' num2str(dvdt,'%.1f') 'v/ns\rightarrow'];
-  p6 = ['riseTime avg(v1+v2):' num2str(riseTime12,'%.1f') 'ns dvdt avg(v1+v2):' num2str(dvdt12,'%.1f') 'v/ns\rightarrow'];
+  p5 = ['riseTime:' num2str(riseTime,'%.1f') 'ns; dvdt:' num2str(dvdt,'%.1f') 'v/ns\rightarrow'];
+  p6 = ['riseTime12:' num2str(riseTime12,'%.1f') 'ns; dvdt12:' num2str(dvdt12,'%.1f') 'v/ns\rightarrow'];
   plot(M(ij1+iv1,1),alignV, '^g','MarkerFaceColor','g')
    
    t1 = max(1,ifstMax - it1);
@@ -50,9 +50,12 @@ function plotAligned(v1,v2s,v3s,M,fstMax,delta,zterm,figname,P0,P,c,alignV,align
    grid minor;
    plot(M(ij1+iv1,1),M(ij1+iv1,2), '^g', 'MarkerFaceColor','g')
    text(M(ij1+iv1,1),M(ij1+iv1,2), p4);
+   
+   plot(M(ij1+iv1+j12,1),v12(ij1+iv1+j12-t1), '^c', 'MarkerFaceColor','c')
+   text(M(ij1+iv1+j12,1),v12(ij1+iv1+j12-t1), p6,'HorizontalAlignment','right');
    %dim = [0.14 0.6 0.1 0.1];
-   dim = [0.14 0.27 0.1 0.1];
-   annotation('textbox',dim,'String',p6,'FitBoxToText','on');
+   %dim = [0.14 0.27 0.1 0.1];
+   %annotation('textbox',dim,'String',p6,'FitBoxToText','on');
   
    %plot(x1(1),alignV, '^g', 'MarkerFaceColor','g')
    %text(x1(1),alignV,p4);

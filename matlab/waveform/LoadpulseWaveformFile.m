@@ -22,8 +22,9 @@ waveform = readtable(fn);
 %input = [waveform(2:9,:);waveform(3,:);waveform(6,:);waveform(8:10,:)];
 %input = [waveform(75,:);waveform(63,:);waveform(79:80,:)]; %ipb4-44
 %vs.ipb41-44
-input = [waveform(57:58,:)]; %sri-ipb1-41 vs. sri-ipb1-48
-figname = 'ipb3-43-070617-old.pdf';
+%input = [waveform(83:86,:)]; %ipb41-44
+input = [waveform(57,:)]; %ipb41-44
+figname = 'ipb43-43-070717.pdf';
 filen1 = strcat(outputPath, strrep(figname, '.pdf', '.csv'));
 figname = strcat(outputPath,figname);
 numWaveform = size(input,1);
@@ -33,10 +34,11 @@ s2ns = 1e9; %second to ns
 hz2kHz = 1e3; %hz to kHz
 Fs = 2.5*1e9; %sampling frequency 2.5 gHz.
 inchNs = 0.0847253; %  speed light in unit [inch/ns]
-output1 = cell2table(cell(0,26),...
+output1 = cell2table(cell(0,34),...
 'VariableName',{'folder','date','filename','pulseWidth','frequency','Zterm','CoreQPow','v1rms','v2rms','v3rms',...
-'alignPowerPos','cPosM','riseTimePosM','dvdtPosM','cPosCV','riseTimePosCV','dvdtPosCV',...
-'alignPowerNeg','cNegM','riseTimeNegM','dvdtNegM','cNegCV','riseTimeNegCV','dvdtNegCV','noise','type'});
+'alignPowerPos','cPosM','riseTimePosM','dvdtPosM','riseTime12PosM','dvdt12PosM','cPosCV','riseTimePosCV','dvdtPosCV','riseTime12PosCV','dvdt12PosCV',...
+'alignPowerNeg','cNegM','riseTimeNegM','dvdtNegM','riseTime12NegM','dvdt12NegM','cNegCV','riseTimeNegCV','dvdtNegCV','riseTime12NegCV','dvdt12NegCV',...
+'noise','type'});
 delete(figname);
 pos = [10 10 1000 800];
 for wi = 1:numWaveform
@@ -71,7 +73,6 @@ for wi = 1:numWaveform
      disp(msg);  
      continue;
    end   
-  
    max2 = max(M(:,2));
    min2 = min(M(:,2));
    switch char(type)
@@ -233,11 +234,19 @@ for wi = 1:numWaveform
      riseTimePosCV(wi) = std(posArray(isfinite(posArray(:,3)),3));
      dvdtPosM(wi) = mean(posArray(isfinite(posArray(:,7)),7));
      dvdtPosCV(wi) = std(posArray(isfinite(posArray(:,7)),7));
+     riseTime12PosM(wi) = mean(posArray(isfinite(posArray(:,8)),8));
+     riseTime12PosCV(wi) = std(posArray(isfinite(posArray(:,8)),8));
+     dvdt12PosM(wi) = mean(posArray(isfinite(posArray(:,9)),9));
+     dvdt12PosCV(wi) = std(posArray(isfinite(posArray(:,9)),9));
      j1 = size(lc2,2); 
      for pi = 1:j1
+       
        fstMin = lc2(pi);
+      
        [pNeg,cNeg,riseTimeNeg,v1sNeg,v2sNeg,v3sNeg,alignVNeg,dvdtNeg,riseTime12Neg,dvdt12Neg,j12Neg] = calculateAlignedPower(fstMin,M,MM,delta,alignP,zterm,timeInterval,s2ns,coreL,inchNs,debug,tt,pi,mVolt);
-       negArray(pi,1:9)=[lc2(pi),cNeg,riseTimeNeg,v1sNeg,v2sNeg,v3sNeg,dvdtNeg,riserTime12Neg,dvdt12Neg];
+       
+       negArray(pi,1:9)=[lc2(pi),cNeg,riseTimeNeg,v1sNeg,v2sNeg,v3sNeg,dvdtNeg,riseTime12Neg,dvdt12Neg];
+       
        if pi == 1 && plotNeg
          plotAligned(v1sNeg,v2sNeg,v3sNeg,M,fstMin,delta,zterm,figname,P0,pNeg,cNeg,alignVNeg,alignP,riseTimeNeg,pos,tt,yNeg(1),yNeg,visible,it1,it2,dvdtNeg,mFactor,...
              riseTime12Neg,dvdt12Neg,j12Neg);
@@ -251,16 +260,24 @@ for wi = 1:numWaveform
      
      dvdtNegM(wi) = mean(negArray(isfinite(negArray(:,7)),7));
      dvdtNegCV(wi) = std(negArray(isfinite(negArray(:,7)),7));
+     riseTime12NegM(wi) = mean(negArray(isfinite(negArray(:,8)),8));
+     riseTime12NegCV(wi) = std(negArray(isfinite(negArray(:,8)),8));
+     
+     dvdt12NegM(wi) = mean(negArray(isfinite(negArray(:,9)),9));
+     dvdt12NegCV(wi) = std(negArray(isfinite(negArray(:,9)),9));
      if plotCN
         plotCNs(posArray,negArray,pos,figname,tt,visible);
      end
    end
-   output1 =[output1;table(folder,dateN,filename,pulseWidth,frequency,zterm,P0*0.94*0.94,y1rms,y2rms,y3rms,...
-       pPos,cPosM(wi),riseTimePosM(wi),dvdtPosM(wi),cPosCV(wi),riseTimePosCV(wi),dvdtPosCV(wi),...
-       pNeg,cNegM(wi),riseTimeNegM(wi),dvdtNegM(wi),cNegCV(wi),riseTimeNegCV(wi),dvdtNegCV(wi),filterValue,type,...
-      'VariableName',{'folder','date','filename','pulseWidth','frequency','Zterm','CoreQPow','v1rms','v2rms','v3rms',...
-      'alignPowerPos','cPosM','riseTimePosM','dvdtPosM','cPosCV','riseTimePosCV','dvdtPosCV'...
-      'alignPowerNeg','cNegM','riseTimeNegM','dvdtNegM','cNegCV','riseTimeNegCV','dvdtNegCV','noise','type'})];
+   output1 =[output1;table(folder,dateN,filename,pulseWidth,frequency,zterm,P0*0.94,y1rms,y2rms,y3rms,...
+       pPos,cPosM(wi),riseTimePosM(wi),dvdtPosM(wi),riseTime12PosM(wi),dvdt12PosM(wi),cPosCV(wi),riseTimePosCV(wi),dvdtPosCV(wi),riseTime12PosCV(wi),dvdt12PosCV(wi),...
+       pNeg,cNegM(wi),riseTimeNegM(wi),dvdtNegM(wi),riseTime12NegM(wi),dvdt12NegM(wi),cNegCV(wi),riseTimeNegCV(wi),dvdtNegCV(wi),riseTime12NegCV(wi),dvdt12NegCV(wi),...
+       filterValue,type,...
+       'VariableName',{'folder','date','filename','pulseWidth','frequency','Zterm','CoreQPow','v1rms','v2rms','v3rms',...
+'alignPowerPos','cPosM','riseTimePosM','dvdtPosM','riseTime12PosM','dvdt12PosM','cPosCV','riseTimePosCV','dvdtPosCV','riseTime12PosCV','dvdt12PosCV',...
+'alignPowerNeg','cNegM','riseTimeNegM','dvdtNegM','riseTime12NegM','dvdt12NegM','cNegCV','riseTimeNegCV','dvdtNegCV','riseTime12NegCV','dvdt12NegCV',...
+'noise','type'})];
+     
 end
 writetable(output1,filen1);
 if plotErrBar
@@ -283,18 +300,23 @@ if plotErrBar
   hold on;  
   p1=errorbar(pw,riseTimePosM,riseTimePosCV,'-x');
   p2=errorbar(pw,riseTimeNegM,riseTimeNegCV,'-o');
+  p3=errorbar(pw,riseTime12PosM,riseTime12PosCV,'-+');
+  p4=errorbar(pw,riseTime12NegM,riseTime12NegCV,'-*');
+
   set(gca,'XTick',[]);
   hold off;
-  legend([p1,p2],'riseTimePos','riseTimeNeg')
+  legend([p1,p2,p3,p4],'riseTimePos','riseTimeNeg','riseTime12Pos','riseTime12Neg')
   subplot(3,1,3);
   grid on;
   grid minor;
   hold on;  
   p1=errorbar(pw,dvdtPosM,dvdtPosCV,'-x');
   p2=errorbar(pw,dvdtNegM,dvdtNegCV,'-o');
+  p3=errorbar(pw,dvdt12PosM,dvdt12PosCV,'-+');
+  p4=errorbar(pw,dvdt12NegM,dvdt12NegCV,'-*');
   
   hold off;
-  legend([p1,p2],'dvdtPos','dvdtNeg')
+  legend([p1,p2,p3,p4],'dvdtPos','dvdtNeg','dvdt12Pos','dvdt12Neg')
   set(gca,'xtick',1:numWaveform);
   export_fig(f10,figname,'-append');
 end    

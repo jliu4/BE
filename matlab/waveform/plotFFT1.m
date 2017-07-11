@@ -1,4 +1,4 @@
-function plotFFT(M,t1,t2,pos,figname,tt,Fs,xrange,visible )
+function plotFFT1(M,t1,t2,pos,figname,tt,Fs,xrange,visible )
      f1 = figure('Position',pos,'visible',visible);
  
      nfft = length(M(t1:t2,1));
@@ -6,11 +6,14 @@ function plotFFT(M,t1,t2,pos,figname,tt,Fs,xrange,visible )
     % fre = numPoint/nfft
      subplot(2,2,1)
      suptitle(tt); 
-     plot(M(t1:t2,1),M(t1:t2,2),M(t1:t2,1),M(t1:t2,3),M(t1:t2,1),M(t1:t2,4)); 
+     x = M(t1:t2,1)/M(1,1);
+     plot(x,M(t1:t2,2),x,M(t1:t2,3),x,M(t1:t2,4)); 
      grid on;
      grid minor;
+     ylabel('volt');
+     xlabel('time');
      legend('v1','v2','v3');
-     %axis tight 
+     %axis tight  
      %nfft = length(M(:,1)); 
      Y1 = fft(M(t1:t2,2),nfft);
      %take out DC

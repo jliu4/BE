@@ -10,7 +10,9 @@ function plotCNs(posArray,negArray,pos,figname,tt,visible)
    yyaxis left
    ylabel('c');
    yyaxis right
-   plot(posArray(:,1),posArray(:,3),'-o');
+   plot(posArray(:,1),posArray(:,3),'-o',posArray(:,1),posArray(:,8),'-*');
+   legend('cPos','riseTimePos','riseTime12Pos');
+   set(gca,'XTick',[]);
    grid on;
    grid minor;
    ylabel('RiseTime');
@@ -25,7 +27,9 @@ function plotCNs(posArray,negArray,pos,figname,tt,visible)
    yyaxis left
    ylabel('c');
    yyaxis right
-   plot(negArray(:,1),negArray(:,3),'-o');
+   plot(negArray(:,1),negArray(:,3),'-o',negArray(:,1),negArray(:,8),'-*');
+   legend('c','riseTimeNeg','riseTime12Neg');
+   set(gca,'XTick',[]);
    grid on;
    grid minor;
    ylabel('RiseTime');
@@ -35,11 +39,13 @@ function plotCNs(posArray,negArray,pos,figname,tt,visible)
    hold on; 
    plot(posArray(:,1),posArray(:,7),'-x');
    plot(negArray(:,1),negArray(:,7),'-o');
+   plot(posArray(:,1),posArray(:,9),'-+');
+   plot(negArray(:,1),negArray(:,9),'-*');
    grid on;
    grid minor;
    
    ylabel('dvdt');
-   legend('dvdt-Pos','dvdt-Neg');
+   legend('dvdt-Pos','dvdt-Neg','dvdt12-Pos','dvdt12-Neg');
    export_fig(f5,figname,'-append');
 
 end
