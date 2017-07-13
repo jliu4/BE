@@ -23,8 +23,8 @@ waveform = readtable(fn);
 %input = [waveform(75,:);waveform(63,:);waveform(79:80,:)]; %ipb4-44
 %vs.ipb41-44
 %input = [waveform(83:86,:)]; %ipb41-44
-input = [waveform(57,:)]; %ipb41-44
-figname = 'ipb43-43-070717.pdf';
+input = [waveform(87:90,:)]; %ipb41-50
+figname = 'ipb41-50-071317.pdf';
 filen1 = strcat(outputPath, strrep(figname, '.pdf', '.csv'));
 figname = strcat(outputPath,figname);
 numWaveform = size(input,1);
@@ -63,7 +63,7 @@ for wi = 1:numWaveform
    M = csvread(fn,nh,0);
    totalTime = M(end,1) - M(1,1);
    numPoint = size(M,1);
-   timeInterval = totalTime/numPoint; %sec
+   timeInterval = totalTime/(numPoint-1); %sec
    pulseWidthPoint = pulseWidth/timeInterval/s2ns; 
    %take out 
    M0 = M(isfinite(M(:,2)),2);
@@ -291,6 +291,7 @@ if plotErrBar
   hold on;  
   p1=errorbar(pw,cPosM,cPosCV,'-x'); 
   p2=errorbar(pw,cNegM,cNegCV,'-o');  
+  ylabel('c[speed light]');
   set(gca,'XTick',[]);
   hold off;
   legend([p1,p2],'cPos','cNeg')
@@ -302,7 +303,7 @@ if plotErrBar
   p2=errorbar(pw,riseTimeNegM,riseTimeNegCV,'-o');
   p3=errorbar(pw,riseTime12PosM,riseTime12PosCV,'-+');
   p4=errorbar(pw,riseTime12NegM,riseTime12NegCV,'-*');
-
+  ylabel('riseTime[ns]');
   set(gca,'XTick',[]);
   hold off;
   legend([p1,p2,p3,p4],'riseTimePos','riseTimeNeg','riseTime12Pos','riseTime12Neg')
@@ -314,9 +315,9 @@ if plotErrBar
   p2=errorbar(pw,dvdtNegM,dvdtNegCV,'-o');
   p3=errorbar(pw,dvdt12PosM,dvdt12PosCV,'-+');
   p4=errorbar(pw,dvdt12NegM,dvdt12NegCV,'-*');
-  
+  ylabel('dv/dt[volt/ns]');
   hold off;
-  legend([p1,p2,p3,p4],'dvdtPos','dvdtNeg','dvdt12Pos','dvdt12Neg')
+  legend([p1,p2,p3,p4],'dv/dtPos','dv/dtNeg','dv/dt12Pos','dv/dt12Neg')
   set(gca,'xtick',1:numWaveform);
   export_fig(f10,figname,'-append');
 end    

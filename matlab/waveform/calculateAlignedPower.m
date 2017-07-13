@@ -24,10 +24,11 @@ function [P,c,riseTime,v1,v2,v3,alignV,dvdt,riseTime12,dvdt12,j12]  = calculateA
    dvdt =abs((M(ifstMax,2)-M(iv1+ij1,2)))/riseTime;
    
    v12 = 0.5*(M(ij1+iv1:ij2-iv2,2) + M(ij1+iv1+iv2:ij2,3));
-   
-   j12 = find(signM*v12 > signM*M(ifstMax,2),1,'first');
+   %since v2 sometime is smaller than v1, so add a parameter to reduce the
+   %maximum
+   j12 = find(signM*v12 >= 0.9*signM*M(ifstMax,2),1,'first');
    if isempty(j12)
-    j12 = find(signM*v12 > 0.9*signM*M(ifstMax,2),1,'first');
+    j12 = find(signM*v12 > 0.8*signM*M(ifstMax,2),1,'first');
      %sometimes max(0.5*(v1+v2)) is smaller than 80% max v2
      %so we reduce it 
    end

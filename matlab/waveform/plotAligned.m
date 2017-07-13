@@ -7,8 +7,8 @@ function plotAligned(v1,v2s,v3s,M,fstMax,delta,zterm,figname,P0,P,c,alignV,align
   p2 = char(strcat('Pulse Alignment Method: mean((v1-v2)*v3)/Z = ',num2str(P,'%.2f'),' Z=', num2str(zterm), ' propagate speed = ',num2str(c,'%.2f'),'c rmsP/alignP = ',num2str(P0/P,'%.2f') ));
   p3 = [num2str(mFactor*100) '%=' num2str(M(ifstMax,2))  '\rightarrow'];
   p4 = ['\leftarrow aligned at ' num2str(alignP*100) '%=' num2str(M(iv1+ij1,2))];
-  p5 = ['riseTime:' num2str(riseTime,'%.1f') 'ns; dvdt:' num2str(dvdt,'%.1f') 'v/ns\rightarrow'];
-  p6 = ['riseTime12:' num2str(riseTime12,'%.1f') 'ns; dvdt12:' num2str(dvdt12,'%.1f') 'v/ns\rightarrow'];
+  p5 = ['riseTime:' num2str(riseTime,'%.1f') 'ns; dv/dt:' num2str(dvdt,'%.1f') 'v/ns\rightarrow'];
+  p6 = ['riseTime12:' num2str(riseTime12,'%.1f') 'ns; dv/dt12:' num2str(dvdt12,'%.1f') 'v/ns\rightarrow'];
   plot(M(ij1+iv1,1),alignV, '^g','MarkerFaceColor','g')
    
    t1 = max(1,ifstMax - it1);
@@ -28,6 +28,7 @@ function plotAligned(v1,v2s,v3s,M,fstMax,delta,zterm,figname,P0,P,c,alignV,align
    plot(M(t1:t2,1),M(t1:t2,2),M(t1:t2,1),M(t1:t2,3),M(t1:t2,1),M(t1:t2,4))
    plot(x,y1,'black','linewidth',1);
    plot(x1,y1,'black','linewidth',1);
+   ylabel('[volt]');
    plot(M(ifstMax,1),M(ifstMax,2), '^r', 'MarkerFaceColor','r')
    text(M(ifstMax,1),M(ifstMax,2), p3,'HorizontalAlignment','right');
    grid on;
@@ -45,6 +46,7 @@ function plotAligned(v1,v2s,v3s,M,fstMax,delta,zterm,figname,P0,P,c,alignV,align
   
    plot(M(t1:t2,1),M(t1:t2,2),M(t1:t2-v2s,1),M(t1+v2s:t2,3),M(t1:t2-v3s-v2s,1),M(t1+v3s+v2s:t2,4))
    plot(M(t1:t2-v2s,1),v12);
+   ylabel('[volt]');
    plot(x1,y1,'black','linewidth',1);
    grid on;
    grid minor;
@@ -74,10 +76,11 @@ function plotAligned(v1,v2s,v3s,M,fstMax,delta,zterm,figname,P0,P,c,alignV,align
    plot(M(t1:t2-v2s,1),deltaV);
    grid on;
    grid minor;
-   ylabel('v1-v2');
+   ylabel('v1-v2[volt]');
    yyaxis right
    plot(M(t1:t2-v3s-v2s,1),P);
-   ylabel('Instantaneous Pulse Power');
+   ylabel('Instantaneous Pulse Power[w]');
+   set(gca,'XTick',[]);
    export_fig(f1,figname,'-append');
 
 end

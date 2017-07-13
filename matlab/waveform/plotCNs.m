@@ -8,14 +8,14 @@ function plotCNs(posArray,negArray,pos,figname,tt,visible)
    grid on;
    grid minor;
    yyaxis left
-   ylabel('c');
+   ylabel('c[speed light]');
    yyaxis right
    plot(posArray(:,1),posArray(:,3),'-o',posArray(:,1),posArray(:,8),'-*');
    legend('cPos','riseTimePos','riseTime12Pos');
    set(gca,'XTick',[]);
    grid on;
    grid minor;
-   ylabel('RiseTime');
+   ylabel('riseTime[ns]');
    
    subplot(3,1,2)
    grid on;
@@ -25,14 +25,14 @@ function plotCNs(posArray,negArray,pos,figname,tt,visible)
    grid on;
    grid minor;
    yyaxis left
-   ylabel('c');
+   ylabel('c[speed light]');
    yyaxis right
    plot(negArray(:,1),negArray(:,3),'-o',negArray(:,1),negArray(:,8),'-*');
    legend('c','riseTimeNeg','riseTime12Neg');
    set(gca,'XTick',[]);
    grid on;
    grid minor;
-   ylabel('RiseTime');
+   ylabel('riseTime[ns]');
    subplot(3,1,3)
    grid on;
    grid minor;
@@ -43,9 +43,9 @@ function plotCNs(posArray,negArray,pos,figname,tt,visible)
    plot(negArray(:,1),negArray(:,9),'-*');
    grid on;
    grid minor;
-   
-   ylabel('dvdt');
-   legend('dvdt-Pos','dvdt-Neg','dvdt12-Pos','dvdt12-Neg');
+   set(gca,'XTick',[]);
+   ylabel('dv/dt[volt/ns]');
+   legend('dv/dt-Pos','dv/dt-Neg','dv/dt12-Pos','dv/dt12-Neg');
    export_fig(f5,figname,'-append');
 
 end

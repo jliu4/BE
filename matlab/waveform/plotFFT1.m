@@ -6,12 +6,12 @@ function plotFFT1(M,t1,t2,pos,figname,tt,Fs,xrange,visible )
     % fre = numPoint/nfft
      subplot(2,2,1)
      suptitle(tt); 
-     x = M(t1:t2,1)/M(1,1);
+     x = M(t1:t2,1)-M(t1,1);
      plot(x,M(t1:t2,2),x,M(t1:t2,3),x,M(t1:t2,4)); 
      grid on;
      grid minor;
-     ylabel('volt');
-     xlabel('time');
+     ylabel('[volt]');
+     xlabel('time[s]');
      legend('v1','v2','v3');
      %axis tight  
      %nfft = length(M(:,1)); 
