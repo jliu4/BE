@@ -23,7 +23,9 @@ waveform = readtable(fn);
 %input = [waveform(75,:);waveform(63,:);waveform(79:80,:)]; %ipb4-44
 %vs.ipb41-44
 %input = [waveform(83:86,:)]; %ipb41-44
-input = [waveform(65,:);waveform(67,:)]; 
+
+input = [waveform(64,:);waveform(66,:)]; 
+input = [waveform(64:67,:);waveform(67,:)]; 
 figname = 'ipb3-43-72717.pdf';
 filen1 = strcat(outputPath, strrep(figname, '.pdf', '.csv'));
 figname = strcat(outputPath,figname);
@@ -56,6 +58,7 @@ for wi = 1:numWaveform
    coreL = input.coreL(wi);  %core length in inch
    pulseWidth = input.pulseWidth(wi); %ns
    panelDivision = input.panelDivision(wi); %vol
+   filterValue = filterCount/256 * panelDivision *4; 
    type = input.type(wi); 
    tt = char(strcat(folder,'-',dateN,'-',filename,'-',type,'-',num2str(filterCount)));
    fn = char(strcat(dataPath,folder,'\',filename));
@@ -64,7 +67,7 @@ for wi = 1:numWaveform
    totalTime = M(end,1) - M(1,1);
    numPoint = size(M,1);
    timeInterval = totalTime/(numPoint-1); %sec
-   pulseWidthPoint = pulseWidth/timeInterval/s2ns; 
+   pulseWidthPoint = pulseWidth/timeInterval/s2ns;
    %take out 
    M0 = M(isfinite(M(:,2)),2);
    %if there is inf, there is no sense to align them.   
@@ -81,17 +84,21 @@ for wi = 1:numWaveform
         mVolt = 0.5*voltage; %regular pulse causes the over shoot, and max and min actuall 10% higher than desired. 
         it1 = delta;
         it2 = 3*delta; %it2=max(1000,pulseWidthPoint+0.5*delta);
+        ift1 = 3*delta;
        case {'square-lpf'} %low pass filter cause the voltage not reach the desired peak
         mVolt = min(max2,-min2);
-        it1 = delta;
-        it2 = 3*delta; %it2=max(1000,pulseWidthPoint+0.5*delta);   
+        it1 = 2*delta;
+        it2 = 3*delta; %it2=max(1000,pulseWidthPoint+0.5*delta);  
+        ift1 = 6*delta;
        case {'singleNarrow'}
         mVolt = min(max2,-min2);
         it1 = delta;
         it2 = 3*delta;
+        ift1 = 3*it1;
        case {'dualNarrow'}
         mVolt = min(max2,-min2);
         it1 = 10*delta; %min(1000,pulseWidthPoint+0.5*delta);
+        ift1 = it1;
         it2 = 3*delta;  
    end   
        
@@ -123,12 +130,13 @@ for wi = 1:numWaveform
      xrange = 4;
       %filter out noise.
       M0 = M(:,2:4);
-      
-      %M0(abs(M0) <= filterValue*0)= 0;
+     
+      M0(abs(M0) <= filterValue*8)= 0;
       M1 = horzcat(M(:,1),M0(:,1:3));
    
-     t1 = int32(lc20(1)-2*delta);
-     t2 = int32(lc20(2)-2*delta);
+     t1 = int32(lc10(2)-ift1);
+     t2 = int32(lc10(2)+pulseWidthPoint+it2);
+     %t2 = int32(lc20(2)-2*delta);
      test = strcat(outputPath,'jinfft.csv');
      %csvwrite(test,M1(:,1));
      plotFFT1(M1,t1,t2,pos,figname,tt,Fs,xrange,visible);
@@ -196,7 +204,7 @@ for wi = 1:numWaveform
    last1 = max(1,lastP - it1);
    last2 = min(numPoint,lastP + it2);
    %[noise floor level ADC counts/sizeof(byte)] x [(QSetV/4) x 4 scope divisions]
-   filterValue = filterCount/256 * panelDivision *4; 
+   
    MM =M(firstP:lastP,2:4);
    %filter out noise.
    MM(abs(MM) <= filterValue)= 0;

@@ -40,7 +40,7 @@ function plotFFT1(M,t1,t2,pos,figname,tt,Fs,xrange,visible )
      title('magnitude response');
      xlabel('Frequency (mHz)');
      ylabel('magnitude');
-         ax = axis;
+     ax = axis;
      
      axis([0 50 ax(3:4)])
      subplot(2,2,3)
@@ -56,11 +56,11 @@ function plotFFT1(M,t1,t2,pos,figname,tt,Fs,xrange,visible )
      
      P1dBW = 10*log10(P1);
      power_at_DC_dBW1 = P1dBW(F==0)   % dBW
- 
-     [peakPowers_dBW, peakFreqIdx] = findpeaks(P1dBW,'minpeakheight',-5);
-     peakFreqs_Hz = F(peakFreqIdx)
+     fp = floor(power_at_DC_dBW1);
+     [peakPowers_dBW, peakFreqIdx] = findpeaks(P1dBW,'minpeakheight',fp);
+     peakFreqs_Hz = F(peakFreqIdx);
      np = length(peakFreqs_Hz)
-     peakPowers_dBW
+     peakPowers_dBW;
     segmentLength = int32(nfft/4);
     
      [P1,F1] = pwelch(M(t1:t2,2),ones(segmentLength,1),0,nfft,Fs,'power');
@@ -69,14 +69,17 @@ function plotFFT1(M,t1,t2,pos,figname,tt,Fs,xrange,visible )
      subplot(2,2,4)
     % plot(F1/1e6,10*log10(P1),F2/1e6,10*log10(P2),F3/1e6,10*log10(P3));
      plot(F1/1e6,10*log10(P1));
-      xlabel('Frequency in mHz')
-      legend('v1','v2','v3');
+      xlabel('Frequency in mHz');
+      ylabel('Power spectrum (dBW)');
+      %legend('v1','v2','v3');
      ax = axis;
-     
      axis([0 50 ax(3:4)])
+     %axis([0 peakFreqs_Hz(np)/1e6 ax(3:4)])
   [PSD,F]  = pwelch(M(t1:t2,2),ones(segmentLength,1),0,nfft,Fs,'psd');
   figure;
   plot(F/1e6,10*log10(PSD));
+  ax = axis;
+  axis([0 50 ax(3:4)])
   export_fig(f1,figname,'-append');
 
 end
