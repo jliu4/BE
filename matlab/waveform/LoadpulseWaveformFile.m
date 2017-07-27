@@ -23,8 +23,8 @@ waveform = readtable(fn);
 %input = [waveform(75,:);waveform(63,:);waveform(79:80,:)]; %ipb4-44
 %vs.ipb41-44
 %input = [waveform(83:86,:)]; %ipb41-44
-input = [waveform(87:90,:)]; %ipb41-50
-figname = 'ipb41-50-071317.pdf';
+input = [waveform(65,:);waveform(67,:)]; 
+figname = 'ipb3-43-72717.pdf';
 filen1 = strcat(outputPath, strrep(figname, '.pdf', '.csv'));
 figname = strcat(outputPath,figname);
 numWaveform = size(input,1);
@@ -76,11 +76,15 @@ for wi = 1:numWaveform
    max2 = max(M(:,2));
    min2 = min(M(:,2));
    switch char(type)
-       case {'square';'square-cal';'Trapezoid'}
+       case {'square';'Trapezoid'}
         %mVolt = min(max2,-min2); %
-        mVolt = 0.5*voltage;
+        mVolt = 0.5*voltage; %regular pulse causes the over shoot, and max and min actuall 10% higher than desired. 
         it1 = delta;
         it2 = 3*delta; %it2=max(1000,pulseWidthPoint+0.5*delta);
+       case {'square-lpf'} %low pass filter cause the voltage not reach the desired peak
+        mVolt = min(max2,-min2);
+        it1 = delta;
+        it2 = 3*delta; %it2=max(1000,pulseWidthPoint+0.5*delta);   
        case {'singleNarrow'}
         mVolt = min(max2,-min2);
         it1 = delta;
@@ -125,6 +129,8 @@ for wi = 1:numWaveform
    
      t1 = int32(lc20(1)-2*delta);
      t2 = int32(lc20(2)-2*delta);
+     test = strcat(outputPath,'jinfft.csv');
+     %csvwrite(test,M1(:,1));
      plotFFT1(M1,t1,t2,pos,figname,tt,Fs,xrange,visible);
   end
   %continue;
@@ -163,7 +169,7 @@ for wi = 1:numWaveform
    lc2 = lc20;
  end
 
- if debug
+ if false
    figure;
    hold on
    plot(M(:,1), M(:,2)/max2);

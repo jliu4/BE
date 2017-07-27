@@ -1,18 +1,27 @@
 function [tt,icT,hpdrop,v12,dqp,v122,hv,res,hva,hvb,hqpa,hqpb,resa,resb,hv0,hqp0,res0,ql,...
-    hqp0sse,res0sse,icTsse] = plotSummary(pdata,isDC,efficiency,temp1,temp2)
+    hqp0sse,res0sse,icTsse] = plotSummary(pdata,isDC,efficiency,temp1,temp2,ct)
 %pdata = horzcat(coreT', inT', outT', ql', qf', hp', v1', v2', v3',qPow', termP', pcbP', qSP', qSV', h2',coreQPow');
 %asignColumn name 
 tt=[];icT=[];hpdrop=[];v12=[];dqp=[];v122=[];hv=[];res=[];hva=[];hvb=[];hqpa=[];
 hqpb=[];resa=[];resb=[];hv0=[];hqp0=[];res0=[];ql=[];
     hqp0sse=[];res0sse=[];icTsse=[];
-uniqCT = unique(int16(pdata(:,1)));
+ 
+if ct  %use core t   
+ uniqCT = unique(int16(pdata(:,1)));
+else %use inner t
+ uniqCT = unique(int16(pdata(:,2)));
+end 
 uniqCT(uniqCT>(temp2+3))=[];
 uniqCT(uniqCT<(temp1-2))=[];
 %assume for each run all temperatures have the same q-pulse length
 
 i = 0;
 for ti = 1:numel(uniqCT) 
+ if ct  %use core t   
   tdata = pdata(int16(pdata(:,1)) == uniqCT(ti),:);
+ else
+  tdata = pdata(int16(pdata(:,2)) == uniqCT(ti),:);
+ end 
   tdata = tdata(tdata(:,6) > 1,:);
  
   %exception 

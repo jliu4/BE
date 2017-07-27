@@ -14,9 +14,9 @@ outputPath ='C:\jinwork\BEC\tmp\';
 googleModelPath = 'C:\jinwork\BE\matlab\df-google\matfiles\';
 %Control parameters
 tsPlot = true; googleCopPlot = true; debugPlot = false; tsMultiPlot = false; tempExpFit = false; hpExpFit = true;  %has to set true TODO JLIU
-postProcess = true; writeOutput = true; plotOutput = true; detailPlot = true;findDuplicates = false; hpDropCal=false;
+postProcess = true; writeOutput = true; plotOutput = true; detailPlot = true;findDuplicates = false; hpDropCal = true;
 %plot bounds setting
-startOffset = 0;endOffset = 0;hp1 = 0;hp2 = 55; qp1 = 5;qp2 = 55;cqp1 = 0;cqp2 = 12; temp1 = 300; temp2 = 325;
+startOffset = 0;endOffset = 0;hp1 = 0;hp2 = 50; qp1 = 5;qp2 = 55;cqp1 = 0;cqp2 = 12; temp1 = 275; temp2 = 325;
 colors = setColors();
 %read cases
 readCase;
@@ -44,6 +44,7 @@ end
 
 %the summary plot count number
 fcount = 0;
+%subplot ax2;
 for ai = 1:size(aSet,1)
   reactor  = char(aSet.reactor(ai));
   folder  = char(aSet.folder(ai));
@@ -61,7 +62,7 @@ for ai = 1:size(aSet,1)
   googleModel = aSet.googleModel(ai);
   desc = char(aSet.desc(ai));
   fileName = char(aSet.fileName(ai));
-  
+  ct = true; %default core t control
   switch (reactor)
     case {'ipb1-29'; 'ipb1-30';'ipb1-13';'ipb1-40';'ipb1-41'}
       rtFolder='ISOPERIBOLIC_DATA'; 
@@ -72,12 +73,16 @@ for ai = 1:size(aSet,1)
     case {'ipb3-32';'ipb3-37';'ipb3-42';'ipb3-43'}
       rtFolder='IPB3_DATA';   
     case {'ipb4-37';'ipb4-44';'ipb41-44';'ipb41-50'}
-      rtFolder='IPB4_DATA';       
+      rtFolder='IPB4_DATA';  
+      if strcmp(reactor,'ipb41-50')
+          ct = false; %inner temp control
+      end    
     case 'sri-conflat'
       rtFolder='SRIdata';
     case 'google'
       rtFolder='Jin\google\060217';
   end %switch
+  
   Directory=char(strcat(dataPath,rtFolder,'\',folder));
   tmpDir = extractAfter(Directory,dataPath);
 
@@ -114,7 +119,7 @@ for ai = 1:size(aSet,1)
     %export_fig(ff(ai),figname,'-append');
     if hpDropCal  
       [tt,icT,hpdrop,v12,dqp,v122,hv,res,hva,hvb,hqpa,hqpb,resa,resb,hv0,hqp0,res0,ql,...
-       hqp0sse,res0sse,icTsse] = plotSummary(pdata,isDC,efficiency,temp1,temp2);
+       hqp0sse,res0sse,icTsse] = plotSummary(pdata,isDC,efficiency,temp1,temp2, ct);
       if length(tt) < 1
         continue;
       end  
@@ -174,7 +179,6 @@ for ai = 1:size(aSet,1)
     end  
   end  
   figure(fsummary);
-  
   for qi = 1:size(ql,1) 
     fcount = fcount + 1; 
    % tqStr = strcat(tStr,'-',num2str(ql(qi)),'-ns');
@@ -220,14 +224,12 @@ for ai = 1:size(aSet,1)
     hqpa(qi,:)',hqpb(qi,:)',...
     'VariableNames',{'run','coreT','R','Rsse','C','M','Msse','Ra','Rb','Ca','Cb','Ma','Mb'})];
   end
+  
  end
 end
 end
-if tsMultiPlot
-  export_fig(ftsMulitplot,figname,'-append');
-end
 if writeOutput
-writetable(T1,filen1);
+  writetable(T1,filen1);
 end
 if postProcess && hpDropCal
   legend(ax2,l1,'Location','SouthOutside');

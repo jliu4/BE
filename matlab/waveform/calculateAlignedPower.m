@@ -9,6 +9,8 @@ function [P,c,riseTime,v1,v2,v3,alignV,dvdt,riseTime12,dvdt12,j12]  = calculateA
    alignV = alignP*signM*mVolt;
   % alignV = alignP*mVolt;
    %find the alignP% alignment for v2
+   %sometimes the noise is too high, so increase alignP will solve the
+   %problem.
    j1 = max(1,fstMax-delta); ij1 = int32(j1);
    ij2 = min(ifstMax+delta,size(M,1));
    [c1 v1] = min(abs(M(ij1:ij2,2)-alignV));
@@ -38,15 +40,23 @@ function [P,c,riseTime,v1,v2,v3,alignV,dvdt,riseTime12,dvdt12,j12]  = calculateA
    c = coreL/(v2*timeInterval)*inchNs/s2ns; %TODO JLIU
    
    if debug
+       
+        disp(v1);
+        disp(v2);
+        disp(v3);
+        disp(j12);
      figure;
+    
      hold on
      plot(M(ij1:ij2,1),M(ij1:ij2,2:4))
      plot(M(ij1+iv1:ij2-iv2,1),v12)
+    
      plot(M(ifstMax,1),M(ifstMax,2), '^r', 'MarkerFaceColor','r')
      plot(M(ij1+iv1,1),alignV, '^g','MarkerFaceColor','g')
      plot(M(ij1+iv1+iv2,1),alignV, '^k','MarkerFaceColor','k')
      plot(M(ij1+iv1+iv2+iv3,1),alignV, '^c','MarkerFaceColor','c')
      plot(M(ij1+iv1+j12,1),v12(j12), '^b','MarkerFaceColor','b')
+      legend('v1','v2','v3','(v1+v2)/2','80v1','10v1','10v2','10v3','80(v1+v2)/2');
      hold off
      grid
    end
