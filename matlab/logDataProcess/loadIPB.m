@@ -202,7 +202,7 @@ rawDataN = dataset({rawData,'dateN',...
      'CoreTOFns'}); 
 dt = datetime(rawDataN.dateN, 'ConvertFrom', 'datenum') ;
 cop = 0;
-if googleCopPlot && strcmp(googleModel,'No') == 0
+if false && googleCopPlot && strcmp(googleModel,'No') == 0
   tmp = char(strcat(googleModelPath, reactor,'\',googleModel));
   cop = doGoogleModel(rawDataN,tmp,isDC);
 end  

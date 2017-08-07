@@ -24,9 +24,9 @@ waveform = readtable(fn);
 %vs.ipb41-44
 %input = [waveform(83:86,:)]; %ipb41-44
 
-input = [waveform(64,:);waveform(66,:)]; 
-input = [waveform(64:67,:);waveform(67,:)]; 
-figname = 'ipb3-43-72717.pdf';
+input = [waveform(83,:);waveform(66,:)]; 
+input = [waveform(85:86,:)]; 
+figname = 'ipb3-39-080717.pdf';
 filen1 = strcat(outputPath, strrep(figname, '.pdf', '.csv'));
 figname = strcat(outputPath,figname);
 numWaveform = size(input,1);
@@ -53,14 +53,14 @@ for wi = 1:numWaveform
    filterCount = input.filterCount(wi);
    alignP = input.alignP(wi); %where v1,v2 and v3 aligned 0.05 or 0.1
    mFactor = input.mFactor(wi); %where riser time peak 
-   input_frequency = input.frequency(wi); %kHz-Hz
+   segDiv = input.segDiv(wi); %kHz-Hz
    delta = input.delta(wi); %use the range to seach the 
    coreL = input.coreL(wi);  %core length in inch
    pulseWidth = input.pulseWidth(wi); %ns
    panelDivision = input.panelDivision(wi); %vol
    filterValue = filterCount/256 * panelDivision *4; 
    type = input.type(wi); 
-   tt = char(strcat(folder,'-',dateN,'-',filename,'-',type,'-',num2str(filterCount)));
+   tt = char(strcat(folder,'-',dateN,'-',filename,'-',type));
    fn = char(strcat(dataPath,folder,'\',filename));
    %read in big file  
    M = csvread(fn,nh,0);
@@ -123,23 +123,19 @@ for wi = 1:numWaveform
      lc20(end) = [];
    end  
    numOfPulse = size(lc10,1)+size(lc20,1); %count a positive pulse and a negtive pulse as two pulses
-   
    %calculatePulseWid =abs(lc1(1)-lc2(1))*timeInterval*s2ns 
    frequency = int32(numOfPulse/totalTime/hz2kHz); %kHz as the frequency unit
    if fftAnalysis  
-     xrange = 4;
       %filter out noise.
-      M0 = M(:,2:4);
-     
-      M0(abs(M0) <= filterValue*8)= 0;
-      M1 = horzcat(M(:,1),M0(:,1:3));
-   
-     t1 = int32(lc10(2)-ift1);
-     t2 = int32(lc10(2)+pulseWidthPoint+it2);
-     %t2 = int32(lc20(2)-2*delta);
-     test = strcat(outputPath,'jinfft.csv');
+     M0 = M(:,2:4);
+     M0(abs(M0) <= filterValue*8)= 0;
+     M1 = horzcat(M(:,1),M0(:,1:3)); 
+     t1 = int32(lc10(1)-ift1);
+     %t2 = int32(lc10(2)+pulseWidthPoint+it2);
+     t2 = int32(lc10(2)-ift1);
+     %test = strcat(outputPath,'jinfft.csv');
      %csvwrite(test,M1(:,1));
-     plotFFT1(M1,t1,t2,pos,figname,tt,Fs,xrange,visible);
+     plotFFT1(M1,t1,t2,pos,figname,tt,Fs,segDiv,visible);
   end
   %continue;
    
@@ -151,10 +147,8 @@ for wi = 1:numWaveform
      i2 = int32(lc10(i));  
      i1 = int32(max(i2-pulseWidthPoint,1));
      %ji2 = find(M(i1:i2,2) > mFactor*max2,1,'first'); %TODO  should use the same max
-     ji2 = find(M(i1:i2,2) > mFactor*mVolt,1,'first'); %switch to set max, eliminate all unexpected reflection, noise etc.
-     
+     ji2 = find(M(i1:i2,2) > mFactor*mVolt,1,'first'); %switch to set max, eliminate all unexpected reflection, noise etc.    
      ji3 = max(lc10(i)-pulseWidthPoint,1)+ji2; % can not move to pass first point
-    
      if  ji3 > delta
        ii = ii + 1;  
        lc1(ii) = ji3;
@@ -215,9 +209,9 @@ for wi = 1:numWaveform
    yrms= rms(MM(:,1:3));
    yfft = fft(MM)/n;
    yf=rms(abs(yfft));yrms/sqrt(n);
-   P0 = (y1rms-y2rms)*y3rms/zterm;
-   p1 = char(strcat('RMS Voltage Method: (rms(v1)-rms(v2))*rms(v3)/Z = ',num2str(P0,'%.2f'),...
-       ' rms(v1) = ',num2str(y1rms,'%.2f'), ' rms(v2) = ',num2str(y2rms,'%.2f'), ' rms(v3) = ',num2str(y3rms,'%.2f')));
+   P0 = (y1rms-y2rms)*y2rms/zterm;
+   p1 = char(strcat('RMS Voltage Method: (rms(v1)-rms(v2))*rms(v2)/Z = ',num2str(P0,'%.2f'),...
+       ' rms(v1) = ',num2str(y1rms,'%.2f'), ' rms(v2) = ',num2str(y2rms,'%.2f')));
    if plotSummary
       plotWaveFormSummary(M,max2,min2,frequency,filterValue,firstP,lastP,first1,first2,last1,last2,pos,figname,tt,p1,visible)   
    end   

@@ -14,9 +14,9 @@ outputPath ='C:\jinwork\BEC\tmp\';
 googleModelPath = 'C:\jinwork\BE\matlab\df-google\matfiles\';
 %Control parameters
 tsPlot = true; googleCopPlot = true; debugPlot = false; tsMultiPlot = false; tempExpFit = false; hpExpFit = true;  %has to set true TODO JLIU
-postProcess = true; writeOutput = true; plotOutput = true; detailPlot = true;findDuplicates = false; hpDropCal = true;
+postProcess = true; writeOutput = true; plotOutput = true; detailPlot = true;findDuplicates = false; hpDropCal = false;
 %plot bounds setting
-startOffset = 0;endOffset = 0;hp1 = 0;hp2 = 50; qp1 = 5;qp2 = 55;cqp1 = 0;cqp2 = 12; temp1 = 275; temp2 = 325;
+startOffset = 0;endOffset = 0;hp1 = 0;hp2 = 140; qp1 = 5;qp2 = 55;cqp1 = 0;cqp2 = 12; temp1 = 275; temp2 = 325;
 colors = setColors();
 %read cases
 readCase;
@@ -66,15 +66,15 @@ for ai = 1:size(aSet,1)
   switch (reactor)
     case {'ipb1-29'; 'ipb1-30';'ipb1-13';'ipb1-40';'ipb1-41'}
       rtFolder='ISOPERIBOLIC_DATA'; 
-    case {'sri-ipb1-41';'sri-ipb1-48'}
+    case {'sri-ipb1-41';'sri-ipb1-48';'sri-ipb1-45'}
       rtFolder='SRI-IPB1';  
     case {'sri-ipb2-27';'sri-ipb2-33'}
       rtFolder='SRI-IPB2';  
-    case {'ipb3-32';'ipb3-37';'ipb3-42';'ipb3-43'}
+    case {'ipb3-32';'ipb3-37';'ipb3-42';'ipb3-43';'ipb3-39'}
       rtFolder='IPB3_DATA';   
-    case {'ipb4-37';'ipb4-44';'ipb41-44';'ipb41-50'}
+    case {'ipb4-37';'ipb4-44';'ipb41-44';'ipb41-50';'ipb41-53'}
       rtFolder='IPB4_DATA';  
-      if strcmp(reactor,'ipb41-50')
+      if strcmp(reactor,'ipb41-53')
           ct = false; %inner temp control
       end    
     case 'sri-conflat'

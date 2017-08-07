@@ -48,7 +48,7 @@ function [P,c,riseTime,v1,v2,v3,alignV,dvdt,riseTime12,dvdt12,j12]  = calculateA
      figure;
     
      hold on
-     plot(M(ij1:ij2,1),M(ij1:ij2,2:4))
+     plot(M(ij1:ij2,1),M(ij1:ij2,2:3))
      plot(M(ij1+iv1:ij2-iv2,1),v12)
     
      plot(M(ifstMax,1),M(ifstMax,2), '^r', 'MarkerFaceColor','r')
@@ -56,7 +56,7 @@ function [P,c,riseTime,v1,v2,v3,alignV,dvdt,riseTime12,dvdt12,j12]  = calculateA
      plot(M(ij1+iv1+iv2,1),alignV, '^k','MarkerFaceColor','k')
      plot(M(ij1+iv1+iv2+iv3,1),alignV, '^c','MarkerFaceColor','c')
      plot(M(ij1+iv1+j12,1),v12(j12), '^b','MarkerFaceColor','b')
-      legend('v1','v2','v3','(v1+v2)/2','80v1','10v1','10v2','10v3','80(v1+v2)/2');
+      legend('v1','v2','(v1+v2)/2','80v1','10v1','10v2','10v3','80(v1+v2)/2');
      hold off
      grid
    end
@@ -79,6 +79,6 @@ function [P,c,riseTime,v1,v2,v3,alignV,dvdt,riseTime12,dvdt12,j12]  = calculateA
    %calculate 0.5*(v1+v2) where probably the core most active part 
    
    deltaV = (MM(1:end-iv2,1)-MM(1+iv2:end,2)); 
-   P = mean(deltaV(1:end-iv3).*MM(1+iv3+iv2:end,3))/zterm; %TODO abs
+   P = mean(deltaV(1:end).*MM(1+iv2:end,2))/zterm; %TODO abs
 end
 

@@ -8,7 +8,7 @@ function plotWaveFormSummary(M,max2,min2,frequency,filterValue,firstP,lastP,firs
    grid on;
    grid minor;
    
-   plot(M(:,1),M(:,2),M(:,1),M(:,3),M(:,1),M(:,4))
+   plot(M(:,1),M(:,2),M(:,1),M(:,3))
    %xlabel('time');
    set(gca,'XTick',[]);
    ylabel('[volt]');
@@ -23,7 +23,7 @@ function plotWaveFormSummary(M,max2,min2,frequency,filterValue,firstP,lastP,firs
    set(gca,'XTick',[]);
    %annotation('textbox',[0.14,0.78,0.1,0.1],'String',p3,'FitBoxToText','on');
    x=[M(firstP,1),M(firstP,1)];
-   plot(M(first1:first2,1),M(first1:first2,2),M(first1:first2,1),M(first1:first2,3),M(first1:first2,1),M(first1:first2,4))
+   plot(M(first1:first2,1),M(first1:first2,2),M(first1:first2,1),M(first1:first2,3))
    dim = [0.14 0.27 0.1 0.1];
    %xlabel('time');
    ylabel('[volt]');
@@ -38,7 +38,7 @@ function plotWaveFormSummary(M,max2,min2,frequency,filterValue,firstP,lastP,firs
    grid minor;
    x=[M(lastP,1),M(lastP,1)];
    hold on;
-   plot(M(last1:last2,1),M(last1:last2,2),M(last1:last2,1),M(last1:last2,3),M(last1:last2,1),M(last1:last2,4))
+   plot(M(last1:last2,1),M(last1:last2,2),M(last1:last2,1),M(last1:last2,3))
    plot(x,y,'black');
    set(gca,'XTick',[]);
    %xlabel('time');

@@ -25,7 +25,7 @@ function plotAligned(v1,v2s,v3s,M,fstMax,delta,zterm,figname,P0,P,c,alignV,align
    dim = [0.14 0.6 0.1 0.1];
    annotation('textbox',dim,'String',p2,'FitBoxToText','on');
    hold on;
-   plot(M(t1:t2,1),M(t1:t2,2),M(t1:t2,1),M(t1:t2,3),M(t1:t2,1),M(t1:t2,4))
+   plot(M(t1:t2,1),M(t1:t2,2),M(t1:t2,1),M(t1:t2,3))
    plot(x,y1,'black','linewidth',1);
    plot(x1,y1,'black','linewidth',1);
    ylabel('[volt]');
@@ -35,7 +35,7 @@ function plotAligned(v1,v2s,v3s,M,fstMax,delta,zterm,figname,P0,P,c,alignV,align
    grid minor;
    text(x1(1),y, p5,'HorizontalAlignment','right');
    hold off;
-   legend('v1','v2','v3');
+   legend('v1','v2');
    set(gca,'XTick',[]);
    
    subplot(3,1,2);
@@ -44,7 +44,7 @@ function plotAligned(v1,v2s,v3s,M,fstMax,delta,zterm,figname,P0,P,c,alignV,align
    hold on;
    v12 = 0.5*(M(t1:t2-v2s,2) + M(t1+v2s:t2,3));
   
-   plot(M(t1:t2,1),M(t1:t2,2),M(t1:t2-v2s,1),M(t1+v2s:t2,3),M(t1:t2-v3s-v2s,1),M(t1+v3s+v2s:t2,4))
+   plot(M(t1:t2,1),M(t1:t2,2),M(t1:t2-v2s,1),M(t1+v2s:t2,3))
    plot(M(t1:t2-v2s,1),v12);
    ylabel('[volt]');
    plot(x1,y1,'black','linewidth',1);
@@ -65,20 +65,20 @@ function plotAligned(v1,v2s,v3s,M,fstMax,delta,zterm,figname,P0,P,c,alignV,align
    hold off;
    %dim = [0.14 0.3 0.1 0.1];
    %annotation('textbox',dim,'String',p2,'FitBoxToText','on');
-   legend('v1','v2','v3','(v1+v2)/2');
+   legend('v1','v2','(v1+v2)/2');
    set(gca,'XTick',[]);
    subplot(3,1,3);
    grid on;
    grid minor;
    deltaV = (M(t1:t2-v2s,2)-M(t1+v2s:t2,3));
-   P = deltaV(1:end-v3s).*M(t1+v3s+v2s:t2,4)/zterm;
+   P = deltaV(1:end).*M(t1+v2s:t2,3)/zterm;
    yyaxis left
    plot(M(t1:t2-v2s,1),deltaV);
    grid on;
    grid minor;
    ylabel('v1-v2[volt]');
    yyaxis right
-   plot(M(t1:t2-v3s-v2s,1),P);
+   plot(M(t1:t2-v2s,1),P);
    ylabel('Instantaneous Pulse Power[w]');
    set(gca,'XTick',[]);
    export_fig(f1,figname,'-append');
