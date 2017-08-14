@@ -26,7 +26,8 @@ waveform = readtable(fn);
 
 input = [waveform(83,:);waveform(66,:)]; 
 input = [waveform(85:86,:)]; 
-figname = 'ipb3-39-080717.pdf';
+input = [waveform(146:147,:)]; 
+figname = 'ipb5-52-081017.pdf';
 filen1 = strcat(outputPath, strrep(figname, '.pdf', '.csv'));
 figname = strcat(outputPath,figname);
 numWaveform = size(input,1);
@@ -53,7 +54,6 @@ for wi = 1:numWaveform
    filterCount = input.filterCount(wi);
    alignP = input.alignP(wi); %where v1,v2 and v3 aligned 0.05 or 0.1
    mFactor = input.mFactor(wi); %where riser time peak 
-   segDiv = input.segDiv(wi); %kHz-Hz
    delta = input.delta(wi); %use the range to seach the 
    coreL = input.coreL(wi);  %core length in inch
    pulseWidth = input.pulseWidth(wi); %ns
@@ -126,9 +126,10 @@ for wi = 1:numWaveform
    %calculatePulseWid =abs(lc1(1)-lc2(1))*timeInterval*s2ns 
    frequency = int32(numOfPulse/totalTime/hz2kHz); %kHz as the frequency unit
    if fftAnalysis  
+       segDiv = 100;
       %filter out noise.
      M0 = M(:,2:4);
-     M0(abs(M0) <= filterValue*8)= 0;
+     %M0(abs(M0) <= filterValue*8)= 0;
      M1 = horzcat(M(:,1),M0(:,1:3)); 
      t1 = int32(lc10(1)-ift1);
      %t2 = int32(lc10(2)+pulseWidthPoint+it2);

@@ -15,8 +15,9 @@ googleModelPath = 'C:\jinwork\BE\matlab\df-google\matfiles\';
 %Control parameters
 tsPlot = true; googleCopPlot = true; debugPlot = false; tsMultiPlot = false; tempExpFit = false; hpExpFit = true;  %has to set true TODO JLIU
 postProcess = true; writeOutput = true; plotOutput = true; detailPlot = true;findDuplicates = false; hpDropCal = false;
+logScalePlot = true;
 %plot bounds setting
-startOffset = 0;endOffset = 0;hp1 = 0;hp2 = 140; qp1 = 5;qp2 = 55;cqp1 = 0;cqp2 = 12; temp1 = 275; temp2 = 325;
+startOffset = 0;endOffset = 0;hp1 = 0;hp2 = 60; qp1 = 5;qp2 = 55;cqp1 = 0;cqp2 = 12; temp1 = 250; temp2 = 350;
 colors = setColors();
 %read cases
 readCase;
@@ -70,11 +71,11 @@ for ai = 1:size(aSet,1)
       rtFolder='SRI-IPB1';  
     case {'sri-ipb2-27';'sri-ipb2-33'}
       rtFolder='SRI-IPB2';  
-    case {'ipb3-32';'ipb3-37';'ipb3-42';'ipb3-43';'ipb3-39'}
+    case {'ipb3-32';'ipb3-37';'ipb3-42';'ipb3-43';'ipb3-39';'ipb3-56'}
       rtFolder='IPB3_DATA';   
-    case {'ipb4-37';'ipb4-44';'ipb41-44';'ipb41-50';'ipb41-53'}
+    case {'ipb4-37';'ipb4-44';'ipb41-44';'ipb41-50';'ipb41-53';'ipb42-52'}
       rtFolder='IPB4_DATA';  
-      if strcmp(reactor,'ipb41-53')
+      if contains(reactor,'ipb42')
           ct = false; %inner temp control
       end    
     case 'sri-conflat'
@@ -117,6 +118,9 @@ for ai = 1:size(aSet,1)
     end    
     %comment out , too many plots
     %export_fig(ff(ai),figname,'-append');
+    if logScalePlot
+       plotMvsPulseLen(pdata,ai,temp1,temp2, ct,pos,figname,tStr);
+    end
     if hpDropCal  
       [tt,icT,hpdrop,v12,dqp,v122,hv,res,hva,hvb,hqpa,hqpb,resa,resb,hv0,hqp0,res0,ql,...
        hqp0sse,res0sse,icTsse] = plotSummary(pdata,isDC,efficiency,temp1,temp2, ct);

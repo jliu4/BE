@@ -2,10 +2,13 @@ function plotFFT1(M,t1,t2,pos,figname,tt,Fs,segDiv,visible )
      f1 = figure('Position',pos,'visible',visible);
  
      nfft = length(M(t1:t2,1));
-     win = hamming(nfft);
     
+   
      bin = Fs/nfft
-     segmentLength = int32(nfft/segDiv);
+     segmentLength =  Fs/bin/10e6
+     bin = 1;
+     segmentLength =  Fs/bin/10e6
+     
      infft2 = int32(nfft/2);
      F = ((0:1/nfft:1-1/nfft)*Fs).';
      subplot(2,2,1)
@@ -18,9 +21,9 @@ function plotFFT1(M,t1,t2,pos,figname,tt,Fs,segDiv,visible )
      ylabel('[volt]');
      xlabel('time[s]');
      legend('v1','v2');
-     y = M(t1:t2,2).*win;
-     ydft = fft(y);
-     my = abs(ydft);
+     %y = M(t1:t2,2).*win;
+     %ydft = fft(y);
+     %my = abs(ydft);
      %axis tight  
      %nfft = length(M(:,1)); 
      Y1 = fft(M(t1:t2,2),nfft);
@@ -44,16 +47,17 @@ function plotFFT1(M,t1,t2,pos,figname,tt,Fs,segDiv,visible )
     % ylabel('magnitude');
      
      subplot(2,2,2)
-      [PSD1,F1]  = pwelch(M(t1:t2,2),ones(segmentLength,1),0,nfft,Fs,'psd');
-      [PSD2,F2]  = pwelch(M(t1:t2,3),ones(segmentLength,1),0,nfft,Fs,'psd');
+      [PSD1,F1]  = pwelch(M(t1:t2,2),ones(segmentLength,1),0,nfft,Fs,'power');
+      [PSD2,F2]  = pwelch(M(t1:t2,3),ones(segmentLength,1),0,nfft,Fs,'power');
       plot(F1/1e6,10*log10(PSD1),F2/1e6,10*log10(PSD2));
            xlabel('Frequency in MHz');
            grid on;
      grid minor;
-      ylabel('Power spectrum density (dBW)');
+     yy =strcat('Power spectrum in dB, bandwidth =', num2str(bin),'MHz'); 
+      ylabel(yy);
       legend('v1','v2');
       ax = axis;
-     axis([0 300 ax(3:4)])
+     %axis([0 300 ax(3:4)])
      %%
      %%mY1(1) = 0;% remove the DC component for better visualization
      %%plot(F(1:nfft/2)/1e6, 10*log10(mY1(1:nfft/2)),F(1:nfft/2)/1e6, 10*log10(mY2(1:nfft/2)));
@@ -68,10 +72,11 @@ function plotFFT1(M,t1,t2,pos,figname,tt,Fs,segDiv,visible )
      plot(F(1:nfft/2)/1e6,pY1(1:nfft/2),F(1:nfft/2)/1e6,pY2(1:nfft/2));
      legend('v1','v2');
      xlabel('Frequency in MHz')
-     ylabel('radians')
+     ylabel('Phase response in radians')
      grid on;
      grid minor;
      axis tight
+     
      [P1,F1]=periodogram(M(t1:t2,2),[],nfft,Fs,'power');
      [P2,F2]=periodogram(M(t1:t2,3),[],nfft,Fs,'power');
      [P3,F3]=periodogram(M(t1:t2,4),[],nfft,Fs,'power');
@@ -83,8 +88,10 @@ function plotFFT1(M,t1,t2,pos,figname,tt,Fs,segDiv,visible )
      peakFreqs_Hz = F(peakFreqIdx);
      np = length(peakFreqs_Hz)
      peakPowers_dBW;
-    
-    
+      segmentLength = segmentLength/10;
+      bin = Fs/segmentLength/10e6
+      bin = 0.1;
+     segmentLength = int32(Fs/bin/10e6)
      [P1,F1] = pwelch(M(t1:t2,2),ones(segmentLength,1),0,nfft,Fs,'power');
      [P2,F2] = pwelch(M(t1:t2,3),ones(segmentLength,1),0,nfft,Fs,'power');
      [P3,F3] = pwelch(M(t1:t2,4),ones(segmentLength,1),0,nfft,Fs,'power');
@@ -94,7 +101,8 @@ function plotFFT1(M,t1,t2,pos,figname,tt,Fs,segDiv,visible )
      grid on;
      grid minor;
       xlabel('Frequency in MHz');
-      ylabel('Power spectrum (dBW)');
+      yy =strcat('Power spectrum in dB, bandwidth =', num2str(bin),'MHz'); 
+      ylabel(yy);
       legend('v1','v2');
      ax = axis;
      axis([0 300 ax(3:4)])

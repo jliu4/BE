@@ -1,4 +1,4 @@
-function plotTS(dt,hp1,hp2,cqp1,cqp2,data,plotTitle,pos,figname,cop,isDC,version,coreL,termRes)
+function plotTS(dt,hp1,hp2,cqp1,cqp2,ct1,ct2,data,plotTitle,pos,figname,cop,isDC,version,coreL,termRes)
 fq=figure('Position',pos);
 aa_splot(dt,data.HeaterPower,'black','linewidth',1.5); 
 ylim([hp1, hp2]);
@@ -30,7 +30,7 @@ else
     addaxisplot(dt,smooth(c,20),2,'--') ;
   end  
 end 
-addaxis(dt,data.CoreTemp,[200,650],'color','r','linewidth',1.5);
+addaxis(dt,data.CoreTemp,[ct1,ct2],'color','r','linewidth',1.5);
 addaxisplot(dt,data.InnerBlockTemp1,3,'--');
 addaxis(dt,data.CoreQV1Rms,[cqp1,cqp2]); %light purple
 addaxisplot(dt,data.CoreQV2Rms,4,'--'); %light purple

@@ -210,7 +210,7 @@ if tsPlot
   if contains(reactor,'ipb41-44') || contains(folder,'ipb41-44')
     plotTS_ipb41(dt,hp1,hp2,cqp1,cqp2,rawDataN,plotTitle,pos,figname,cop,isDC,version,coreL,termRes);
   else
-    plotTS(dt,hp1,hp2,cqp1,cqp2,rawDataN,plotTitle,pos,figname,cop,isDC,version,coreL,termRes);
+    plotTS(dt,hp1,hp2,cqp1,cqp2,temp1,temp2,rawDataN,plotTitle,pos,figname,cop,isDC,version,coreL,termRes);
   end
 end 
 if isDC == false && debugPlot
