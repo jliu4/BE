@@ -17,7 +17,7 @@ tsPlot = true; googleCopPlot = true; debugPlot = false; tsMultiPlot = false; tem
 postProcess = true; writeOutput = true; plotOutput = true; detailPlot = true;findDuplicates = false; hpDropCal = false;
 logScalePlot = true;
 %plot bounds setting
-startOffset = 0;endOffset = 0;hp1 = 0;hp2 = 60; qp1 = 5;qp2 = 55;cqp1 = 0;cqp2 = 12; temp1 = 250; temp2 = 350;
+startOffset = 0;endOffset = 0;hp1 = 0;hp2 = 60; qp1 = 5;qp2 = 55;cqp1 = 0;cqp2 = 12; temp1 = 250; temp2 = 650;
 colors = setColors();
 %read cases
 readCase;
@@ -75,7 +75,7 @@ for ai = 1:size(aSet,1)
       rtFolder='IPB3_DATA';   
     case {'ipb4-37';'ipb4-44';'ipb41-44';'ipb41-50';'ipb41-53';'ipb42-52'}
       rtFolder='IPB4_DATA';  
-      if contains(reactor,'ipb42')
+      if contains(reactor,'ipb41-5')
           ct = false; %inner temp control
       end    
     case 'sri-conflat'

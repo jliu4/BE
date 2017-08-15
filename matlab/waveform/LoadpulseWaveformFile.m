@@ -26,8 +26,8 @@ waveform = readtable(fn);
 
 input = [waveform(83,:);waveform(66,:)]; 
 input = [waveform(85:86,:)]; 
-input = [waveform(146:147,:)]; 
-figname = 'ipb5-52-081017.pdf';
+input = [waveform(32,:)]; 
+figname = 'sri-ipb2-33-081517.pdf';
 filen1 = strcat(outputPath, strrep(figname, '.pdf', '.csv'));
 figname = strcat(outputPath,figname);
 numWaveform = size(input,1);
@@ -298,8 +298,16 @@ if plotErrBar
   grid on;
   grid minor;
   hold on;  
-  p1=errorbar(pw,cPosM,cPosCV,'-x'); 
-  p2=errorbar(pw,cNegM,cNegCV,'-o');  
+  p1=errorbar(pw,cPosM,cPosCV,'x'); 
+  p2=errorbar(pw,cNegM,cNegCV,'o'); 
+   xlim([0,n+2]);
+  for i = 1:n
+     tx(i) = pw(i);
+     tp(i) = cPosM(i);
+     tn(i) = cNegM(i);
+     xi = strcat('cPos=',num2str(cPosM(i),'%.2f'),' cNeg=',num2str(cNegM(i),'%.2f'));
+     text(tx(i),0.5*(tp(i)+tn(i)),xi);
+  end
   ylabel('c[speed light]');
   set(gca,'XTick',[]);
   hold off;
@@ -308,10 +316,18 @@ if plotErrBar
   grid on;
   grid minor;
   hold on;  
-  p1=errorbar(pw,riseTimePosM,riseTimePosCV,'-x');
-  p2=errorbar(pw,riseTimeNegM,riseTimeNegCV,'-o');
-  p3=errorbar(pw,riseTime12PosM,riseTime12PosCV,'-+');
-  p4=errorbar(pw,riseTime12NegM,riseTime12NegCV,'-*');
+  p1=errorbar(pw,riseTimePosM,riseTimePosCV,'x');
+  p2=errorbar(pw,riseTimeNegM,riseTimeNegCV,'o');
+  p3=errorbar(pw,riseTime12PosM,riseTime12PosCV,'+');
+  p4=errorbar(pw,riseTime12NegM,riseTime12NegCV,'*');
+   xlim([0,n+2]);
+  for i = 1:n
+     tx(i) = pw(i);
+     tp(i) = riseTimePosM(i);
+     tn(i) = riseTimeNegM(i);
+     xi = strcat('riseTimePos=',num2str(riseTimePosM(i),'%.1f'),' riseTimeNeg=',num2str(riseTimeNegM(i),'%.1f'));
+     text(tx(i),0.5*(tp(i)+tn(i)),xi);
+  end
   ylabel('riseTime[ns]');
   set(gca,'XTick',[]);
   hold off;
@@ -320,10 +336,18 @@ if plotErrBar
   grid on;
   grid minor;
   hold on;  
-  p1=errorbar(pw,dvdtPosM,dvdtPosCV,'-x');
-  p2=errorbar(pw,dvdtNegM,dvdtNegCV,'-o');
-  p3=errorbar(pw,dvdt12PosM,dvdt12PosCV,'-+');
-  p4=errorbar(pw,dvdt12NegM,dvdt12NegCV,'-*');
+  p1=errorbar(pw,dvdtPosM,dvdtPosCV,'x');
+  p2=errorbar(pw,dvdtNegM,dvdtNegCV,'o');
+  p3=errorbar(pw,dvdt12PosM,dvdt12PosCV,'+');
+  p4=errorbar(pw,dvdt12NegM,dvdt12NegCV,'*');
+  xlim([0,n+2]);
+   for i = 1:n
+     tx(i) = pw(i);
+     tp(i) = dvdtPosM(i);
+     tn(i) = dvdtNegM(i);
+     xi = strcat('dvdtPos=',num2str(dvdtPosM(i),'%.1f'),' dvdtNeg=',num2str(dvdtNegM(i),'%.1f'));
+     text(tx(i),0.5*(tp(i)+tn(i)),xi);
+  end
   ylabel('dv/dt[volt/ns]');
   hold off;
   legend([p1,p2,p3,p4],'dv/dtPos','dv/dtNeg','dv/dt12Pos','dv/dt12Neg')

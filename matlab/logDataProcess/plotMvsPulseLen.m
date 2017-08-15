@@ -32,11 +32,24 @@ for ti = 1:numel(uniqCT)
  %find hps with coreqpow to calculate the hpdrop
  hps = tdata(tdata(:,16) > 0.1,:);
  M = (hps0 - hps(:,6))./hps(:,16);
- 
+
  if length(M) > 0 
-  
+   [M1,i1] = max(M(:,6));
+   [M2,i2] = min(M(:,6));
    i = i + 1;
    semilogx(hps(:,4),M(:,6),'-x');
+   txt1 = strcat('max=',num2str(M1,'%.2f'), ' at ', num2str(hps(i1,4)),'(ns) ',num2str(hps(i1,14),'%.0f'),'(v)');
+   txt2 = strcat('min=',num2str(M2,'%.2f'), ' at ', num2str(hps(i2,4)),'(ns) ',num2str(hps(i2,14),'%.0f'),'(v)');
+   x1 = hps(i1,4);
+   y1 = M1;
+   
+   text(x1,y1,txt1)
+   %x2 = log10(hps(i2,4));
+    x2 = hps(i2,4);
+   y2 = M2;
+   
+   text(x2,y2,txt2)
+
    %ylim([0 1])
    le{i}=strcat('Temp=',num2str(uniqCT(ti)));   
    hold on
