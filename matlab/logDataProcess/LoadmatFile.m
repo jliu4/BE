@@ -17,7 +17,7 @@ numberOfFolders = length(listOfFolderNames)
 for k = 1 : numberOfFolders
 	% Get this folder and print it out.
 	thisFolder = listOfFolderNames{k};
-	fprintf('Processing folder %s\n', thisFolder);
+	
 	filePattern = sprintf('%s/*.mat', thisFolder);
 	baseFileNames = dir(filePattern);
 	numberOfMatfiles = length(baseFileNames);
@@ -25,6 +25,7 @@ for k = 1 : numberOfFolders
 		% Go through all those image files.
 		for f = 1 : numberOfMatfiles
 			fullFileName = fullfile(thisFolder, baseFileNames(f).name);
+            %fprintf('Processing folder %s\n', thisFolder);
 			fprintf('%s\n',baseFileNames(f).name);
             %str=char(string(files(1,fi)))   
             S = load(fullFileName);
@@ -37,9 +38,10 @@ for k = 1 : numberOfFolders
             paramName =[param(:).Name];
             filen = strcat('C:\jinwork\BEC\tmp\parameters','.csv');
             dlmwrite(filen,parameters,'-append');
+            %dlmwrite(filen,parameters);
         end   
-   else
-		fprintf('     Folder %s has no image files in it.\n', thisFolder);
+   %else
+	%	fprintf('     Folder %s has no image files in it.\n', thisFolder);
    end
 end
 %clear S

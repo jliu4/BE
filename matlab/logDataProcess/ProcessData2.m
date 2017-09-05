@@ -15,9 +15,9 @@ googleModelPath = 'C:\jinwork\BE\matlab\df-google\matfiles\';
 %Control parameters
 tsPlot = true; googleCopPlot = true; debugPlot = false; tsMultiPlot = false; tempExpFit = false; hpExpFit = true;  %has to set true TODO JLIU
 postProcess = true; writeOutput = true; plotOutput = true; detailPlot = true;findDuplicates = false; hpDropCal = false;
-logScalePlot = true;
+logScalePlot = false;
 %plot bounds setting
-startOffset = 0;endOffset = 0;hp1 = 0;hp2 = 60; qp1 = 5;qp2 = 55;cqp1 = 0;cqp2 = 12; temp1 = 250; temp2 = 650;
+startOffset = 0;endOffset = 0;hp1 = 0;hp2 = 60; qp1 = 5;qp2 = 55;cqp1 = 0;cqp2 = 13; temp1 = 200; temp2 = 360;
 colors = setColors();
 %read cases
 readCase;
@@ -67,21 +67,27 @@ for ai = 1:size(aSet,1)
   switch (reactor)
     case {'ipb1-29'; 'ipb1-30';'ipb1-13';'ipb1-40';'ipb1-41'}
       rtFolder='ISOPERIBOLIC_DATA'; 
-    case {'sri-ipb1-41';'sri-ipb1-48';'sri-ipb1-45'}
+    case {'sri-ipb1-41';'sri-ipb1-48';'sri-ipb1-45';'sri-ipb1-43'}
       rtFolder='SRI-IPB1';  
     case {'sri-ipb2-27';'sri-ipb2-33'}
       rtFolder='SRI-IPB2';  
     case {'ipb3-32';'ipb3-37';'ipb3-42';'ipb3-43';'ipb3-39';'ipb3-56'}
       rtFolder='IPB3_DATA';   
-    case {'ipb4-37';'ipb4-44';'ipb41-44';'ipb41-50';'ipb41-53';'ipb42-52'}
+    case {'ipb35-51'}
+      rtFolder='IPB3-5_DATA';
+      ct = false;
+    case {'ipb4-37';'ipb4-44';'ipb41-44';'ipb41-50';'ipb41-53';'ipb42-52';'ipb43-14'}
       rtFolder='IPB4_DATA';  
-      if contains(reactor,'ipb41-5')
+      if contains(reactor,'ipb41-5') || contains(reactor,'ipb42') || contains(reactor,'ipb43')
           ct = false; %inner temp control
       end    
     case 'sri-conflat'
       rtFolder='SRIdata';
     case 'google'
       rtFolder='Jin\google\060217';
+      if contains(folder,'ipb41-5') || contains(folder,'ipb42') || contains(folder,'ipb43') || contains(folder,'ipb35-51')
+         ct = false; %inner temp control
+      end      
   end %switch
   
   Directory=char(strcat(dataPath,rtFolder,'\',folder));

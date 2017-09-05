@@ -18,26 +18,9 @@ fftAnalysis = true;
 
 fn = char(strcat(dataPath,'waveform.xlsx'));
 waveform = readtable(fn);
-%input = [waveform(22,:);waveform(7,:);waveform(51,:);waveform(73:74,:)];
-%input = [waveform(2:9,:);waveform(3,:);waveform(6,:);waveform(8:10,:)];
-%input = [waveform(75,:);waveform(63,:);waveform(79:80,:)]; %ipb4-44
-%vs.ipb41-44
-%input = [waveform(83:86,:)]; %ipb41-44
+input = [waveform(159:160,:)]; 
+figname = '4x-082817.pdf';
 
-input = [waveform(83,:);waveform(66,:)]; 
-input = [waveform(85:86,:)]; 
-input = [waveform(68,:)]; 
-figname = 'ipb3-43-dualnarrow-082417.pdf';
-input = [waveform(55,:);waveform(57,:)]; 
-figname = 'ipb3-42-foilcore-square-082517.pdf';
-
-input = [waveform(97:98,:)]; 
-figname = 'ipb35-51-082817.pdf';
-
-input = [waveform(156,:)]; 
-figname = 'ipb43-14-singleNarrow-11nf-082517.pdf';
-input = [waveform(158,:)]; 
-figname = 'ipb43-14-singleNarrow-22nf-090417.pdf';
 filen1 = strcat(outputPath, strrep(figname, '.pdf', '.csv'));
 figname = strcat(outputPath,figname);
 numWaveform = size(input,1);
@@ -45,15 +28,18 @@ vfactor = 0.94;% off 0.6 seconds for each 10 seconds q-pulse measurement.
 nh = 21; %waveform file header lines
 s2ns = 1e9; %second to ns
 hz2kHz = 1e3; %hz to kHz
-Fs = 2.5*1e9; %sampling frequency 2.5 gHz.
+%need to input sample rate, since it appears they are different on each
+%case.
+Fs = 0.5*1e9; %sampling frequency 0.5 gHz.
 inchNs = 0.0847253; %  speed light in unit [inch/ns]
-output1 = cell2table(cell(0,34),...
-'VariableName',{'folder','date','filename','pulseWidth','frequency','Zterm','CoreQPow','v1rms','v2rms','v3rms',...
+output1 = cell2table(cell(0,33),...
+'VariableName',{'folder','date','filename','pulseWidth','frequency','Zterm','CoreQPow','v1rms','v2rms',...
 'alignPowerPos','cPosM','riseTimePosM','dvdtPosM','riseTime12PosM','dvdt12PosM','cPosCV','riseTimePosCV','dvdtPosCV','riseTime12PosCV','dvdt12PosCV',...
 'alignPowerNeg','cNegM','riseTimeNegM','dvdtNegM','riseTime12NegM','dvdt12NegM','cNegCV','riseTimeNegCV','dvdtNegCV','riseTime12NegCV','dvdt12NegCV',...
 'noise','type'});
 delete(figname);
 pos = [10 10 1000 800];
+M = [];
 for wi = 1:numWaveform
    folder = input.folder(wi);
    dateN = input.date(wi);
@@ -73,8 +59,16 @@ for wi = 1:numWaveform
    tt = char(strcat(folder,'-',dateN,'-',filename,'-',type));
    fn = char(strcat(dataPath,folder,'\',filename));
    %read in big file  
-  
-   M = csvread(fn,nh,0);
+   nh = 1; %waveform file header lines
+   M2 = csvread(fn,nh,0);
+   if wi == 1
+       M = M2;
+   else
+       M = horzcat(M,M2(:,2));
+   end     
+end
+
+
    totalTime = M(end,1) - M(1,1);
    numPoint = size(M,1);
    timeInterval = totalTime/(numPoint-1); %sec
@@ -82,38 +76,16 @@ for wi = 1:numWaveform
    %take out 
    M0 = M(isfinite(M(:,2)),2);
    %if there is inf, there is no sense to align them.   
-   if size(M0,1) < numPoint
-     msg = strcat('file:',filename,'has inf');  
-     disp(msg);  
-     continue;
-   end   
+ 
    max2 = max(M(:,2));
    min2 = min(M(:,2));
-   bandwidth = 1; %for fft analysis
-   switch char(type)
-       case {'square';'Trapezoid'}
-        %mVolt = min(max2,-min2); %
-        mVolt = 0.5*voltage; %regular pulse causes the over shoot, and max and min actuall 10% higher than desired. 
-        it1 = delta;
-        it2 = 3*delta; %it2=max(1000,pulseWidthPoint+0.5*delta);
-        ift1 = 3*delta;
-       case {'square-lpf'} %low pass filter cause the voltage not reach the desired peak
-        mVolt = min(max2,-min2);
-        it1 = 2*delta;
-        it2 = 3*delta; %it2=max(1000,pulseWidthPoint+0.5*delta);  
-        ift1 = 6*delta;
-       case {'singleNarrow'}
-        mVolt = min(max2,-min2);
-        it1 = delta;
-        it2 = 3*delta;
-        ift1 = 3*it1;
-       case {'dualNarrow'}
-        mVolt = min(max2,-min2);
-        it1 = 60*delta; %min(1000,pulseWidthPoint+0.5*delta);
-        ift1 = it1;
-        it2 = 3*delta;  
-        bandwidth = 0.2; %for fft analysis
-   end   
+  
+   mVolt = min(max2,-min2);
+   it1 = delta;
+   it2 = 3*delta;
+   ift1 = 3*it1;
+   bandwidth = 0.5; %for fft analysis
+
        
    %[pk10,lc10] = findpeaks(M(delta:end-delta,2),'MinPeakProminence',100,'MinPeakHeight',mFactor*max2,'MinPeakDistance',pulseWidthPoint);
    %[pk20,lc20] = findpeaks(-M(delta:end-delta,2),'MinPeakProminence',100,'MinPeakHeight',-mFactor*min2,'MinPeakDistance',pulseWidthPoint);
@@ -140,15 +112,15 @@ for wi = 1:numWaveform
    frequency = int32(numOfPulse/totalTime/hz2kHz); %kHz as the frequency unit
    if fftAnalysis  
       %filter out noise.
-     M0 = M(:,2:4);
+     M0 = M(:,2:3);
      %M0(abs(M0) <= filterValue*8)= 0;
-     M1 = horzcat(M(:,1),M0(:,1:3)); 
+     M1 = horzcat(M(:,1),M0(:,1:2)); 
      t1 = int32(lc10(1)-ift1);
      %t2 = int32(lc10(2)+pulseWidthPoint+it2);
      t2 = int32(lc10(2)-ift1);
      %test = strcat(outputPath,'jinfft.csv');
      %csvwrite(test,M1(:,1));
-     plotFFT1(M1,t1,t2,pos,figname,tt,Fs,bandwidth,visible);
+     plotFFT_4x(M1,t1,t2,pos,figname,tt,Fs,bandwidth,visible);
   end
   %continue;
    
@@ -212,14 +184,14 @@ for wi = 1:numWaveform
    last2 = min(numPoint,lastP + it2);
    %[noise floor level ADC counts/sizeof(byte)] x [(QSetV/4) x 4 scope divisions]
    
-   MM =M(firstP:lastP,2:4);
+   MM =M(firstP:lastP,2:3);
    %filter out noise.
    MM(abs(MM) <= filterValue)= 0;
    n = size(MM,1);
    y1rms = rms(MM(isfinite(MM(:,1)),1));
    y2rms = rms(MM(isfinite(MM(:,2)),2));
-   y3rms = rms(MM(isfinite(MM(:,3)),3));
-   yrms= rms(MM(:,1:3));
+  
+   yrms= rms(MM(:,1:2));
    yfft = fft(MM)/n;
    yf=rms(abs(yfft));yrms/sqrt(n);
    P0 = (y1rms-y2rms)*y2rms/zterm;
@@ -228,11 +200,7 @@ for wi = 1:numWaveform
    if plotSummary
       plotWaveFormSummary(M,max2,min2,frequency,filterValue,firstP,lastP,first1,first2,last1,last2,pos,figname,tt,p1,visible)   
    end   
-   if alignP == 0
-     msg = strcat('file:',filename,'has zero align value');  
-     disp(msg);    
-     continue;
-   end     
+ 
    yPos = [0,max2(1)];
    yNeg = [min2(1),0];
    posArray = [];
@@ -241,7 +209,7 @@ for wi = 1:numWaveform
      j1 = size(lc1,2); 
      for pi = 1:j1   
       fstMax =lc1(pi);   
-      [pPos,cPos,riseTimePos,v1sPos,v2sPos,v3sPos,alignVPos,dvdtPos,riseTime12Pos,dvdt12Pos,j12Pos] = calculateAlignedPower(fstMax,M,MM,delta,alignP,zterm,timeInterval,s2ns,coreL,inchNs,debug,tt,pi,mVolt);  
+      [pPos,cPos,riseTimePos,v1sPos,v2sPos,v3sPos,alignVPos,dvdtPos,riseTime12Pos,dvdt12Pos,j12Pos] = calculateAlignedPower_4x(fstMax,M,MM,delta,alignP,zterm,timeInterval,s2ns,coreL,inchNs,debug,tt,pi,mVolt);  
       posArray(pi,1:9)=[lc1(pi),cPos,riseTimePos,v1sPos,v2sPos,v3sPos,dvdtPos,riseTime12Pos,dvdt12Pos];
       %only plot the first one
       if pi==1 && plotPos %let's plot two
@@ -264,7 +232,7 @@ for wi = 1:numWaveform
        
        fstMin = lc2(pi);
       
-       [pNeg,cNeg,riseTimeNeg,v1sNeg,v2sNeg,v3sNeg,alignVNeg,dvdtNeg,riseTime12Neg,dvdt12Neg,j12Neg] = calculateAlignedPower(fstMin,M,MM,delta,alignP,zterm,timeInterval,s2ns,coreL,inchNs,debug,tt,pi,mVolt);
+       [pNeg,cNeg,riseTimeNeg,v1sNeg,v2sNeg,v3sNeg,alignVNeg,dvdtNeg,riseTime12Neg,dvdt12Neg,j12Neg] = calculateAlignedPower_4x(fstMin,M,MM,delta,alignP,zterm,timeInterval,s2ns,coreL,inchNs,debug,tt,pi,mVolt);
        
        negArray(pi,1:9)=[lc2(pi),cNeg,riseTimeNeg,v1sNeg,v2sNeg,v3sNeg,dvdtNeg,riseTime12Neg,dvdt12Neg];
        
@@ -290,16 +258,14 @@ for wi = 1:numWaveform
         plotCNs(posArray,negArray,pos,figname,tt,visible);
      end
    end
-   output1 =[output1;table(folder,dateN,filename,pulseWidth,frequency,zterm,P0*0.94,y1rms,y2rms,y3rms,...
+   output1 =[output1;table(folder,dateN,filename,pulseWidth,frequency,zterm,P0*0.94,y1rms,y2rms,...
        pPos,cPosM(wi),riseTimePosM(wi),dvdtPosM(wi),riseTime12PosM(wi),dvdt12PosM(wi),cPosCV(wi),riseTimePosCV(wi),dvdtPosCV(wi),riseTime12PosCV(wi),dvdt12PosCV(wi),...
        pNeg,cNegM(wi),riseTimeNegM(wi),dvdtNegM(wi),riseTime12NegM(wi),dvdt12NegM(wi),cNegCV(wi),riseTimeNegCV(wi),dvdtNegCV(wi),riseTime12NegCV(wi),dvdt12NegCV(wi),...
        filterValue,type,...
-       'VariableName',{'folder','date','filename','pulseWidth','frequency','Zterm','CoreQPow','v1rms','v2rms','v3rms',...
+       'VariableName',{'folder','date','filename','pulseWidth','frequency','Zterm','CoreQPow','v1rms','v2rms',...
 'alignPowerPos','cPosM','riseTimePosM','dvdtPosM','riseTime12PosM','dvdt12PosM','cPosCV','riseTimePosCV','dvdtPosCV','riseTime12PosCV','dvdt12PosCV',...
 'alignPowerNeg','cNegM','riseTimeNegM','dvdtNegM','riseTime12NegM','dvdt12NegM','cNegCV','riseTimeNegCV','dvdtNegCV','riseTime12NegCV','dvdt12NegCV',...
 'noise','type'})];
-     
-end
 writetable(output1,filen1);
 if plotErrBar
   n = size(cPosM,2);

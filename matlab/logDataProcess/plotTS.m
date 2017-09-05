@@ -23,7 +23,7 @@ else
    q = data.CoreQPower;
    q(q<0.5)=-1;
    r=v2./q; 
-   addaxis(dt,r,[0,0.5]);
+   addaxis(dt,r,[0,0.7]);
 
   if version > 188 
     c =(coreL*0.0847253)./data.CoreTOFns;
