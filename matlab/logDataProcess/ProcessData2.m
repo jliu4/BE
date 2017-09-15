@@ -13,7 +13,7 @@ end
 outputPath ='C:\jinwork\BEC\tmp\';
 googleModelPath = 'C:\jinwork\BE\matlab\df-google\matfiles\';
 %Control parameters
-tsPlot = true; googleCopPlot = true; debugPlot = false; tsMultiPlot = false; tempExpFit = false; hpExpFit = true;  %has to set true TODO JLIU
+tsPlot = true; googleCopPlot = true; debugPlot = false; tsMultiPlot = false; tempExpFit = true; hpExpFit = false;  %has to set true TODO JLIU
 postProcess = true; writeOutput = true; plotOutput = true; detailPlot = true;findDuplicates = false; hpDropCal = false;
 logScalePlot = false;
 %plot bounds setting
@@ -27,9 +27,9 @@ delete(figname);
 filen1 = strcat(outputPath,aSetdesc,'detail.csv');
 filen2 = strcat(outputPath,aSetdesc,'.csv');
 if tempExpFit 
-   T1=cell2table(cell(0,27),...
+   T1=cell2table(cell(0,28),...
 'VariableName',{'coreT','inT','outT','QL','QF','HP','CoreQPower','v1','v2','v3','qPow','qSP','qSV','h2','termP','pcbP',...
-'p1','p2','p3','p4','hp_','it2','it3','it4','seq','steps','date'});
+'p1','p2','p3','p4','hp_','it1','it2','it3','it4','seq','steps','date'});
 else 
        T1=cell2table(cell(0,24),...
 'VariableName',{'coreT','inT','outT','QL','QF','HP','CoreQPower','v1','v2','v3','qPow','qSP','qSV','h2','termP','pcbP',...
@@ -89,7 +89,10 @@ for ai = 1:size(aSet,1)
          ct = false; %inner temp control
       end      
   end %switch
-  
+   tStr = strcat(reactor,'-',runDate,'-',desc);  
+  if contains(reactor,'google')
+      tStr = strcat(folder,fileName);
+  end
   Directory=char(strcat(dataPath,rtFolder,'\',folder));
   tmpDir = extractAfter(Directory,dataPath);
 
@@ -98,8 +101,7 @@ for ai = 1:size(aSet,1)
   Experiment'
   loadCSVFile; 
   dateN=datenum(DateTime,'mm/dd/yyyy HH:MM:SS');
-  tStr = strcat(reactor,'-',runDate,'-',desc);  
-  
+ 
   if contains(rtFolder,'SRIdata')
    %conflat
     loadConflat;
@@ -118,7 +120,7 @@ for ai = 1:size(aSet,1)
     continue;
   else   
     ff(ai) = 0;
-    [T1,pdata] = writeOut(rawDataN,T1,hpExpFit,tempExpFit,writeOutput,figname,tStr,ff(ai));
+    [T1,pdata] = writeOut(rawDataN,T1,hpExpFit,tempExpFit,writeOutput,figname,tStr,ff(ai),pos);
     if size(pdata,1) <1
         continue;
     end    

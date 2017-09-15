@@ -5,12 +5,11 @@ function plotWaveFormSummary(M,max2,min2,frequency,filterValue,firstP,lastP,firs
    f2 = figure('Position',pos,'visible',visible);
    subplot(3,1,1);
    suptitle(tt); 
+   plot(M(:,1),M(:,2),M(:,1),M(:,3))
    grid on;
    grid minor;
-   
-   plot(M(:,1),M(:,2),M(:,1),M(:,3))
-   %xlabel('time');
-   set(gca,'XTick',[]);
+   xlabel('time');
+   %set(gca,'XTick',[]);
    ylabel('[volt]');
    dim = [0.14 0.57 0.1 0.1];
    % dim = [0.15 0.25 0.5 0.5];

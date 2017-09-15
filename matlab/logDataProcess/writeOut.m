@@ -1,4 +1,4 @@
-function [T1,pdata] = writeOut(data,T1,hpExpFit,tempExpFit,writeOutput,figname,tStr,ff)
+function [T1,pdata] = writeOut(data,T1,hpExpFit,tempExpFit,writeOutput,figname,tStr,ff,pos)
 dataSize = size(data,1);
 ctFit = [];
 itFit = [];
@@ -62,13 +62,14 @@ while (i < dataSize-1)
     termP(seq2)= trimmean(data.TerminationHeatsinkPower(i1:i2),trim);
     pcbP(seq2)= trimmean(data.QPulsePCBHeatsinkPower(i1:i2),trim);
     if tempExpFit
-      ctFit(seq2,1:4) = expFit(data.CoreTemp(i1:i2));
+      ctFit(seq2,1:5) = expFit(data.CoreTemp(i1:i2),figname,hp(seq2),coreT(seq2),tStr,seq2,ff,pos,1);
       p1(seq2)=ctFit(seq2,1);
       p2(seq2)=ctFit(seq2,2);
       p3(seq2)=ctFit(seq2,3);
       p4(seq2)=ctFit(seq2,4);
-      itFit(seq2,1:4) = expFit(data.InnerBlockTemp1(i1:i2));
-      p5(seq2)=itFit(seq2,1);
+      p5(seq2) = ctFit(seq2,5);
+      itFit(seq2,1:5) = expFit(data.InnerBlockTemp1(i1:i2),figname,hp(seq2),coreT(seq2),tStr,seq2,ff,pos,0);
+      it1(seq2)=itFit(seq2,1);
       it2(seq2)=itFit(seq2,2);
       it3(seq2)=itFit(seq2,3);
       it4(seq2)=itFit(seq2,4);
@@ -80,7 +81,7 @@ while (i < dataSize-1)
       %take out 15% data set from beginning. 
       i11 = double(int16(0.1*(i2-i1)));
       
-      hpFit(seq2,1:4) = expFit(data.HeaterPower(i1+i11:i2),figname,hp(seq2),coreT(seq2),tStr,seq2,ff);      
+      hpFit(seq2,1:4) = expFit(data.HeaterPower(i1+i11:i2),figname,hp(seq2),coreT(seq2),tStr,seq2,ff,pos,0);      
       p1(seq2)=hpFit(seq2,1);
       p2(seq2)=hpFit(seq2,2);
       p3(seq2)=hpFit(seq2,3);
@@ -96,9 +97,9 @@ dt2 = datetime(dt1, 'ConvertFrom', 'datenum');
 if (writeOutput)
     if tempExpFit
 T1=[T1;table(coreT(:),inT(:),outT(:),ql(:),qf(:),hp(:),coreQPow(:),v1(:),v2(:),v3(:),qPow(:),qSP(:),qSV(:),h2(:),termP(:),pcbP(:),...
-    p1(:),p2(:),p3(:),p4(:),p5(:),it2(:),it3(:),it4(:),seq1(:),i12(:),dt2(:),...
+    p1(:),p2(:),p3(:),p4(:),p5(:),it1(:),it2(:),it3(:),it4(:),seq1(:),i12(:),dt2(:),...
 'VariableName',{'coreT','inT','outT','QL','QF','HP','CoreQPower','v1','v2','v3','qPow','qSP','qSV','h2','termP','pcbP',...
-'p1','p2','p3','p4','hp_','it2','it3','it4','seq','steps','date'})];
+'p1','p2','p3','p4','hp_','it1','it2','it3','it4','seq','steps','date'})];
     else
         T1=[T1;table(coreT(:),inT(:),outT(:),ql(:),qf(:),hp(:),coreQPow(:),v1(:),v2(:),v3(:),qPow(:),qSP(:),qSV(:),h2(:),termP(:),pcbP(:),...
     p1(:),p2(:),p3(:),p4(:),p5(:),seq1(:),i12(:),dt2(:),...
