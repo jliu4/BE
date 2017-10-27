@@ -11,6 +11,7 @@ if (true)
 %hold on;
 
 if ct == 1 && seq2 < 26
+deltaT = 0.3; % 1 degree
 fexp = figure('Position',pos);
 grid on;
 grid minor;
@@ -20,8 +21,17 @@ grid minor;
 plot(f,x1,data);
 ylabel('coreT');
 title(titleS); 
-decay = -10/3600/min(fp(2),fp(4));
-txt1 = ['decay = ' num2str(decay) ]; text(x1(1), data(1), txt1);
+if fp(2) < fp(4)
+  a1 = abs(fp(1));
+  p1 = fp(2);
+else  
+  a1 = abs(fp(3));
+  p1 = fp(4);
+end
+decay = 10/3600*log(deltaT/a1)/p1;
+tau = -10/3600/min(fp(2),fp(4));
+
+txt1 = ['tau = ' num2str(tau,'%.2f') ', Time converge:' num2str(decay,'%.2f') ' hour'  ]; text(x1(1), data(1), txt1);
 export_fig(fexp,figname,'-append');
 end
 %b = gca; legend(b,'off');

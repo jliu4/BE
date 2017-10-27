@@ -24,27 +24,8 @@ waveform = readtable(fn);
 %vs.ipb41-44
 %input = [waveform(83:86,:)]; %ipb41-44
 
-input = [waveform(83,:);waveform(66,:)]; 
-input = [waveform(85:86,:)]; 
-input = [waveform(68,:)]; 
-figname = 'ipb3-43-dualnarrow-082417.pdf';
-input = [waveform(55,:);waveform(57,:)]; 
-figname = 'ipb3-42-foilcore-square-082517.pdf';
-
-input = [waveform(97:98,:)]; 
-figname = 'ipb35-51-082817.pdf';
-
-input = [waveform(156,:)]; 
-figname = 'ipb43-14-singleNarrow-11nf-082517.pdf';
-input = [waveform(158,:)]; 
-figname = 'ipb43-14-singleNarrow-22nf-090417.pdf';
-input = [waveform(164,:)]; 
-figname = 'conflat-508-090717.pdf';
-input = [waveform(159,:)]; 
-figname = 'ipb43-14-singleNarrow-32nf-090717.pdf';
-filen1 = strcat(outputPath, strrep(figname, '.pdf', '.csv'));
-input = [waveform(167,:)]; 
-figname = 'conflat-509-091117.pdf';
+input = [waveform(114:115,:)]; 
+figname = 'ipb35-72-25c-he-102717.pdf';
 
 figname = strcat(outputPath,figname);
 numWaveform = size(input,1);
@@ -82,7 +63,8 @@ for wi = 1:numWaveform
    %read in big file  
   
    %M = csvread(fn,nh,0,[nh,0,600000,2]);
-   M = csvread(fn,nh,0,[nh,0,600000,2]);
+   M = csvread(fn,nh,0);
+   if false
    figure
    
    plot(M(:,1),M(:,2),M(:,1),M(:,3))
@@ -91,6 +73,8 @@ for wi = 1:numWaveform
    xlabel('time');
    %set(gca,'XTick',[]);
    ylabel('[volt]');
+   end
+  
    dim = [0.14 0.57 0.1 0.1];
    totalTime = M(end,1) - M(1,1);
    numPoint = size(M,1);
@@ -317,7 +301,7 @@ for wi = 1:numWaveform
 'noise','type'})];
      
 end
-writetable(output1,filen1);
+%writetable(output1,filen1);
 if plotErrBar
   n = size(cPosM,2);
   pw = 1:n;

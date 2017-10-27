@@ -1,14 +1,14 @@
-function plotConflatTS(dt,hp1,hp2,data,plotTitle,pos,figname)
+function plotConflatTS(dt,hp1,hp2,ct1,ct2,data,plotTitle,pos,figname)
 fq=figure('Position',pos);
 %hold on
 aa_splot(dt,data.HeaterPower,'black','linewidth',1.5); 
 ylim([hp1, hp2]);
-addaxis(dt,data.CoreTemp,'linewidth',1.5);
-
+addaxis(dt,data.CoreTemp,[ct1,ct2],'color','r','linewidth',1.5);
+addaxisplot(dt,data.InnerCoreTemp,2,'--');
 addaxis(dt,data.QPow);
 title(plotTitle,'fontsize',11);
 addaxislabel(1,'Heater Power(W)');
-addaxislabel(2,'CoreTemp(C)');
+addaxislabel(2,'CoreTemp-InnerT(C)');
 addaxislabel(3,'Power(W)');
 
 %addaxislabel(5,'V');

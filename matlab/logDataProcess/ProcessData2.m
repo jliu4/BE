@@ -13,11 +13,11 @@ end
 outputPath ='C:\jinwork\BEC\tmp\';
 googleModelPath = 'C:\jinwork\BE\matlab\df-google\matfiles\';
 %Control parameters
-tsPlot = true; googleCopPlot = true; debugPlot = false; tsMultiPlot = false; tempExpFit = true; hpExpFit = false;  %has to set true TODO JLIU
+tsPlot = true; googleCopPlot = true; debugPlot = false; tsMultiPlot = false; tempExpFit = false; hpExpFit = true;  %has to set true TODO JLIU
 postProcess = true; writeOutput = true; plotOutput = true; detailPlot = true;findDuplicates = false; hpDropCal = false;
-logScalePlot = false;
+logScalePlot = true;
 %plot bounds setting
-startOffset = 0;endOffset = 0;hp1 = 0;hp2 = 60; qp1 = 5;qp2 = 55;cqp1 = 0;cqp2 = 13; temp1 = 200; temp2 = 360;
+startOffset = 0;endOffset = 0;hp1 = 0;hp2 = 140; qp1 = 5;qp2 = 50;cqp1 = 0;cqp2 = 13; temp1 = 230; temp2 = 610;
 colors = setColors();
 %read cases
 readCase;
@@ -28,11 +28,11 @@ filen1 = strcat(outputPath,aSetdesc,'detail.csv');
 filen2 = strcat(outputPath,aSetdesc,'.csv');
 if tempExpFit 
    T1=cell2table(cell(0,28),...
-'VariableName',{'coreT','inT','outT','QL','QF','HP','CoreQPower','v1','v2','v3','qPow','qSP','qSV','h2','termP','pcbP',...
+'VariableName',{'coreT','inT','outT','QL','QF','HP','CoreQPower','v1','v2','v3','qPow','qSP','qSV','qCur','termP','pcbP',...
 'p1','p2','p3','p4','hp_','it1','it2','it3','it4','seq','steps','date'});
 else 
        T1=cell2table(cell(0,24),...
-'VariableName',{'coreT','inT','outT','QL','QF','HP','CoreQPower','v1','v2','v3','qPow','qSP','qSV','h2','termP','pcbP',...
+'VariableName',{'coreT','inT','outT','QL','QF','HP','CoreQPower','v1','v2','v3','qPow','qSP','qSV','qCur','termP','pcbP',...
 'p1','p2','p3','p4','hp_','seq','steps','date'});
 end
 
@@ -67,18 +67,25 @@ for ai = 1:size(aSet,1)
   switch (reactor)
     case {'ipb1-29'; 'ipb1-30';'ipb1-13';'ipb1-40';'ipb1-41'}
       rtFolder='ISOPERIBOLIC_DATA'; 
-    case {'sri-ipb1-41';'sri-ipb1-48';'sri-ipb1-45';'sri-ipb1-43'}
+    case {'sri-ipb1-41';'sri-ipb1-48';'sri-ipb1-45';'sri-ipb1-43';'sri-ipb1-54'}
       rtFolder='SRI-IPB1';  
-    case {'sri-ipb2-27';'sri-ipb2-33'}
-      rtFolder='SRI-IPB2';  
+      if contains(reactor,'54')
+          ct = false; %inner temp control
+      end    
+    case {'sri-ipb2-27';'sri-ipb2-33';'sri-ipb2-83'}
+      rtFolder='SRI-IPB2'; 
+       if contains(reactor,'83')
+          ct = false; %inner temp control
+      end    
     case {'ipb3-32';'ipb3-37';'ipb3-42';'ipb3-43';'ipb3-39';'ipb3-56'}
       rtFolder='IPB3_DATA';   
-    case {'ipb35-51'}
+    case {'ipb35-51';'ipb35-62'}
       rtFolder='IPB3-5_DATA';
       ct = false;
-    case {'ipb4-37';'ipb4-44';'ipb41-44';'ipb41-50';'ipb41-53';'ipb42-52';'ipb43-14'}
+    case {'ipb4-37';'ipb4-44';'ipb41-44';'ipb41-50';'ipb41-53';'ipb42-52';'ipb43-14';'ipb45-58'}
       rtFolder='IPB4_DATA';  
-      if contains(reactor,'ipb41-5') || contains(reactor,'ipb42') || contains(reactor,'ipb43')
+      if contains(reactor,'ipb41-5') || contains(reactor,'ipb42') || contains(reactor,'ipb43') ...
+              || contains(reactor,'ipb45')
           ct = false; %inner temp control
       end    
     case 'sri-conflat'
@@ -101,10 +108,13 @@ for ai = 1:size(aSet,1)
   Experiment'
   loadCSVFile; 
   dateN=datenum(DateTime,'mm/dd/yyyy HH:MM:SS');
- 
+  DateTime(end)
+  dateN(end)
+  size(DateTime)
   if contains(rtFolder,'SRIdata')
    %conflat
     loadConflat;
+    DateTime(end)
   else   
    %IPB
     loadIPB;
